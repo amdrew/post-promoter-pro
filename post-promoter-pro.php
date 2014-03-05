@@ -32,10 +32,6 @@ class PostPromoterPro {
 			add_action( 'admin_init', array( $this, 'load_admin_hooks' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_cusom_js' ), 99 );
 			add_action( 'publish_post', 'ppp_schedule_share' );
-
-
-
-			add_action( 'admin_head', 'test_setting_times' );
 		}
 	}
 
