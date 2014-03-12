@@ -24,15 +24,19 @@ class PostPromoterPro {
 		$ppp_social_settings = get_option( 'ppp_social_settings' );
 
 		include PPP_PATH . '/includes/share-functions.php';
+		include PPP_PATH . '/includes/libs/social-loader.php';
 
 		if ( is_admin() ) {
 			include PPP_PATH . '/includes/admin/admin-pages.php';
+			include PPP_PATH . '/includes/admin/meta-boxes.php';
 			add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
 			add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
 			add_action( 'admin_init', array( $this, 'load_admin_hooks' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_cusom_js' ), 99 );
-			add_action( 'publish_post', 'ppp_schedule_share' );
+			add_action( 'trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 		}
+
+		add_action( 'publish_post', 'ppp_schedule_share' );
 	}
 
 	/**

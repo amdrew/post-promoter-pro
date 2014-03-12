@@ -35,10 +35,15 @@ function ppp_admin_page() {
 				</td>
 			</tr>
 
+			<tr valign="top">
+				<th scope="row"><?php _e( 'Advanced', PPP_CORE_TEXT_DOMAIN ); ?><br /><span style="font-size: x-small;"><?php _e( 'Tools for troubleshooting and advanced usage', PPP_CORE_TEXT_DOMAIN ); ?></span></th>
+				<td>
+					<input type="checkbox" name="ppp_options[enable_debug]" "<?php checked( '1', $ppp_options['enable_debug'], true ); ?>" value="1" /> Enable Debug
+				</td>
+			</tr>
 			<input type="hidden" name="action" value="update" />
 			<?php $page_options = apply_filters( 'ppp_settings_page_options', array( 'ppp_options' ) ); ?>
 			<input type="hidden" name="page_options" value="<?php echo implode( ',', $page_options ); ?>" />
-
 			<?php settings_fields( 'ppp-options' ); ?>
 		</table>
 		<input type="submit" class="button-primary" value="<?php _e( 'Save Changes', PPP_CORE_TEXT_DOMAIN ) ?>" />
@@ -52,55 +57,28 @@ function ppp_admin_page() {
 * @return void
 */
 function ppp_display_social() {
-	global $ppp_social_settings;
+	global $ppp_social_settings, $ppp_twitter_oauth;
 	?>
 	<form method="post" action="options.php">
 		<?php wp_nonce_field( 'ppp-social-settings' ); ?>
 		<table class="form-table">
 
 			<tr valign="top">
-				<th scope="row"><?php _e( 'Twitter', PPP_CORE_TEXT_DOMAIN ); ?><br /><span style="font-size: x-small;"><?php _e( 'Setup at <a href="http://dev.twitter.com/" target="blank">dev.twitter.com</a>', PPP_CORE_TEXT_DOMAIN ); ?></span></th>
-				<td width="150px">
-					<label for="ppp_social_settings[twitter][api_key]">API Key:</label>
-				</td>
+				<th scope="row"><?php _e( 'Twitter', PPP_CORE_TEXT_DOMAIN ); ?><br /><span style="font-size: x-small;"><?php _e( '<a href="https://twitter.com/settings/applications" target="blank">Remove Access</a>', PPP_CORE_TEXT_DOMAIN ); ?></span></th>
 				<td>
-					<input size="50" type="text" name="ppp_social_settings[twitter][api_key]" placeholder="<?php _e( 'API Key', PPP_CORE_TEXT_DOMAIN ); ?>" <?php if ( $ppp_social_settings['twitter']['api_key'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_social_settings['twitter']['api_key'] ); ?>"<?php ;}?> />
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"></th>
-				<td>
-					<label for="ppp_social_settings[twitter][api_secret]">API Secret:</label>
-				</td>
-				<td>
-					<input size="50" type="text" name="ppp_social_settings[twitter][api_secret]" placeholder="<?php _e( 'API Secret', PPP_CORE_TEXT_DOMAIN ); ?>" <?php if ( $ppp_social_settings['twitter']['api_secret'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_social_settings['twitter']['api_secret'] ); ?>"<?php ;}?> />
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"></th>
-				<td>
-					<label for="ppp_social_settings[twitter][access_token]">Access Token:</label>
-				</td>
-				<td>
-					<input size="50" type="text" name="ppp_social_settings[twitter][access_token]" placeholder="<?php _e( 'Access Token', PPP_CORE_TEXT_DOMAIN ); ?>" <?php if ( $ppp_social_settings['twitter']['access_token'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_social_settings['twitter']['access_token'] ); ?>"<?php ;}?> />
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"></th>
-				<td>
-					<label for="ppp_social_settings[twitter][access_token_secret]">Access Token Secret:</label>
-				</td>
-				<td>
-					<input size="50" type="text" name="ppp_social_settings[twitter][access_token_secret]" placeholder="<?php _e( 'Access Token Secret', PPP_CORE_TEXT_DOMAIN ); ?>" <?php if ( $ppp_social_settings['twitter']['access_token_secret'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_social_settings['twitter']['access_token_secret'] ); ?>"<?php ;}?> />
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"></th>
-				<td>
-					<label for="ppp_social_settings[twitter][username]">Username:</label>
-				</td>
-				<td>
-					<input size="50" type="text" name="ppp_social_settings[twitter][username]" placeholder="<?php _e( 'Access Token Secret', PPP_CORE_TEXT_DOMAIN ); ?>" <?php if ( $ppp_social_settings['twitter']['username'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_social_settings['twitter']['username'] ); ?>"<?php ;}?> />
+					<?php
+					$results = $ppp_twitter_oauth->ppp_initialize_twitter();
+					if ( is_array( $results ) ) {
+						$ppp_social_settings['twitter'] = $results;
+						update_option( 'ppp_social_settings', $ppp_social_settings );
+					}
+					?>
+					<?php if ( !isset( $ppp_social_settings['twitter']['user'] ) ) { ?>
+					<?php $tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url(); ?>
+					<a href="<?php echo $tw_authurl; ?>" class="button-primary">Sign in with Twitter</a>	
+					<?php } else { ?>
+						<img src="<?php echo $ppp_social_settings['twitter']['user']->profile_image_url_https; ?>" /> Signed in as <?php echo $ppp_social_settings['twitter']['user']->name; ?> 
+					<?php } ?>
 				</td>
 			</tr>
 			<input type="hidden" name="action" value="update" />
@@ -108,7 +86,7 @@ function ppp_display_social() {
 
 			<?php settings_fields( 'ppp-social-settings' ); ?>
 		</table>
-		<input type="submit" class="button-primary" value="<?php _e( 'Save Changes', PPP_CORE_TEXT_DOMAIN ) ?>" />
+		<!-- <input type="submit" class="button-primary" value="<?php _e( 'Save Changes', PPP_CORE_TEXT_DOMAIN ) ?>" /> -->
 	</form>
 	<?php
 }
