@@ -36,7 +36,7 @@ class PostPromoterPro {
 			add_action( 'trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 		}
 
-		add_action( 'publish_post', 'ppp_schedule_share' );
+		add_action( 'save_post', 'ppp_schedule_share', 10, 2);
 	}
 
 	/**
@@ -63,7 +63,7 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function load_cusom_js( $hook ) {
-		if ( 'settings_page_post-promoter-pro' != $hook )
+		if ( 'settings_page_post-promoter-pro' != $hook && 'post-new.php' != $hook && 'post.php' != $hook )
 			return;
 
 		wp_register_style( 'ppp_admin_css', PPP_URL . '/includes/scripts/css/admin-style.css', false, PPP_VERSION );

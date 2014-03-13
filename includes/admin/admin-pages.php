@@ -25,11 +25,11 @@ function ppp_admin_page() {
 						</tr>
 						<tr>
 							<td><input id="day1" type="text" name="ppp_options[times][day1]" class="share-time-selector" <?php if ( $ppp_options['times']['day1'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day1'] ); ?>"<?php ;}?> size="8" /></td>
-							<td><input id="day1" type="text" name="ppp_options[times][day2]" class="share-time-selector" <?php if ( $ppp_options['times']['day2'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day2'] ); ?>"<?php ;}?> size="8" /></td>
-							<td><input id="day1" type="text" name="ppp_options[times][day3]" class="share-time-selector" <?php if ( $ppp_options['times']['day3'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day3'] ); ?>"<?php ;}?> size="8" /></td>
-							<td><input id="day1" type="text" name="ppp_options[times][day4]" class="share-time-selector" <?php if ( $ppp_options['times']['day4'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day4'] ); ?>"<?php ;}?> size="8" /></td>
-							<td><input id="day1" type="text" name="ppp_options[times][day5]" class="share-time-selector" <?php if ( $ppp_options['times']['day5'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day5'] ); ?>"<?php ;}?> size="8" /></td>
-							<td><input id="day1" type="text" name="ppp_options[times][day6]" class="share-time-selector" <?php if ( $ppp_options['times']['day6'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day6'] ); ?>"<?php ;}?> size="8" /></td>
+							<td><input id="day2" type="text" name="ppp_options[times][day2]" class="share-time-selector" <?php if ( $ppp_options['times']['day2'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day2'] ); ?>"<?php ;}?> size="8" /></td>
+							<td><input id="day3" type="text" name="ppp_options[times][day3]" class="share-time-selector" <?php if ( $ppp_options['times']['day3'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day3'] ); ?>"<?php ;}?> size="8" /></td>
+							<td><input id="day4" type="text" name="ppp_options[times][day4]" class="share-time-selector" <?php if ( $ppp_options['times']['day4'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day4'] ); ?>"<?php ;}?> size="8" /></td>
+							<td><input id="day5" type="text" name="ppp_options[times][day5]" class="share-time-selector" <?php if ( $ppp_options['times']['day5'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day5'] ); ?>"<?php ;}?> size="8" /></td>
+							<td><input id="day6" type="text" name="ppp_options[times][day6]" class="share-time-selector" <?php if ( $ppp_options['times']['day6'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day6'] ); ?>"<?php ;}?> size="8" /></td>
 						</tr>
 					</table>
 				</td>
@@ -81,6 +81,7 @@ function ppp_display_social() {
 					<?php } ?>
 				</td>
 			</tr>
+
 			<input type="hidden" name="action" value="update" />
 			<input type="hidden" name="page_options" value="ppp_social_settings" />
 
