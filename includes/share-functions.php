@@ -1,4 +1,7 @@
 <?php
+/**
+ * Given a month, day, year and post ID, generate the timestamps and unique cron names
+ */
 function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	global $ppp_options, $ppp_social_settings;
 	$days_ahead = 1;
@@ -17,9 +20,9 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 
 		$hours   = (int)$share_time[0] + $offset;
 		$minutes = (int)$share_time[1];
-		
+
 		$timestamp = mktime( $hours, $minutes, 0, $month, $day + $days_ahead, $year );
-		$times[strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) )] = 'share_date_' . $days_ahead . '_' . $post_id;
+		$times[strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) )] = 'sharedate_' . $days_ahead . '_' . $post_id;
 		$days_ahead++;
 	}
 
@@ -53,7 +56,16 @@ function ppp_share_post( $post_id, $name ) {
 	global $ppp_options, $ppp_social_settings, $ppp_twitter_oauth;
 	$post = get_post( $post_id, OBJECT );
 
-	$tweet = $post->post_title . ' ' . get_permalink( $post_id ) . ' via @' . $ppp_social_settings['twitter']['user']->screen_name;
+	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
+	if ( !empty( $ppp_post_override ) ) {
+		$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
+		$name_array = explode( '_', $name );
+		$day = 'day' . $name_array[1];
+		$tweet_text = $ppp_post_override_data[$day]['text'];
+	}
+
+	$tweet_text = isset( $tweet_text ) ? $tweet_text : $post->post_title;
+	$tweet = $tweet_text . ' ' . get_permalink( $post_id );
 
 	$status = $ppp_twitter_oauth->ppp_tweet( $tweet );
 
@@ -65,7 +77,7 @@ function ppp_share_post( $post_id, $name ) {
 function ppp_remove_scheduled_shares( $post_id ) {
 	$days_ahead = 1;
 	while ( $days_ahead <= 6 ) {
-		$name = 'share_date_' . $days_ahead . '_' . $post_id;
+		$name = 'sharedate_' . $days_ahead . '_' . $post_id;
 		wp_clear_scheduled_hook( 'ppp_share_post_event', array( $post_id, $name ) );
 
 		$days_ahead++;
