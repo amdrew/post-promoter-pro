@@ -101,7 +101,7 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function ppp_setup_admin_menu() {
-		add_options_page( __( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ), __( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ), 'manage_settings', 'post-promoter-pro', array( $this, 'determine_tab' ) );
+		add_options_page( __( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ), __( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ), 'manage_options', 'post-promoter-pro', array( $this, 'determine_tab' ) );
 	}
 
 	/**
@@ -153,6 +153,24 @@ class PostPromoterPro {
 		register_setting( 'ppp-options', 'ppp_options' );
 		register_setting( 'ppp-social-settings', 'ppp_social_settings' );
 		do_action( 'ppp_register_additional_settings' );
+
+		global $ppp_options;
+		if ( !isset( $ppp_options['times'] ) ) {
+			$i = 1;
+			while( $i <= 6 ) {
+				$ppp_options['times']['day' . $i] = '12:00';
+				$i++;
+			}
+		} elseif ( count( $ppp_options['times'] ) < 6 || in_array( '', $ppp_options['times'], true ) ) {
+			$i = 1;
+			while( $i <= 6 ) {
+				if ( !isset( $ppp_options['times']['day' . $i] ) || empty( $ppp_options['times']['day' . $i] ) ) {
+					$ppp_options['times']['day' . $i] = '12:00';
+				}
+				$i++;
+			}
+		}
+
 	}
 
 	/**
