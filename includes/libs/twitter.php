@@ -94,7 +94,7 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 			//check twitter class is loaded or not
 			if( !$twitter ) return false;
 			
-			$request_token = $this->twitter->getRequestToken( admin_url( 'options-general.php?page=post-promoter-pro&tab=social' ) ); // get_permalink( $post->ID )
+			$request_token = $this->twitter->getRequestToken( admin_url( 'admin.php?page=ppp-social-settings' ) ); // get_permalink( $post->ID )
 
 			// If last connection failed don't display authorization link. 
 			switch( $this->twitter->http_code ) { //

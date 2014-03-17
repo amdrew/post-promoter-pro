@@ -32,7 +32,8 @@ class PostPromoterPro {
 			add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
 			add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
 			add_action( 'admin_init', array( $this, 'load_admin_hooks' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'load_cusom_js' ), 99 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_styes' ) );
 			add_action( 'trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 		}
 
@@ -62,18 +63,20 @@ class PostPromoterPro {
 	 * @return void
 	 * @access public
 	 */
-	public function load_cusom_js( $hook ) {
+	public function load_custom_scripts( $hook ) {
 		if ( 'settings_page_post-promoter-pro' != $hook && 'post-new.php' != $hook && 'post.php' != $hook )
 			return;
-
-		wp_register_style( 'ppp_admin_css', PPP_URL . '/includes/scripts/css/admin-style.css', false, PPP_VERSION );
-		wp_enqueue_style( 'ppp_admin_css' );
 
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 		wp_enqueue_script( 'jquery-ui-slider' );
 		wp_enqueue_script( 'ppp_timepicker_js', PPP_URL . '/includes/scripts/libs/jquery-ui-timepicker-addon.js', array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
 		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'/includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
+	}
+
+	public function load_styes() {
+		wp_register_style( 'ppp_admin_css', PPP_URL . '/includes/scripts/css/admin-style.css', false, PPP_VERSION );
+		wp_enqueue_style( 'ppp_admin_css' );
 	}
 
 	/**
@@ -101,7 +104,17 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function ppp_setup_admin_menu() {
-		add_options_page( __( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ), __( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ), 'manage_options', 'post-promoter-pro', array( $this, 'determine_tab' ) );
+		add_menu_page( __( 'Post Promoter', PPP_CORE_TEXT_DOMAIN ),
+		               __( 'Post Promoter', PPP_CORE_TEXT_DOMAIN ),
+		               'manage_options',
+		               'ppp-options',
+		               'ppp_admin_page'
+		             );
+
+		add_submenu_page( 'ppp-options', __( 'Social Settings', PPP_CORE_TEXT_DOMAIN ), __( 'Social Settings', PPP_CORE_TEXT_DOMAIN ), 'manage_options', 'ppp-social-settings', 'ppp_display_social' );
+		add_submenu_page( 'ppp-options', __( 'System Info', PPP_CORE_TEXT_DOMAIN ), __( 'System Info', PPP_CORE_TEXT_DOMAIN ), 'manage_options', 'ppp-system-info', 'ppp_display_sysinfo' );
+
+		//add_options_page( __( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ), __( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ), 'manage_options', 'post-promoter-pro', array( $this, 'determine_tab' ) );
 	}
 
 	/**
