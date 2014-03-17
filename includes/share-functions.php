@@ -34,13 +34,15 @@ function ppp_schedule_share( $post_id, $post ) {
 		return;
 	}
 
-	if ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) {
+	if ( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) ||
+	     ( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) ) {
 		// Be sure to clear any currently scheduled tweets so we aren't creating multiple instances
 		// This will stop something from moving between draft and post and continuing to schedule tweets
 		ppp_remove_scheduled_shares( $post_id );
 	}
 
-	if( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] != 'publish' ) {
+	if( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] != 'publish' ) ||
+		( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) ) {
 		global $ppp_options, $ppp_social_settings;
 
 		$timestamps = ppp_get_timestamps( $_POST['mm'], $_POST['jj'], $_POST['aa'], $post_id );
