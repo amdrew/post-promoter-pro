@@ -34,6 +34,12 @@ function ppp_schedule_share( $post_id, $post ) {
 		return;
 	}
 
+	$ppp_post_exclude = get_post_meta( $post->ID, '_ppp_post_exclude', true );
+	if ( $ppp_post_exclude ) { // If the post meta says to exclude from social media posts, delete all scheduled and return
+		ppp_remove_scheduled_shares( $post_id );
+		return;
+	}
+
 	if ( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) ||
 	     ( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) ) {
 		// Be sure to clear any currently scheduled tweets so we aren't creating multiple instances
