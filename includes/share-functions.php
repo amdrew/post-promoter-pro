@@ -75,7 +75,7 @@ function ppp_share_post( $post_id, $name ) {
 	$tweet_text = isset( $tweet_text ) ? $tweet_text : $post->post_title;
 	$tweet = $tweet_text . ' ' . get_permalink( $post_id );
 
-	$status = $ppp_twitter_oauth->ppp_tweet( $tweet );
+	$status['twitter'] = $ppp_twitter_oauth->ppp_tweet( $tweet );
 
 	if ( $ppp_options['enable_debug'] == '1' ) {
 		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
