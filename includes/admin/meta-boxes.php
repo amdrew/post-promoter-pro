@@ -54,7 +54,9 @@ function ppp_save_post_meta_boxes( $post_id, $post ) {
 
 	update_post_meta( $post->ID, '_ppp_post_exclude', $ppp_post_exclude );
 	update_post_meta( $post->ID, '_ppp_post_override', $ppp_post_override );
-	update_post_meta( $post->ID, '_ppp_post_override_data', $ppp_post_override_data );
+	if ( !empty( $ppp_post_override_data ) ) {
+		update_post_meta( $post->ID, '_ppp_post_override_data', $ppp_post_override_data );
+	}
 
 	return $post->ID;
 }
