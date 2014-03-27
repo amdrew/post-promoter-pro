@@ -64,7 +64,6 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function load_custom_scripts( $hook ) {
-		if ( 'settings_page_post-promoter-pro' != $hook && 'post-new.php' != $hook && 'post.php' != $hook )
 		if ( 'toplevel_page_ppp-options' != $hook && 'post-new.php' != $hook && 'post.php' != $hook )
 			return;
 
