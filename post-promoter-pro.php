@@ -3,7 +3,7 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: http://filament-studios.com/plugins/post-promoter-pro
 Description: Schedule the promotion of blog posts for the next 6 days, with no further work.
-Version: 1.0
+Version: 1.0b03272014
 Author: Filament Studios
 Author URI: http://filament-studios.com
 License: GPLv2
@@ -11,7 +11,7 @@ License: GPLv2
 
 define( 'PPP_CORE_TEXT_DOMAIN', 'ppp-txt' );
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '1.0' );
+define( 'PPP_VERSION', '1.0b03272014' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( 'post-promoter-pro', 'post-promoter-pro.php' ) );
 
