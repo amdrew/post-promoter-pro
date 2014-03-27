@@ -1,11 +1,20 @@
 <?php
 function ppp_register_meta_boxes() {
-	add_meta_box( 'ppp_tweet_schedule_metabox', 'Post Promoter Pro', 'ppp_tweet_schedule_callback', 'post', 'normal', 'low' );
+	global $post, $ppp_options;
+
+	if ( !isset( $ppp_options['post_types'] ) || !is_array( $ppp_options['post_types'] ) ) {
+		return;
+	}
+
+	foreach ( $ppp_options['post_types'] as $post_type => $value ) {
+		add_meta_box( 'ppp_tweet_schedule_metabox', 'Post Promoter Pro', 'ppp_tweet_schedule_callback', $post_type, 'normal', 'low' );
+	}
 }
 add_action( 'add_meta_boxes', 'ppp_register_meta_boxes', 12 );
 
 function ppp_tweet_schedule_callback() {
 	global $post, $ppp_options;
+
 	$ppp_post_exclude = get_post_meta( $post->ID, '_ppp_post_exclude', true );
 	$ppp_post_override = get_post_meta( $post->ID, '_ppp_post_override', true );
 	$ppp_post_override_data = get_post_meta( $post->ID, '_ppp_post_override_data', true );
@@ -47,6 +56,11 @@ function ppp_tweet_schedule_callback() {
 }
 
 function ppp_save_post_meta_boxes( $post_id, $post ) {
+	global $ppp_options;
+
+	if ( !isset( $ppp_options['post_types'] ) || !is_array( $ppp_options['post_types'] ) || !array_key_exists( $post->post_type, $ppp_options['post_types'] ) ) {
+		return;
+	}
 
 	$ppp_post_exclude = ( isset( $_REQUEST['_ppp_post_exclude'] ) ) ? $_REQUEST['_ppp_post_exclude'] : '0';
 	$ppp_post_override = ( isset( $_REQUEST['_ppp_post_override'] ) ) ? $_REQUEST['_ppp_post_override'] : '0';

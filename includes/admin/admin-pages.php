@@ -38,11 +38,23 @@ function ppp_admin_page() {
 				</tr>
 
 				<tr valign="top">
+					<th scope="row"><?php _e( 'Post Types', PPP_CORE_TEXT_DOMAIN ); ?><br /><span style="font-size: x-small;"><?php _e( 'What post types do you want to schedule for?', PPP_CORE_TEXT_DOMAIN ); ?></span></th>
+					<td>
+						<?php $post_types = get_post_types( array( 'public' => true, 'publicly_queryable' => true ), NULL, 'and' ); ?>
+						<?php if ( array_key_exists( 'attachment', $post_types ) ) { unset( $post_types['attachment'] ); } ?>
+						<?php foreach ( $post_types as $post_type => $type_data ): ?>
+							<input type="checkbox" name="ppp_options[post_types][<?php echo $post_type; ?>]" value="1" id="<?php echo $post_type; ?>" <?php checked( $ppp_options['post_types'][$post_type], '1', true ); ?> />&nbsp;<label for="<?php echo $post_type; ?>"><?php echo $type_data->labels->name; ?></label></br />
+						<?php endforeach; ?>
+					</td>
+				</tr>
+
+				<tr valign="top">
 					<th scope="row"><?php _e( 'Advanced', PPP_CORE_TEXT_DOMAIN ); ?><br /><span style="font-size: x-small;"><?php _e( 'Tools for troubleshooting and advanced usage', PPP_CORE_TEXT_DOMAIN ); ?></span></th>
 					<td>
 						<input type="checkbox" name="ppp_options[enable_debug]" "<?php checked( '1', $ppp_options['enable_debug'], true ); ?>" value="1" /> Enable Debug
 					</td>
 				</tr>
+
 				<input type="hidden" name="action" value="update" />
 				<?php $page_options = apply_filters( 'ppp_settings_page_options', array( 'ppp_options' ) ); ?>
 				<input type="hidden" name="page_options" value="<?php echo implode( ',', $page_options ); ?>" />
