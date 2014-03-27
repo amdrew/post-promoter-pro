@@ -1,6 +1,11 @@
 <?php
 /**
- * Given a month, day, year and post ID, generate the timestamps and unique cron names
+ * Create timestamps and unique identifiers for each cron.
+ * @param  int $month
+ * @param  int $day
+ * @param  int $year
+ * @param  int $post_id
+ * @return array
  */
 function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	global $ppp_options, $ppp_social_settings;
@@ -29,6 +34,12 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	return $times;
 }
 
+/**
+ * Schedule social media posts with wp_schedule_single_event
+ * @param  id $post_id
+ * @param  object $post
+ * @return void
+ */
 function ppp_schedule_share( $post_id, $post ) {
 	if ( !isset( $_POST['post_status'] ) || $post->post_type != 'post' ) {
 		return;
@@ -60,6 +71,12 @@ function ppp_schedule_share( $post_id, $post ) {
 }
 add_action( 'ppp_share_post_event', 'ppp_share_post', 10, 2 );
 
+/**
+ * Hook for the crons to fire and send tweets
+ * @param  id $post_id
+ * @param  string $name
+ * @return void
+ */
 function ppp_share_post( $post_id, $name ) {
 	global $ppp_options, $ppp_social_settings, $ppp_twitter_oauth;
 	$post = get_post( $post_id, OBJECT );

@@ -80,7 +80,7 @@ class PostPromoterPro {
 	}
 
 	/**
-	 * Adds the Settings and Pushover Link to the Settings page list
+	 * Adds the Settings and Post Promoter Pro Link to the Settings page list
 	 * @param  array $links The current list of links
 	 * @param  string $file The plugin file
 	 * @return array        The new list of links, with our additional ones added
@@ -113,48 +113,6 @@ class PostPromoterPro {
 
 		add_submenu_page( 'ppp-options', __( 'Social Settings', PPP_CORE_TEXT_DOMAIN ), __( 'Social Settings', PPP_CORE_TEXT_DOMAIN ), 'manage_options', 'ppp-social-settings', 'ppp_display_social' );
 		add_submenu_page( 'ppp-options', __( 'System Info', PPP_CORE_TEXT_DOMAIN ), __( 'System Info', PPP_CORE_TEXT_DOMAIN ), 'manage_options', 'ppp-system-info', 'ppp_display_sysinfo' );
-
-		//add_options_page( __( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ), __( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ), 'manage_options', 'post-promoter-pro', array( $this, 'determine_tab' ) );
-	}
-
-	/**
-	 * Determines what tab is being displayed, and executes the display of that tab
-	 * @return void
-	 * @access public
-	 */
-	public function determine_tab() {
-		global $ppp_options;
-		?>
-		<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ); ?></h2>
-		<?php
-		$current = ( !isset( $_GET['tab'] ) ) ? 'general' : $_GET['tab'];
-		$default_tabs = array(
-				'general' => __( 'Settings', PPP_CORE_TEXT_DOMAIN ),
-				'social'  => __( 'Social Networks', PPP_CORE_TEXT_DOMAIN ),
-				'sysinfo' => __( 'System Info', PPP_CORE_TEXT_DOMAIN )
-			);
-
-		$tabs = apply_filters( 'ppp_settings_tabs', $default_tabs );
-
-		?><h2 class="nav-tab-wrapper"><?php
-		foreach( $tabs as $tab => $name ){
-			$class = ( $tab == $current ) ? ' nav-tab-active' : '';
-			echo "<a class='nav-tab$class' href='?page=post-promoter-pro&tab=$tab'>$name</a>";
-		}
-		?>
-		</h2>
-		<div class="wrap">
-		<?php
-		if ( !isset( $_GET['tab'] ) || $_GET['tab'] == 'general' ) {
-			ppp_admin_page();
-		} else {
-			// Extension Devs - Your function that shows the tab content needs to be prefaced with 'ppp_display_' in order to work here.
-			$tab_function = 'ppp_display_'.$_GET['tab'];
-			$tab_function();
-		}
-		?>
-		</div>
-		<?php
 	}
 
 	/**
