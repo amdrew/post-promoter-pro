@@ -9,7 +9,6 @@ Author URI: http://filament-studios.com
 License: GPLv2
 */
 
-define( 'PPP_CORE_TEXT_DOMAIN', 'ppp-txt' );
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
 define( 'PPP_VERSION', '1.0b03272014' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
@@ -91,7 +90,7 @@ class PostPromoterPro {
 			return $links;
 		}
 
-		$settings_link = sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=post-promoter-pro' ), __( 'Settings', PPP_CORE_TEXT_DOMAIN ) );
+		$settings_link = sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=post-promoter-pro' ), __( 'Settings', 'ppp-txt' ) );
 
 		array_unshift( $links, $settings_link );
 
@@ -104,15 +103,15 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function ppp_setup_admin_menu() {
-		add_menu_page( __( 'Post Promoter', PPP_CORE_TEXT_DOMAIN ),
-		               __( 'Post Promoter', PPP_CORE_TEXT_DOMAIN ),
+		add_menu_page( __( 'Post Promoter', 'ppp-txt' ),
+		               __( 'Post Promoter', 'ppp-txt' ),
 		               'manage_options',
 		               'ppp-options',
 		               'ppp_admin_page'
 		             );
 
-		add_submenu_page( 'ppp-options', __( 'Social Settings', PPP_CORE_TEXT_DOMAIN ), __( 'Social Settings', PPP_CORE_TEXT_DOMAIN ), 'manage_options', 'ppp-social-settings', 'ppp_display_social' );
-		add_submenu_page( 'ppp-options', __( 'System Info', PPP_CORE_TEXT_DOMAIN ), __( 'System Info', PPP_CORE_TEXT_DOMAIN ), 'manage_options', 'ppp-system-info', 'ppp_display_sysinfo' );
+		add_submenu_page( 'ppp-options', __( 'Social Settings', 'ppp-txt' ), __( 'Social Settings', 'ppp-txt' ), 'manage_options', 'ppp-social-settings', 'ppp_display_social' );
+		add_submenu_page( 'ppp-options', __( 'System Info', 'ppp-txt' ), __( 'System Info', 'ppp-txt' ), 'manage_options', 'ppp-system-info', 'ppp_display_sysinfo' );
 	}
 
 	/**
@@ -150,7 +149,7 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function ppp_loaddomain() {
-		load_plugin_textdomain( PPP_CORE_TEXT_DOMAIN, false, '/post-promoter-pro/languages/' );
+		load_plugin_textdomain( 'ppp-txt', false, '/post-promoter-pro/languages/' );
 	}
 }
 

@@ -6,14 +6,14 @@
 function ppp_admin_page() {
 	global $ppp_options;
 	?>
-	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ); ?></h2>
+	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
 	<div class="wrap">
 		<form method="post" action="options.php">
 			<?php wp_nonce_field( 'ppp-options' ); ?>
 			<table class="form-table">
 
 				<tr valign="top">
-					<th scope="row"><?php _e( 'Default Share Times', PPP_CORE_TEXT_DOMAIN ); ?><br /><span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can changes this on a per post basis as well', PPP_CORE_TEXT_DOMAIN ); ?></span></th>
+					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can changes this on a per post basis as well', 'ppp-txt' ); ?></span></th>
 					<td>
 						<strong>Days After Publish</strong>
 						<table id="ppp-days-table">
@@ -38,20 +38,20 @@ function ppp_admin_page() {
 				</tr>
 
 				<tr valign="top">
-					<th scope="row"><?php _e( 'Post Types', PPP_CORE_TEXT_DOMAIN ); ?><br /><span style="font-size: x-small;"><?php _e( 'What post types do you want to schedule for?', PPP_CORE_TEXT_DOMAIN ); ?></span></th>
+					<th scope="row"><?php _e( 'Post Types', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'What post types do you want to schedule for?', 'ppp-txt' ); ?></span></th>
 					<td>
 						<?php $post_types = get_post_types( array( 'public' => true, 'publicly_queryable' => true ), NULL, 'and' ); ?>
 						<?php if ( array_key_exists( 'attachment', $post_types ) ) { unset( $post_types['attachment'] ); } ?>
 						<?php foreach ( $post_types as $post_type => $type_data ): ?>
-							<input type="checkbox" name="ppp_options[post_types][<?php echo $post_type; ?>]" value="1" id="<?php echo $post_type; ?>" <?php checked( $ppp_options['post_types'][$post_type], '1', true ); ?> />&nbsp;<label for="<?php echo $post_type; ?>"><?php echo $type_data->labels->name; ?></label></br />
+							<input type="checkbox" name="ppp_options[post_types][<?php echo $post_type; ?>]" value="1" id="<?php echo $post_type; ?>" <?php checked( isset( $ppp_options['post_types'][$post_type] ), true, true ); ?> />&nbsp;<label for="<?php echo $post_type; ?>"><?php echo $type_data->labels->name; ?></label></br />
 						<?php endforeach; ?>
 					</td>
 				</tr>
 
 				<tr valign="top">
-					<th scope="row"><?php _e( 'Advanced', PPP_CORE_TEXT_DOMAIN ); ?><br /><span style="font-size: x-small;"><?php _e( 'Tools for troubleshooting and advanced usage', PPP_CORE_TEXT_DOMAIN ); ?></span></th>
+					<th scope="row"><?php _e( 'Advanced', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'Tools for troubleshooting and advanced usage', 'ppp-txt' ); ?></span></th>
 					<td>
-						<input type="checkbox" name="ppp_options[enable_debug]" "<?php checked( '1', $ppp_options['enable_debug'], true ); ?>" value="1" /> Enable Debug
+						<input type="checkbox" name="ppp_options[enable_debug]" "<?php checked( true, isset( $ppp_options['enable_debug'] ), true ); ?>" value="1" /> Enable Debug
 					</td>
 				</tr>
 
@@ -60,7 +60,7 @@ function ppp_admin_page() {
 				<input type="hidden" name="page_options" value="<?php echo implode( ',', $page_options ); ?>" />
 				<?php settings_fields( 'ppp-options' ); ?>
 			</table>
-			<input type="submit" class="button-primary" value="<?php _e( 'Save Changes', PPP_CORE_TEXT_DOMAIN ) ?>" />
+			<input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'ppp-txt' ) ?>" />
 		</form>
 	</div>
 	<?php
@@ -74,14 +74,14 @@ function ppp_admin_page() {
 function ppp_display_social() {
 	global $ppp_social_settings, $ppp_twitter_oauth;
 	?>
-	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ); ?></h2>
+	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
 		<div class="wrap">
 		<form method="post" action="options.php">
 			<?php wp_nonce_field( 'ppp-social-settings' ); ?>
 			<table class="form-table">
 
 				<tr valign="top">
-					<th scope="row"><?php _e( 'Twitter', PPP_CORE_TEXT_DOMAIN ); ?><br /><span style="font-size: x-small;"><?php _e( '<a href="https://twitter.com/settings/applications" target="blank">Remove Access</a>', PPP_CORE_TEXT_DOMAIN ); ?></span></th>
+					<th scope="row"><?php _e( 'Twitter', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( '<a href="https://twitter.com/settings/applications" target="blank">Remove Access</a>', 'ppp-txt' ); ?></span></th>
 					<td>
 						<?php
 						$results = $ppp_twitter_oauth->ppp_initialize_twitter();
@@ -104,7 +104,7 @@ function ppp_display_social() {
 
 				<?php settings_fields( 'ppp-social-settings' ); ?>
 			</table>
-			<!-- <input type="submit" class="button-primary" value="<?php _e( 'Save Changes', PPP_CORE_TEXT_DOMAIN ) ?>" /> -->
+			<!-- <input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'ppp-txt' ) ?>" /> -->
 		</form>
 	</div>
 	<?php
@@ -118,7 +118,7 @@ function ppp_display_sysinfo() {
 	global $wpdb;
 	global $ppp_options;
 	?>
-	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', PPP_CORE_TEXT_DOMAIN ); ?></h2>
+	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
 		<div class="wrap">
 		<textarea style="font-family: Menlo, Monaco, monospace; white-space: pre" onclick="this.focus();this.select()" readonly cols="150" rows="35">
 	SITE_URL:                 <?php echo site_url() . "\n"; ?>
