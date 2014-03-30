@@ -72,7 +72,8 @@ function ppp_admin_page() {
 * @return void
 */
 function ppp_display_social() {
-	global $ppp_social_settings, $ppp_twitter_oauth;
+	global $ppp_twitter_oauth;
+	$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 	?>
 	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
 		<div class="wrap">
@@ -81,20 +82,24 @@ function ppp_display_social() {
 			<table class="form-table">
 
 				<tr valign="top">
-					<th scope="row"><?php _e( 'Twitter', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( '<a href="https://twitter.com/settings/applications" target="blank">Remove Access</a>', 'ppp-txt' ); ?></span></th>
+					<?php if ( isset( $tw_auth['error'] ) ) {
+						?><div class="update error"><p><?php echo $tw_auth['error']; ?></p></div><?php
+					} ?>
+					<th scope="row"><?php _e( 'Twitter', 'ppp-txt' ); ?></th>
 					<td>
-						<?php
-						$results = $ppp_twitter_oauth->ppp_initialize_twitter();
-						if ( is_array( $results ) ) {
-							$ppp_social_settings['twitter'] = $results;
-							update_option( 'ppp_social_settings', $ppp_social_settings );
-						}
-						?>
+						<?php $ppp_twitter_oauth->ppp_initialize_twitter(); ?>
+
+						<?php $ppp_social_settings = get_option( 'ppp_social_settings' ); ?>
+						
 						<?php if ( !isset( $ppp_social_settings['twitter']['user'] ) ) { ?>
-						<?php $tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url(); ?>
-						<a href="<?php echo $tw_authurl; ?>" class="button-primary">Sign in with Twitter</a>	
+							<?php $tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url(); ?>
+							<a href="<?php echo $tw_authurl; ?>"><img src="<?php echo PPP_URL; ?>/includes/images/sign-in-with-twitter-gray.png" /></a>	
 						<?php } else { ?>
-							<img src="<?php echo $ppp_social_settings['twitter']['user']->profile_image_url_https; ?>" /> Signed in as <?php echo $ppp_social_settings['twitter']['user']->name; ?> 
+						<div class="ppp-twitter-profile">
+							<img class="ppp-social-icon" src="<?php echo $ppp_social_settings['twitter']['user']->profile_image_url_https; ?>" />
+							<div class="ppp-twitter-info">Signed in as:<br /><?php echo $ppp_social_settings['twitter']['user']->name; ?></div>
+						</div>
+						<br /><span style="font-size: x-small;"><?php _e( '<a href="https://twitter.com/settings/applications" target="blank">Revoke Access</a>', 'ppp-txt' ); ?></span>
 						<?php } ?>
 					</td>
 				</tr>

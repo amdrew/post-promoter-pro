@@ -33,10 +33,18 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 				if( !class_exists( 'TwitterOAuth' ) ) {
 					require_once ( PPP_PATH . '/includes/libs/twitter/twitteroauth.php' ); 
 				}
-				
+
 				$this->twitter = new TwitterOAuth( PPP_TW_CONSUMER_KEY, PPP_TW_CONSUMER_SECRET );
-				
+
 				return true;
+		}
+
+		public function revoke_access() {
+			global $ppp_social_settings;
+
+			unset( $ppp_social_settings['twitter'] );
+
+			update_option( 'ppp_social_settings', $ppp_social_settings );
 		}
 		
 		/**
@@ -67,18 +75,40 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 				
 				//getting user data from twitter
 				$response = $this->twitter->get('account/verify_credentials');
-				
+
 				//if user data get successfully
 				if ( $response->id_str ) {
 					
 					$data['user'] = $response;
 					$data['user']->accessToken = $ppp_tw_access_token;
 
-					//all data will assign to a session
-					return $data;
-					
+					$ppp_social_settings['twitter'] = $data;
+					update_option( 'ppp_social_settings', $ppp_social_settings );
 				}
 			}
+		}
+
+		public function ppp_verify_twitter_credentials() {
+			$twitter = $this->ppp_load_twitter();
+
+			global $ppp_social_settings;
+			if ( isset( $ppp_social_settings['twitter'] ) ) {
+				$this->twitter = new TwitterOAuth( PPP_TW_CONSUMER_KEY, PPP_TW_CONSUMER_SECRET,
+												   $ppp_social_settings['twitter']['user']->accessToken['oauth_token'], $ppp_social_settings['twitter']['user']->accessToken['oauth_token_secret'] );
+				$response = $this->twitter->get('account/verify_credentials');
+				if ( property_exists( $response, 'errors' ) && count( $response->errors ) > 0 ) {
+					foreach ( $response->errors as $error ) {
+						if ( $error->code == 89 ) { // Expired or revoked tokens
+							unset( $ppp_social_settings['twitter'] );
+							update_option( 'ppp_social_settings', $ppp_social_settings );
+
+							return array( 'error' => __( 'Post Promoter Pro has been removed from your Twitter account. Please reauthorize to continue promoting your content.', 'ppp-txt' ) ); 
+						}
+					}
+				}
+			}
+
+			return true;
 		}
 		
 		/**
@@ -117,14 +147,14 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 			if ( empty( $message ) ) {
 				return false;
 			}
-
-			$twitter = $this->ppp_load_twitter();
-			global $ppp_social_settings;
-			$this->twitter = new TwitterOAuth( PPP_TW_CONSUMER_KEY, PPP_TW_CONSUMER_SECRET,
-											   $ppp_social_settings['twitter']['user']->accessToken['oauth_token'], $ppp_social_settings['twitter']['user']->accessToken['oauth_token_secret'] );
-			$response = $this->twitter->get('account/verify_credentials');
-			$args['status'] = $message;
-			return $this->twitter->post( 'statuses/update', $args );
+			
+			$verify = $this->ppp_verify_twitter_credentials();
+			if ( $verify === true ) {
+				$args['status'] = $message;
+				return $this->twitter->post( 'statuses/update', $args );
+			} else {
+				return false;
+			}
 		}
 		
 	}
