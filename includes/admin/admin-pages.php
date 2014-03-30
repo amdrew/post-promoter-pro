@@ -136,7 +136,7 @@ function ppp_display_sysinfo() {
 	if ( $value == '1' )
 		$value = 'true';
 
-	echo $name . ': ' . $value . "\n";
+	echo $name . ': ' . maybe_serialize( $value ) . "\n";
 	}
 	?>
 
