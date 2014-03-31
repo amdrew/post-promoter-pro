@@ -8,6 +8,14 @@
 	padding: 0;
 }
 
+#ppp-post-override-wrap label, #ppp-post-override-wrap input {
+	padding-right: 5px;
+}
+
+#ppp-post-override-wrap .ppp-share-text {
+	width: 65%;
+}
+
 .ppp-twitter-profile {
 	height: 65px;
 	width: 360px;
