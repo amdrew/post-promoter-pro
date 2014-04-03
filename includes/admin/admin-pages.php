@@ -5,12 +5,40 @@
  */
 function ppp_admin_page() {
 	global $ppp_options;
+	$license 	= get_option( '_ppp_license_key' );
+	$status 	= get_option( '_ppp_license_key_status' );
 	?>
 	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
 	<div class="wrap">
 		<form method="post" action="options.php">
 			<?php wp_nonce_field( 'ppp-options' ); ?>
 			<table class="form-table">
+
+				<tr valign="top">	
+					<th scope="row" valign="top">
+						<?php _e( 'License Key', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'Enter your license key', 'ppp-txt' ); ?></span>
+					</th>
+					<td>
+						<input id="ppp_license_key" name="_ppp_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $license ); ?>" /><?php if( $status !== false && $status == 'valid' ) { ?><span style="color:green;">&nbsp;<?php _e( 'active', 'ppp-txt' ); ?></span><?php } ?>
+					</td>
+				</tr>
+
+				<?php if( false !== $license ) { ?>
+					<tr valign="top">	
+						<th scope="row" valign="top">
+							<?php _e( 'Activate License', 'ppp-txt' ); ?>
+						</th>
+						<td>
+							<?php if( $status !== false && $status == 'valid' ) { ?>
+								<?php wp_nonce_field( 'ppp_deactivate_nonce', 'ppp_deactivate_nonce' ); ?>
+								<input type="submit" class="button-secondary" name="ppp_license_deactivate" value="<?php _e( 'Deactivate License', 'ppp-txt' ); ?>"/>
+							<?php } else {
+								wp_nonce_field( 'ppp_activate_nonce', 'ppp_activate_nonce' ); ?>
+								<input type="submit" class="button-secondary" name="ppp_license_activate" value="<?php _e( 'Activate License', 'ppp-txt' ); ?>"/>
+							<?php } ?>
+						</td>
+					</tr>
+				<?php } ?>
 
 				<tr valign="top">
 					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can changes this on a per post basis as well', 'ppp-txt' ); ?></span></th>
@@ -56,7 +84,7 @@ function ppp_admin_page() {
 				</tr>
 
 				<input type="hidden" name="action" value="update" />
-				<?php $page_options = apply_filters( 'ppp_settings_page_options', array( 'ppp_options' ) ); ?>
+				<?php $page_options = apply_filters( 'ppp_settings_page_options', array( 'ppp_options', '_ppp_license_key' ) ); ?>
 				<input type="hidden" name="page_options" value="<?php echo implode( ',', $page_options ); ?>" />
 				<?php settings_fields( 'ppp-options' ); ?>
 			</table>
