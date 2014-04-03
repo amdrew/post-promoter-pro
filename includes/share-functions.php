@@ -108,3 +108,25 @@ function ppp_remove_scheduled_shares( $post_id ) {
 		$days_ahead++;
 	}
 }
+
+function ppp_set_social_tokens() {
+	$social_tokens = get_transient( 'ppp_social_tokens' );
+
+	if ( !$social_tokens ) {
+		$license = trim( get_option( '_ppp_license_key' ) );
+		$url = PPP_STORE_URL . '/ppp-get-tokens?ppp-license-key=' . $license;
+		$response = wp_remote_get( $url, array( 'timeout' => 15, 'sslverify' => false ) );
+
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+
+		$social_tokens = json_decode( wp_remote_retrieve_body( $response ) );
+		if ( !isset( $social_tokens->error ) ) {
+			set_transient( 'ppp_social_tokens', $social_tokens, WEEK_IN_SECONDS );
+		}
+	}
+
+	define( 'PPP_TW_CONSUMER_KEY', $social_tokens->twitter->consumer_token );
+	define( 'PPP_TW_CONSUMER_SECRET', $social_tokens->twitter->consumer_secret );
+}

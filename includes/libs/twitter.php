@@ -3,9 +3,6 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit;
 
-define( 'PPP_TW_CONSUMER_KEY', 'I5n7RoaCe02v4crCL6A' );
-define( 'PPP_TW_CONSUMER_SECRET', 'f9RNLIdOBoLi3KWETsTxfJvgbp6XFNGlnKEeyWrntk' );
-
 /**
  * Twitter Class
  *
