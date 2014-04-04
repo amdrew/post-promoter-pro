@@ -103,7 +103,7 @@ function ppp_display_social() {
 	global $ppp_twitter_oauth;
 	$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 	?>
-	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
+	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Social Settings', 'ppp-txt' ); ?></h2>
 		<div class="wrap">
 		<form method="post" action="options.php">
 			<?php wp_nonce_field( 'ppp-social-settings' ); ?>
@@ -137,7 +137,6 @@ function ppp_display_social() {
 
 				<?php settings_fields( 'ppp-social-settings' ); ?>
 			</table>
-			<!-- <input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'ppp-txt' ) ?>" /> -->
 		</form>
 	</div>
 	<?php
@@ -151,7 +150,7 @@ function ppp_display_sysinfo() {
 	global $wpdb;
 	global $ppp_options;
 	?>
-	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
+	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - System Info', 'ppp-txt' ); ?></h2>
 		<div class="wrap">
 		<textarea style="font-family: Menlo, Monaco, monospace; white-space: pre" onclick="this.focus();this.select()" readonly cols="150" rows="35">
 	SITE_URL:                 <?php echo site_url() . "\n"; ?>
