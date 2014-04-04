@@ -9,6 +9,15 @@
 		$('#ppp-post-override-wrap').toggle();
 	});
 
+	$('.ppp-share-enable-day').click( function() {
+		var checkbox = $(this);
+		if (checkbox.is(':checked')) {
+			checkbox.siblings('input').prop('readonly', false).prop('disabled', false);
+		} else {
+			checkbox.siblings('input').prop('readonly', true).prop('disabled', true);
+		}
+	});
+
 })(jQuery);
 
 function PPPCountChar(val) {

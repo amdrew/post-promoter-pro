@@ -20,15 +20,18 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	$tweet_times = ( empty( $ppp_post_override ) && !empty( $override_times ) ) ? $ppp_options['times'] : $override_times;
 
 	$times = array();
-	foreach ( $tweet_times as $time ) {
-		$share_time = explode( ':', $time );
+	foreach ( $ppp_post_override_data as $key => $data ) {
+		$days_ahead = substr( $key, -1 );
+		$share_time = explode( ':', $data['time'] );
 
 		$hours   = (int)$share_time[0] + $offset;
 		$minutes = (int)$share_time[1];
 
 		$timestamp = mktime( $hours, $minutes, 0, $month, $day + $days_ahead, $year );
-		$times[strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) )] = 'sharedate_' . $days_ahead . '_' . $post_id;
-		$days_ahead++;
+		
+		if ( $timestamp > time() ) { // Make sure the timestamp we're getting is in the future
+			$times[strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) )] = 'sharedate_' . $days_ahead . '_' . $post_id;
+		}
 	}
 
 	return $times;
@@ -58,8 +61,9 @@ function ppp_schedule_share( $post_id, $post ) {
 		ppp_remove_scheduled_shares( $post_id );
 	}
 
-	if( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] != 'publish' ) ||
-		( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) ) {
+	if( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] != 'publish' ) || // From anything to published
+		( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) || // Updating a future post
+		( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) ) { // Updating an already published post
 		global $ppp_options, $ppp_social_settings;
 
 		$timestamps = ppp_get_timestamps( $_POST['mm'], $_POST['jj'], $_POST['aa'], $post_id );
