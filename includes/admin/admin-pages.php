@@ -79,7 +79,7 @@ function ppp_admin_page() {
 				<tr valign="top">
 					<th scope="row"><?php _e( 'Advanced', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'Tools for troubleshooting and advanced usage', 'ppp-txt' ); ?></span></th>
 					<td>
-						<input type="checkbox" name="ppp_options[enable_debug]" "<?php checked( true, isset( $ppp_options['enable_debug'] ), true ); ?>" value="1" /> Enable Debug
+						<input type="checkbox" name="ppp_options[enable_debug]" "<?php checked( true, isset( $ppp_options['enable_debug'] ), true ); ?>" value="1" /> <?php _e( 'Enable Debug', 'ppp-txt' ); ?>
 					</td>
 				</tr>
 
