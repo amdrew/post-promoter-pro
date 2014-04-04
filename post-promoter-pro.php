@@ -12,7 +12,7 @@ License: GPLv2
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
 define( 'PPP_VERSION', '1.0b03302014' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
-define( 'PPP_URL', plugins_url( 'post-promoter-pro', 'post-promoter-pro.php' ) );
+define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
 define( 'PPP_STORE_URL', 'http://filament-studios.com' );
 define( 'PPP_PLUGIN_NAME', 'Post Promoter Pro' );
