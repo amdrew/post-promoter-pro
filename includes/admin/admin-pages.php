@@ -71,7 +71,8 @@ function ppp_admin_page() {
 						<?php $post_types = get_post_types( array( 'public' => true, 'publicly_queryable' => true ), NULL, 'and' ); ?>
 						<?php if ( array_key_exists( 'attachment', $post_types ) ) { unset( $post_types['attachment'] ); } ?>
 						<?php foreach ( $post_types as $post_type => $type_data ): ?>
-							<input type="checkbox" name="ppp_options[post_types][<?php echo $post_type; ?>]" value="1" id="<?php echo $post_type; ?>" <?php checked( isset( $ppp_options['post_types'][$post_type] ), true, true ); ?> />&nbsp;<label for="<?php echo $post_type; ?>"><?php echo $type_data->labels->name; ?></label></br />
+							<?php $value = ( isset( $ppp_options['post_types'] ) && isset( $ppp_options['post_types'][$post_type] ) ) ? true : false; ?>
+							<input type="checkbox" name="ppp_options[post_types][<?php echo $post_type; ?>]" value="1" id="<?php echo $post_type; ?>" <?php checked( true, $value, true ); ?> />&nbsp;<label for="<?php echo $post_type; ?>"><?php echo $type_data->labels->name; ?></label></br />
 						<?php endforeach; ?>
 					</td>
 				</tr>
@@ -79,7 +80,8 @@ function ppp_admin_page() {
 				<tr valign="top">
 					<th scope="row"><?php _e( 'Advanced', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'Tools for troubleshooting and advanced usage', 'ppp-txt' ); ?></span></th>
 					<td>
-						<input type="checkbox" name="ppp_options[enable_debug]" "<?php checked( true, isset( $ppp_options['enable_debug'] ), true ); ?>" value="1" /> <?php _e( 'Enable Debug', 'ppp-txt' ); ?>
+						<?php $debug_enabled = isset( $ppp_options['enable_debug'] ) ? true : false; ?>
+						<input type="checkbox" name="ppp_options[enable_debug]" "<?php checked( true, $debug_enabled, true ); ?>" value="1" /> <?php _e( 'Enable Debug', 'ppp-txt' ); ?>
 					</td>
 				</tr>
 
