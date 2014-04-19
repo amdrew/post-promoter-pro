@@ -11,7 +11,6 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	global $ppp_options, $ppp_social_settings;
 	$days_ahead = 1;
 	$times = array();
-	$offset = (int) -( get_option( 'gmt_offset' ) ); // Make the timestamp in the users' timezone, b/c that makes more sense
 
 	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
 	$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
@@ -24,17 +23,19 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 		$days_ahead = substr( $key, -1 );
 		$share_time = explode( ':', $data['time'] );
 
-		$hours   = (int)$share_time[0] + $offset;
-		$minutes = (int)$share_time[1];
+		$hours   = (int)$share_time[0];
+
+		$hours   = strtolower( substr( $share_time[1], -2 ) == 'pm' ) ? $hours + 12 : $hours;
+		$minutes = (int)substr( $share_time[1], 0, 2 );
 
 		$timestamp = mktime( $hours, $minutes, 0, $month, $day + $days_ahead, $year );
-		
+
 		if ( $timestamp > time() ) { // Make sure the timestamp we're getting is in the future
 			$times[strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) )] = 'sharedate_' . $days_ahead . '_' . $post_id;
 		}
 	}
 
-	return $times;
+	return apply_filters( 'ppp_get_timestamps', $times );
 }
 
 /**
