@@ -26,7 +26,6 @@ class PostPromoterPro {
 
 	private function __construct() {
 		register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
-		add_action( 'init', array( $this, 'ppp_register_settings' ) );
 
 		global $ppp_options, $ppp_social_settings, $ppp_share_settings;
 		$ppp_options         = get_option( 'ppp_options' );
@@ -39,6 +38,8 @@ class PostPromoterPro {
 		if ( is_admin() ) {
 			include PPP_PATH . '/includes/admin/admin-pages.php';
 			include PPP_PATH . '/includes/admin/meta-boxes.php';
+
+			add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
 
 			// Handle licenses
 			add_action( 'admin_init', array( $this, 'plugin_updater' ) );
@@ -171,14 +172,27 @@ class PostPromoterPro {
 	public function plugin_updater() {
 		$license_key = trim( get_option( '_ppp_license_key' ) );
 
+		if ( empty( $license_key ) ) {
+			add_action( 'admin_notices', array( $this, 'no_license_nag' ) );
+			return;
+		}
+
 		// setup the updater
 		$edd_updater = new EDD_SL_Plugin_Updater( PPP_STORE_URL, __FILE__, array(
-				'version' 	=> PPP_VERSION,        // current version number
-				'license' 	=> $license_key,       // license key (used get_option above to retrieve from DB)
-				'item_name' => PPP_PLUGIN_NAME,    // name of this plugin
-				'author' 	=> 'Filament Studios'  // author of this plugin
+				'version'   => PPP_VERSION,         // current version number
+				'license'   => $license_key,        // license key (used get_option above to retrieve from DB)
+				'item_name' => PPP_PLUGIN_NAME,     // name of this plugin
+				'author'    => 'Post Promoter Pro'  // author of this plugin
 			)
 		);
+	}
+
+	public function no_license_nag() {
+		?>
+		<div class="updated">
+			<p><?php printf( __( 'Post Promoter Pro requires your license key to work, pelase <a href="%s">enter it now</a>.', 'ppp-text' ), admin_url( 'admin.php?page=ppp-options' ) ); ?></p>
+		</div>
+		<?php
 	}
 
 	public function deactivate_license() {
