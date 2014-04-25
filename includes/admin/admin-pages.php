@@ -14,17 +14,18 @@ function ppp_admin_page() {
 			<?php wp_nonce_field( 'ppp-options' ); ?>
 			<table class="form-table">
 
-				<tr valign="top">	
+				<tr valign="top">
 					<th scope="row" valign="top">
 						<?php _e( 'License Key', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'Enter your license key', 'ppp-txt' ); ?></span>
 					</th>
 					<td>
-						<input id="ppp_license_key" name="_ppp_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $license ); ?>" /><?php if( $status !== false && $status == 'valid' ) { ?><span style="color:green;">&nbsp;<?php _e( 'active', 'ppp-txt' ); ?></span><?php } ?>
+						<input id="ppp_license_key" name="_ppp_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $license ); ?>" /><?php if( $status !== false && $status == 'valid' ) { ?>
+						<span style="color:green;">&nbsp;<?php _e( 'active', 'ppp-txt' ); ?></span><?php } ?>
 					</td>
 				</tr>
 
 				<?php if( false !== $license ) { ?>
-					<tr valign="top">	
+					<tr valign="top">
 						<th scope="row" valign="top">
 							<?php _e( 'Activate License', 'ppp-txt' ); ?>
 						</th>
@@ -41,7 +42,8 @@ function ppp_admin_page() {
 				<?php } ?>
 
 				<tr valign="top">
-					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can changes this on a per post basis as well', 'ppp-txt' ); ?></span></th>
+					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br />
+						<span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can changes this on a per post basis as well', 'ppp-txt' ); ?></span></th>
 					<td>
 						<strong>Days After Publish</strong>
 						<table id="ppp-days-table">
@@ -54,12 +56,18 @@ function ppp_admin_page() {
 								<td><label for="ppp_options[times][day6]">6</label></td>
 							</tr>
 							<tr>
-								<td><input id="day1" type="text" name="ppp_options[times][day1]" class="share-time-selector" <?php if ( $ppp_options['times']['day1'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day1'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day2" type="text" name="ppp_options[times][day2]" class="share-time-selector" <?php if ( $ppp_options['times']['day2'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day2'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day3" type="text" name="ppp_options[times][day3]" class="share-time-selector" <?php if ( $ppp_options['times']['day3'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day3'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day4" type="text" name="ppp_options[times][day4]" class="share-time-selector" <?php if ( $ppp_options['times']['day4'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day4'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day5" type="text" name="ppp_options[times][day5]" class="share-time-selector" <?php if ( $ppp_options['times']['day5'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day5'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day6" type="text" name="ppp_options[times][day6]" class="share-time-selector" <?php if ( $ppp_options['times']['day6'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day6'] ); ?>"<?php ;}?> size="8" /></td>
+								<td><input id="day1" type="text" name="ppp_options[times][day1]" class="share-time-selector"
+									<?php if ( $ppp_options['times']['day1'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day1'] ); ?>"<?php ;}?> size="8" /></td>
+								<td><input id="day2" type="text" name="ppp_options[times][day2]" class="share-time-selector"
+									<?php if ( $ppp_options['times']['day2'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day2'] ); ?>"<?php ;}?> size="8" /></td>
+								<td><input id="day3" type="text" name="ppp_options[times][day3]" class="share-time-selector"
+									<?php if ( $ppp_options['times']['day3'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day3'] ); ?>"<?php ;}?> size="8" /></td>
+								<td><input id="day4" type="text" name="ppp_options[times][day4]" class="share-time-selector"
+									<?php if ( $ppp_options['times']['day4'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day4'] ); ?>"<?php ;}?> size="8" /></td>
+								<td><input id="day5" type="text" name="ppp_options[times][day5]" class="share-time-selector"
+									<?php if ( $ppp_options['times']['day5'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day5'] ); ?>"<?php ;}?> size="8" /></td>
+								<td><input id="day6" type="text" name="ppp_options[times][day6]" class="share-time-selector"
+									<?php if ( $ppp_options['times']['day6'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day6'] ); ?>"<?php ;}?> size="8" /></td>
 							</tr>
 						</table>
 					</td>
@@ -72,7 +80,8 @@ function ppp_admin_page() {
 						<?php if ( array_key_exists( 'attachment', $post_types ) ) { unset( $post_types['attachment'] ); } ?>
 						<?php foreach ( $post_types as $post_type => $type_data ): ?>
 							<?php $value = ( isset( $ppp_options['post_types'] ) && isset( $ppp_options['post_types'][$post_type] ) ) ? true : false; ?>
-							<input type="checkbox" name="ppp_options[post_types][<?php echo $post_type; ?>]" value="1" id="<?php echo $post_type; ?>" <?php checked( true, $value, true ); ?> />&nbsp;<label for="<?php echo $post_type; ?>"><?php echo $type_data->labels->name; ?></label></br />
+							<input type="checkbox" name="ppp_options[post_types][<?php echo $post_type; ?>]" value="1" id="<?php echo $post_type; ?>" <?php checked( true, $value, true ); ?> />&nbsp;
+							<label for="<?php echo $post_type; ?>"><?php echo $type_data->labels->name; ?></label></br />
 						<?php endforeach; ?>
 					</td>
 				</tr>
@@ -84,6 +93,8 @@ function ppp_admin_page() {
 						<input type="checkbox" name="ppp_options[enable_debug]" "<?php checked( true, $debug_enabled, true ); ?>" value="1" /> <?php _e( 'Enable Debug', 'ppp-txt' ); ?>
 					</td>
 				</tr>
+
+				<?php do_action( 'ppp_general_settings_after' ); ?>
 
 				<input type="hidden" name="action" value="update" />
 				<?php $page_options = apply_filters( 'ppp_settings_page_options', array( 'ppp_options', '_ppp_license_key' ) ); ?>

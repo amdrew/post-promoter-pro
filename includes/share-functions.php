@@ -17,10 +17,10 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
 	$override_times = wp_list_pluck( $ppp_post_override_data, 'time' );
 
-	$tweet_times = ( empty( $ppp_post_override ) && !empty( $override_times ) ) ? $ppp_options['times'] : $override_times;
+	$tweet_times = ( empty( $ppp_post_override ) ) ? $ppp_options['times'] : $override_times;
 
 	$times = array();
-	foreach ( $ppp_post_override_data as $key => $data ) {
+	foreach ( $tweet_times as $key => $data ) {
 		$days_ahead = substr( $key, -1 );
 		$share_time = explode( ':', $data['time'] );
 
@@ -45,7 +45,12 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
  * @return void
  */
 function ppp_schedule_share( $post_id, $post ) {
-	if ( !isset( $_POST['post_status'] ) || $post->post_type != 'post' ) {
+	global $ppp_options;
+
+	$allowed_post_types = isset( $ppp_options['post_types'] ) ? $ppp_options['post_types'] : array();
+	$allowed_post_types = apply_filters( 'ppp_schedule_share_post_types', $allowed_post_types );
+
+	if ( !isset( $_POST['post_status'] ) || !array_key_exists( $post->post_type, $allowed_post_types ) ) {
 		return;
 	}
 
@@ -114,6 +119,7 @@ function ppp_share_post( $post_id, $name ) {
 }
 
 function ppp_remove_scheduled_shares( $post_id ) {
+	do_action( 'ppp_pre_remove_scheduled_shares', $post_id );
 	$days_ahead = 1;
 	while ( $days_ahead <= 6 ) {
 		$name = 'sharedate_' . $days_ahead . '_' . $post_id;
@@ -121,6 +127,7 @@ function ppp_remove_scheduled_shares( $post_id ) {
 
 		$days_ahead++;
 	}
+	do_action( 'ppp_post_remove_scheduled_shares', $post_id );
 }
 
 function ppp_set_social_tokens() {
@@ -136,11 +143,13 @@ function ppp_set_social_tokens() {
 		}
 
 		$social_tokens = json_decode( wp_remote_retrieve_body( $response ) );
-		if ( !isset( $social_tokens->error ) ) {
+		if ( !isset( $social_tokens->error ) && isset( $social_tokens->twitter ) ) {
 			set_transient( 'ppp_social_tokens', $social_tokens, WEEK_IN_SECONDS );
 		}
 	}
 
-	define( 'PPP_TW_CONSUMER_KEY', $social_tokens->twitter->consumer_token );
-	define( 'PPP_TW_CONSUMER_SECRET', $social_tokens->twitter->consumer_secret );
+	if ( property_exists( $social_tokens, 'twitter' ) ) {
+		define( 'PPP_TW_CONSUMER_KEY', $social_tokens->twitter->consumer_token );
+		define( 'PPP_TW_CONSUMER_SECRET', $social_tokens->twitter->consumer_secret );
+	}
 }

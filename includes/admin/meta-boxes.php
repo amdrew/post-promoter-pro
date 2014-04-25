@@ -22,9 +22,12 @@ function ppp_tweet_schedule_callback() {
 	$exclude_style = ( !empty( $ppp_post_exclude ) ) ? 'display: none;' : '';
 	$override_style = ( empty( $ppp_post_override ) ) ? 'display: none;' : '';
 	?>
-	<input type="checkbox" name="_ppp_post_exclude" id="_ppp_post_exclude" value="1" <?php checked( '1', $ppp_post_exclude, true ); ?> />&nbsp;<label for="_ppp_post_exclude"><?php _e( 'Do not schedule social media promotion for this post.', 'ppp-txt' ); ?></label><br />
+	<input type="checkbox" name="_ppp_post_exclude" id="_ppp_post_exclude" value="1" <?php checked( '1', $ppp_post_exclude, true ); ?> />&nbsp;
+		<label for="_ppp_post_exclude"><?php _e( 'Do not schedule social media promotion for this post.', 'ppp-txt' ); ?></label>
+	<br />
 	<div style="<?php echo $exclude_style; ?>" id="ppp-post-override-wrap">
-		<input type="checkbox" name="_ppp_post_override" id="_ppp_post_override" value="1" <?php checked( '1', $ppp_post_override, true ); ?> />&nbsp;<label for="_ppp_post_override"><?php _e( 'Override Default Text and Times', 'ppp-txt' ); ?></label>
+		<input type="checkbox" name="_ppp_post_override" id="_ppp_post_override" value="1" <?php checked( '1', $ppp_post_override, true ); ?> />&nbsp;
+		<label for="_ppp_post_override"><?php _e( 'Override Default Text and Times', 'ppp-txt' ); ?></label>
 		<div class="post-override-matrix" style="<?php echo $override_style; ?>">
 			<?php
 			$day = 1;
@@ -34,8 +37,24 @@ function ppp_tweet_schedule_callback() {
 				<p>
 				<label for="day<?php echo $day; ?>"><?php printf( __( 'Day %s', 'ppp-txt' ), $day ); ?></label>&nbsp;
 				<input type="checkbox" class="ppp-share-enable-day" value="1" name="_ppp_post_override_data[day<?php echo $day; ?>][enabled]" <?php checked( '1', $enabled, true ); ?>/>&nbsp;
-				<input <?php if ( !$enabled ): ?>readonly disabled<?php endif; ?> id="day<?php echo $day; ?>" type="text" placeholder="<?php _e( 'Time', 'ppp-txt' ); ?>" name="_ppp_post_override_data[day<?php echo $day; ?>][time]" class="share-time-selector" value="<?php echo ( isset( $ppp_post_override_data['day' . $day]['time'] ) ) ? $ppp_post_override_data['day' . $day]['time'] : $ppp_options['times']['day' . $day]; ?>" size="8" />
-				<input <?php if ( !$enabled ): ?>readonly disabled<?php endif; ?> onkeyup="PPPCountChar(this)" class="ppp-share-text" type="text" placeholder="<?php _e( 'Social Text', 'ppp-txt' ); ?>" id="day<?php echo $day; ?>" name="_ppp_post_override_data[day<?php echo $day; ?>][text]" <?php if ( isset( $ppp_post_override_data['day' . $day]['text'] ) ) {?>value="<?php echo htmlspecialchars( $ppp_post_override_data['day' . $day]['text'] ); ?>"<?php ;}?> />
+				<input <?php if ( !$enabled ): ?>readonly disabled<?php endif; ?> 
+					id="day<?php echo $day; ?>" 
+					type="text" 
+					placeholder="<?php _e( 'Time', 'ppp-txt' ); ?>" 
+					name="_ppp_post_override_data[day<?php echo $day; ?>][time]" 
+					class="share-time-selector" 
+					value="<?php echo ( isset( $ppp_post_override_data['day' . $day]['time'] ) ) ? $ppp_post_override_data['day' . $day]['time'] : $ppp_options['times']['day' . $day]; ?>" 
+					size="8"
+				/>
+				<input <?php if ( !$enabled ): ?>readonly disabled<?php endif; ?> 
+					onkeyup="PPPCountChar(this)" 
+					class="ppp-share-text" 
+					type="text" 
+					placeholder="<?php _e( 'Social Text', 'ppp-txt' ); ?>" 
+					id="day<?php echo $day; ?>" 
+					name="_ppp_post_override_data[day<?php echo $day; ?>][text]"
+					<?php if ( isset( $ppp_post_override_data['day' . $day]['text'] ) ) {?>value="<?php echo htmlspecialchars( $ppp_post_override_data['day' . $day]['text'] ); ?>"<?php ;}?>
+				/>
 				<span class="ppp-text-length"></span>
 				</p>
 				<?php
