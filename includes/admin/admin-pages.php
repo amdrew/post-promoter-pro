@@ -104,11 +104,12 @@ function ppp_admin_page() {
 function ppp_display_social() {
 	global $ppp_twitter_oauth;
 	$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
+	$ppp_share_settings = get_option( 'ppp_share_settings' );
 	?>
 	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Social Settings', 'ppp-txt' ); ?></h2>
 		<div class="wrap">
 		<form method="post" action="options.php">
-			<?php wp_nonce_field( 'ppp-social-settings' ); ?>
+			<?php wp_nonce_field( 'ppp-share-settings' ); ?>
 			<table class="form-table">
 
 				<tr valign="top">
@@ -118,12 +119,11 @@ function ppp_display_social() {
 					<th scope="row"><?php _e( 'Twitter', 'ppp-txt' ); ?></th>
 					<td>
 						<?php $ppp_twitter_oauth->ppp_initialize_twitter(); ?>
-
 						<?php $ppp_social_settings = get_option( 'ppp_social_settings' ); ?>
-						
+
 						<?php if ( !isset( $ppp_social_settings['twitter']['user'] ) ) { ?>
 							<?php $tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url(); ?>
-							<a href="<?php echo $tw_authurl; ?>"><img src="<?php echo PPP_URL; ?>/includes/images/sign-in-with-twitter-gray.png" /></a>	
+							<a href="<?php echo $tw_authurl; ?>"><img src="<?php echo PPP_URL; ?>/includes/images/sign-in-with-twitter-gray.png" /></a>
 						<?php } else { ?>
 						<div class="ppp-twitter-profile">
 							<img class="ppp-social-icon" src="<?php echo $ppp_social_settings['twitter']['user']->profile_image_url_https; ?>" />
@@ -134,11 +134,31 @@ function ppp_display_social() {
 					</td>
 				</tr>
 
-				<input type="hidden" name="action" value="update" />
-				<input type="hidden" name="page_options" value="ppp_social_settings" />
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<?php _e( 'Sharing Options', 'ppp-txt' ); ?></span>
+					</th>
+					<td>
+						<input id="ppp_unique_links"
+						       name="ppp_share_settings[ppp_unique_links]"
+						       type="checkbox"
+						       value="1"
+						       <?php checked( '1', $ppp_share_settings['ppp_unique_links'], true ); ?>
+						/>&nbsp<label for="ppp_unique_links"><?php _e( 'Make each link unique.', 'ppp-txt' ); ?></label><br />
+						<small>Will append a query string item to links shared so you can better track convserion</small>
+					</td>
+				</tr>
 
-				<?php settings_fields( 'ppp-social-settings' ); ?>
+				<?php settings_fields( 'ppp-share-settings' ); ?>
+
+				<input type="hidden" name="action" value="update" />
+				<input type="hidden" name="page_options" value="ppp_share_settings" />
+
+
 			</table>
+
+			<input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'ppp-txt' ) ?>" />
+
 		</form>
 	</div>
 	<?php

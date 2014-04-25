@@ -25,9 +25,13 @@ class PostPromoterPro {
 	private static $ppp_instance;
 
 	private function __construct() {
-		global $ppp_options, $ppp_social_settings;
-		$ppp_options = get_option( 'ppp_options' );
+		register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
+		add_action( 'init', array( $this, 'ppp_register_settings' ) );
+
+		global $ppp_options, $ppp_social_settings, $ppp_share_settings;
+		$ppp_options         = get_option( 'ppp_options' );
 		$ppp_social_settings = get_option( 'ppp_social_settings' );
+		$ppp_share_settings  = get_option( 'ppp_share_settings' );
 
 		include PPP_PATH . '/includes/share-functions.php';
 		include PPP_PATH . '/includes/libs/social-loader.php';
@@ -137,24 +141,8 @@ class PostPromoterPro {
 		register_setting( 'ppp-options', '_ppp_license_key', array( $this, 'ppp_sanitize_license' ) );
 
 		register_setting( 'ppp-social-settings', 'ppp_social_settings' );
+		register_setting( 'ppp-share-settings', 'ppp_share_settings' );
 		do_action( 'ppp_register_additional_settings' );
-
-		global $ppp_options;
-		if ( !isset( $ppp_options['times'] ) ) {
-			$i = 1;
-			while( $i <= 6 ) {
-				$ppp_options['times']['day' . $i] = '12:00';
-				$i++;
-			}
-		} elseif ( count( $ppp_options['times'] ) < 6 || in_array( '', $ppp_options['times'], true ) ) {
-			$i = 1;
-			while( $i <= 6 ) {
-				if ( !isset( $ppp_options['times']['day' . $i] ) || empty( $ppp_options['times']['day' . $i] ) ) {
-					$ppp_options['times']['day' . $i] = '12:00';
-				}
-				$i++;
-			}
-		}
 
 	}
 

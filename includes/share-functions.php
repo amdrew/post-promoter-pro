@@ -83,7 +83,7 @@ add_action( 'ppp_share_post_event', 'ppp_share_post', 10, 2 );
  * @return void
  */
 function ppp_share_post( $post_id, $name ) {
-	global $ppp_options, $ppp_social_settings, $ppp_twitter_oauth;
+	global $ppp_options, $ppp_social_settings, $ppp_share_settings, $ppp_twitter_oauth;
 	$post = get_post( $post_id, OBJECT );
 
 	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
@@ -95,9 +95,18 @@ function ppp_share_post( $post_id, $name ) {
 	}
 
 	$tweet_text = isset( $tweet_text ) ? $tweet_text : $post->post_title;
-	$tweet = $tweet_text . ' ' . get_permalink( $post_id );
 
-	$status['twitter'] = $ppp_twitter_oauth->ppp_tweet( $tweet );
+	$tweet_link = get_permalink( $post_id );
+
+	if ( isset( $ppp_share_settings['ppp_unique_links'] ) ) {
+		$tweet_link .= strpos( $tweet_link, '?' ) ? '&' : '?' ;
+		$name_parts = explode( '_', $name );
+		$tweet_link .= 'ppp=' . $post_id . '-' . $name_parts[1];
+	}
+
+	$tweet = $tweet_text . ' ' . $tweet_link;
+
+	$status['twitter'] = apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( $tweet ) );
 
 	if ( $ppp_options['enable_debug'] == '1' ) {
 		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
