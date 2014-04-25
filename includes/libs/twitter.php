@@ -31,6 +31,10 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 					require_once ( PPP_PATH . '/includes/libs/twitter/twitteroauth.php' );
 				}
 
+				if ( ! defined( 'PPP_TW_CONSUMER_KEY' ) || ! defined( 'PPP_TW_CONSUMER_SECRET' ) ) {
+					return false;
+				}
+
 				$this->twitter = new TwitterOAuth( PPP_TW_CONSUMER_KEY, PPP_TW_CONSUMER_SECRET );
 
 				return true;
