@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * Register the metaboxes for Post Promoter Pro
+ * @return void
+ */
 function ppp_register_meta_boxes() {
 	global $post, $ppp_options;
 
@@ -7,12 +12,16 @@ function ppp_register_meta_boxes() {
 	}
 
 	foreach ( $ppp_options['post_types'] as $post_type => $value ) {
-		add_meta_box( 'ppp_tweet_schedule_metabox', 'Post Promoter Pro', 'ppp_tweet_schedule_callback', $post_type, 'normal', 'low' );
+		add_meta_box( 'ppp_schedule_metabox', 'Post Promoter Pro', 'ppp_schedule_callback', $post_type, 'normal', 'low' );
 	}
 }
 add_action( 'add_meta_boxes', 'ppp_register_meta_boxes', 12 );
 
-function ppp_tweet_schedule_callback() {
+/**
+ * Display the Metabox for Post Promoter Pro
+ * @return void
+ */
+function ppp_schedule_callback() {
 	global $post, $ppp_options;
 
 	$ppp_post_exclude = get_post_meta( $post->ID, '_ppp_post_exclude', true );
@@ -37,21 +46,21 @@ function ppp_tweet_schedule_callback() {
 				<p>
 				<label for="day<?php echo $day; ?>"><?php printf( __( 'Day %s', 'ppp-txt' ), $day ); ?></label>&nbsp;
 				<input type="checkbox" class="ppp-share-enable-day" value="1" name="_ppp_post_override_data[day<?php echo $day; ?>][enabled]" <?php checked( '1', $enabled, true ); ?>/>&nbsp;
-				<input <?php if ( !$enabled ): ?>readonly disabled<?php endif; ?> 
-					id="day<?php echo $day; ?>" 
-					type="text" 
-					placeholder="<?php _e( 'Time', 'ppp-txt' ); ?>" 
-					name="_ppp_post_override_data[day<?php echo $day; ?>][time]" 
-					class="share-time-selector" 
-					value="<?php echo ( isset( $ppp_post_override_data['day' . $day]['time'] ) ) ? $ppp_post_override_data['day' . $day]['time'] : $ppp_options['times']['day' . $day]; ?>" 
+				<input <?php if ( !$enabled ): ?>readonly disabled<?php endif; ?>
+					id="day<?php echo $day; ?>"
+					type="text"
+					placeholder="<?php _e( 'Time', 'ppp-txt' ); ?>"
+					name="_ppp_post_override_data[day<?php echo $day; ?>][time]"
+					class="share-time-selector"
+					value="<?php echo ( isset( $ppp_post_override_data['day' . $day]['time'] ) ) ? $ppp_post_override_data['day' . $day]['time'] : $ppp_options['times']['day' . $day]; ?>"
 					size="8"
 				/>
-				<input <?php if ( !$enabled ): ?>readonly disabled<?php endif; ?> 
-					onkeyup="PPPCountChar(this)" 
-					class="ppp-share-text" 
-					type="text" 
-					placeholder="<?php _e( 'Social Text', 'ppp-txt' ); ?>" 
-					id="day<?php echo $day; ?>" 
+				<input <?php if ( !$enabled ): ?>readonly disabled<?php endif; ?>
+					onkeyup="PPPCountChar(this)"
+					class="ppp-share-text"
+					type="text"
+					placeholder="<?php _e( 'Social Text', 'ppp-txt' ); ?>"
+					id="day<?php echo $day; ?>"
 					name="_ppp_post_override_data[day<?php echo $day; ?>][text]"
 					<?php if ( isset( $ppp_post_override_data['day' . $day]['text'] ) ) {?>value="<?php echo htmlspecialchars( $ppp_post_override_data['day' . $day]['text'] ); ?>"<?php ;}?>
 				/>
@@ -67,6 +76,12 @@ function ppp_tweet_schedule_callback() {
 	<?php
 }
 
+/**
+ * Save the items in our meta boxes
+ * @param  int $post_id The Post ID being saved
+ * @param  object $post    The Post Object being saved
+ * @return int          The Post ID
+ */
 function ppp_save_post_meta_boxes( $post_id, $post ) {
 	global $ppp_options;
 

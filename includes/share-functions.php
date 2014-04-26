@@ -108,6 +108,11 @@ function ppp_share_post( $post_id, $name ) {
 	}
 }
 
+/**
+ * Given a post ID remove it's scheduled shares
+ * @param  int $post_id The Post ID to remove shares for
+ * @return void
+ */
 function ppp_remove_scheduled_shares( $post_id ) {
 	do_action( 'ppp_pre_remove_scheduled_shares', $post_id );
 	$days_ahead = 1;
@@ -120,6 +125,10 @@ function ppp_remove_scheduled_shares( $post_id ) {
 	do_action( 'ppp_post_remove_scheduled_shares', $post_id );
 }
 
+/**
+ * Get the Social Share Tokens from the API
+ * @return void
+ */
 function ppp_set_social_tokens() {
 	$social_tokens = get_transient( 'ppp_social_tokens' );
 
@@ -144,6 +153,12 @@ function ppp_set_social_tokens() {
 	}
 }
 
+/**
+ * Generate the content for the shares
+ * @param  int $post_id The Post ID
+ * @param  string $name    The 'Name' from the cron
+ * @return string          The Content to include in the social media post
+ */
 function ppp_generate_share_content( $post_id, $name ) {
 	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
 
@@ -159,6 +174,12 @@ function ppp_generate_share_content( $post_id, $name ) {
 	return apply_filters( 'ppp_share_content', $share_content );
 }
 
+/**
+ * Generate the link for the share
+ * @param  int $post_id The Post ID
+ * @param  string $name    The 'Name from the cron'
+ * @return string          The URL to the post, to share
+ */
 function ppp_generate_link( $post_id, $name ) {
 	global $ppp_share_settings;
 	$share_link = get_permalink( $post_id );
@@ -176,6 +197,12 @@ function ppp_generate_link( $post_id, $name ) {
 	return apply_filters( 'ppp_share_link', $share_link );
 }
 
+/**
+ * Combines the results from ppp_generate_share_content and ppp_generate_link into a single string
+ * @param  int $post_id The Post ID
+ * @param  string $name    The 'name' element from the Cron
+ * @return string          The Full text for the social share
+ */
 function ppp_build_share_message( $post_id, $name ) {
 	$share_content = ppp_generate_share_content( $post_id, $name );
 	$share_link    = ppp_generate_link( $post_id, $name );
@@ -183,6 +210,11 @@ function ppp_build_share_message( $post_id, $name ) {
 	return apply_filters( 'ppp_build_share_message', $share_content . ' ' . $share_link );
 }
 
+/**
+ * Given a message, sends a tweet
+ * @param  string $message The Text to share as the body of the tweet
+ * @return object          The Results from the Twitter API
+ */
 function ppp_send_tweet( $message ) {
 	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( $message ) );
 }

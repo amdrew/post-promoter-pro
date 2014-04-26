@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: http://filament-studios.com/plugins/post-promoter-pro
 Description: Schedule the promotion of blog posts for the next 6 days, with no further work.
-Version: 1.0b04052014
+Version: 1.0b04026014
 Author: Filament Studios
 Author URI: http://filament-studios.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '1.0b04052014' );
+define( 'PPP_VERSION', '1.0b04026014' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -200,7 +200,7 @@ class PostPromoterPro {
 		if( isset( $_POST['ppp_license_deactivate'] ) ) {
 
 			// run a quick security check
-		 	if( ! check_admin_referer( 'ppp_deactivate_nonce', 'ppp_deactivate_nonce' ) )
+			if( ! check_admin_referer( 'ppp_deactivate_nonce', 'ppp_deactivate_nonce' ) )
 				return; // get out if we didn't click the Activate button
 
 			// retrieve the license from the database

@@ -9,7 +9,14 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
+/**
+ * Creates the Schedule List table for Post Promoter Pro
+ */
 class PPP_Schedule_Table extends WP_List_Table {
+
+	/**
+	 * Generate the Class from it's parent
+	 */
 	function __construct() {
 		global $status, $page;
 
@@ -20,10 +27,20 @@ class PPP_Schedule_Table extends WP_List_Table {
 			) );
 	}
 
+	/**
+	 * What to show if no items are found
+	 * @return void
+	 */
 	public function no_items() {
 		printf( __( 'No shares scheduled. Go <a href="%s">write somehing</a>!', 'ppp-txt' ), admin_url( 'post-new.php' ) );
 	}
 
+	/**
+	 * The Default columns
+	 * @param  array $item        The Item being displayed
+	 * @param  string $column_name The column we're currently in
+	 * @return string              The Content to display
+	 */
 	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
 		case 'date':
@@ -32,11 +49,14 @@ class PPP_Schedule_Table extends WP_List_Table {
 		case 'post_title':
 			return $item[ $column_name ];
 		default:
-			return print_r( $item, true ) ; //Show the whole array for troubleshooting purposes
+			return;
 		}
 	}
 
-
+	/**
+	 * The columns for our list view
+	 * @return array Columns shown on the Schedule page
+	 */
 	public function get_columns() {
 		$columns = array(
 			'post_id'        => __( 'Post ID', 'ppp-txt' ),
@@ -49,16 +69,30 @@ class PPP_Schedule_Table extends WP_List_Table {
 		return $columns;
 	}
 
+	/**
+	 * Specifies how to display the post_id column on the schedule page
+	 * @param  array $item The Item being displayed
+	 * @return string       The HTML to display for this column.
+	 */
 	public function column_post_id( $item ) {
-		$actions = array( 'edit'      => sprintf( __( '<a href="%s">Edit</a>', 'ppp-txt' ), admin_url( 'post.php?post=' . $item['post_id'] . '&action=edit#ppp_tweet_schedule_metabox' ) ) );
+		$actions = array( 'edit'      => sprintf( __( '<a href="%s">Edit</a>', 'ppp-txt' ), admin_url( 'post.php?post=' . $item['post_id'] . '&action=edit#ppp_schedule_metabox' ) ) );
 
 		return sprintf( '%1$s %2$s', $item['post_id'], $this->row_actions( $actions ) );
 	}
 
+	/**
+	 * Specifies how to display the date columon on the schedule page
+	 * @param  array $item The Item being displayed
+	 * @return string       The HTML to display the date
+	 */
 	public function column_date( $item ) {
 		return date_i18n( get_option('date_format') . ' @ ' . get_option('time_format'), $item['date'] );
 	}
 
+	/**
+	 * Prepare the data for the WP List Table
+	 * @return void
+	 */
 	function prepare_items() {
 		$columns  = $this->get_columns();
 		$hidden   = array();
