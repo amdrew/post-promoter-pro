@@ -88,9 +88,13 @@ class PPP_Schedule_Table extends WP_List_Table {
 			                           'content'      => ppp_build_share_message( $event_info['args'][0], $event_info['args'][1] ) );
 		}
 
+		$total_items = count( $data );
+
+		$offset = isset( $_GET['paged'] ) ? $_GET['paged'] : 1;
+
+		$data = array_slice( $data, ( $offset - 1 ) * $per_page, $per_page, true );
 		$this->items = $data;
 
-		$total_items = count( $data );
 
 		$this->set_pagination_args( array(
 				'total_items' => $total_items,                  //WE have to calculate the total number of items
