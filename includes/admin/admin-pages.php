@@ -176,6 +176,32 @@ function ppp_display_social() {
 }
 
 /**
+* Display the List Table tab
+* @return void
+*/
+function ppp_display_schedule() {
+	?>
+	<style type="text/css">
+		.wp-list-table .column-post_id { width: 5%; }
+		.wp-list-table .column-day { width: 5%; }
+		.wp-list-table .column-date { width: 15%; }
+		.wp-list-table .column-post_title { width: 30%; }
+		.wp-list-table .column-content { width: 45%; }
+	</style>
+	<?php
+	require_once PPP_PATH . 'includes/admin/class-schedule-table.php';
+	$schedule_table = new PPP_Schedule_Table();
+	$schedule_table->prepare_items();
+	?>
+	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Scheduled Shares', 'ppp-txt' ); ?></h2>
+		<div class="wrap">
+			<?php $schedule_table->display() ?>
+		</div>
+	</div>
+	<?php
+}
+
+/**
  * Display the System Info Tab
  * @return void
  */
