@@ -42,11 +42,13 @@ function ppp_schedule_callback() {
 			$day = 1;
 			while( $day <= 6 ) {
 				$enabled = isset( $ppp_post_override_data['day' . $day]['enabled'] ) ? '1' : false;
+				$readonly = time() > strtotime( $post->post_date . ' +' . $day . ' day' ) ? true : false;
 				?>
 				<p>
 				<label for="day<?php echo $day; ?>"><?php printf( __( 'Day %s', 'ppp-txt' ), $day ); ?></label>&nbsp;
-				<input type="checkbox" class="ppp-share-enable-day" value="1" name="_ppp_post_override_data[day<?php echo $day; ?>][enabled]" <?php checked( '1', $enabled, true ); ?>/>&nbsp;
-				<input <?php if ( !$enabled ): ?>readonly disabled<?php endif; ?>
+				<input <?php if ( $readonly ): ?>disabled<?php endif; ?> type="checkbox" class="ppp-share-enable-day" value="1" name="_ppp_post_override_data[day<?php echo $day; ?>][enabled]" <?php checked( '1', $enabled, true ); ?>/>&nbsp;
+				<input <?php if ( !$enabled ): ?>disabled<?php endif; ?>
+					 <?php if ( !$enabled || $readonly ): ?>readonly<?php endif; ?>
 					id="day<?php echo $day; ?>"
 					type="text"
 					placeholder="<?php _e( 'Time', 'ppp-txt' ); ?>"
@@ -55,7 +57,8 @@ function ppp_schedule_callback() {
 					value="<?php echo ( isset( $ppp_post_override_data['day' . $day]['time'] ) ) ? $ppp_post_override_data['day' . $day]['time'] : $ppp_options['times']['day' . $day]; ?>"
 					size="8"
 				/>
-				<input <?php if ( !$enabled ): ?>readonly disabled<?php endif; ?>
+				<input <?php if ( !$enabled ): ?>disabled<?php endif; ?>
+					 <?php if ( !$enabled || $readonly ): ?>readonly<?php endif; ?>
 					onkeyup="PPPCountChar(this)"
 					class="ppp-share-text"
 					type="text"
