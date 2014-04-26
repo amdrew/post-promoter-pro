@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Post Promoter Pro
-Plugin URI: http://filament-studios.com/plugins/post-promoter-pro
+Plugin URI: http://postpromoterpro.com
 Description: Schedule the promotion of blog posts for the next 6 days, with no further work.
 Version: 0.2.1
-Author: Filament Studios
-Author URI: http://filament-studios.com
+Author: Post Promoter Pro
+Author URI: http://postpromoterpro.com
 License: GPLv2
 */
 
@@ -117,7 +117,7 @@ class PostPromoterPro {
 			return $links;
 		}
 
-		$settings_link = sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=post-promoter-pro' ), __( 'Settings', 'ppp-txt' ) );
+		$settings_link = sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=ppp-options' ), __( 'Settings', 'ppp-txt' ) );
 
 		array_unshift( $links, $settings_link );
 
