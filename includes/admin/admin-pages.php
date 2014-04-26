@@ -185,8 +185,8 @@ function ppp_display_schedule() {
 		.wp-list-table .column-post_id { width: 5%; }
 		.wp-list-table .column-day { width: 5%; }
 		.wp-list-table .column-date { width: 15%; }
-		.wp-list-table .column-post_title { width: 30%; }
-		.wp-list-table .column-content { width: 45%; }
+		.wp-list-table .column-post_title { width: 25%; }
+		.wp-list-table .column-content { width: 50%; }
 	</style>
 	<?php
 	require_once PPP_PATH . 'includes/admin/class-schedule-table.php';
