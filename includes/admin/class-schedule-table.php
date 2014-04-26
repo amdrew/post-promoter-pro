@@ -59,7 +59,6 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 */
 	public function get_columns() {
 		$columns = array(
-			'post_id'        => __( 'Post ID', 'ppp-txt' ),
 			'post_title'     => __( 'Post Title', 'ppp-txt' ),
 			'day'            => __( 'Day', 'ppp-text' ),
 			'date'           => __( 'Scheduled Date', 'ppp-txt' ),
@@ -74,10 +73,10 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 * @param  array $item The Item being displayed
 	 * @return string       The HTML to display for this column.
 	 */
-	public function column_post_id( $item ) {
+	public function column_post_title( $item ) {
 		$actions = array( 'edit'      => sprintf( __( '<a href="%s">Edit</a>', 'ppp-txt' ), admin_url( 'post.php?post=' . $item['post_id'] . '&action=edit#ppp_schedule_metabox' ) ) );
 
-		return sprintf( '%1$s %2$s', $item['post_id'], $this->row_actions( $actions ) );
+		return sprintf( '%1$s %2$s', $item['post_title'], $this->row_actions( $actions ) );
 	}
 
 	/**
@@ -101,13 +100,9 @@ class PPP_Schedule_Table extends WP_List_Table {
 		$per_page = 25;
 		$current_page = $this->get_pagenum();
 
-		$crons = get_option( 'cron' );
+		$crons = ppp_get_shceduled_crons();
 
 		foreach ( $crons as $timestamp => $cron ) {
-			if ( ! isset( $cron['ppp_share_post_event'] ) ) {
-				continue;
-			}
-
 			$ppp_data   = $cron['ppp_share_post_event'];
 			$array_keys = array_keys( $ppp_data );
 			$hash_key   = $array_keys[0];
@@ -115,8 +110,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 			$name_parts = explode( '_', $event_info['args'][1] );
 			$day        = $name_parts[1];
 
-			$data[$hash_key] = array(  'post_id'      => $event_info['args'][0],
-				                       'post_title'   => get_the_title( $event_info['args'][0] ),
+			$data[$hash_key] = array(  'post_title'   => get_the_title( $event_info['args'][0] ),
 			                           'day'          => $day,
 			                           'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
 			                           'content'      => ppp_build_share_message( $event_info['args'][0], $event_info['args'][1] ) );

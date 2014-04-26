@@ -156,7 +156,9 @@ function ppp_display_social() {
 						       value="1"
 						       <?php checked( '1', $ppp_share_settings['ppp_unique_links'], true ); ?>
 						/>&nbsp<label for="ppp_unique_links"><?php _e( 'Make each link unique.', 'ppp-txt' ); ?></label><br />
-						<small>Will append a query string item to links shared so you can better track convserion</small>
+						<small><?php _e( 'Appends a query string to shared links for analytics. For example:', 'ppp-txt' ); ?><br />
+							<?php $post = wp_get_recent_posts( array( 'numberposts' => 1 ) ); ?>
+							<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'] ); ?></code></small>
 					</td>
 				</tr>
 
@@ -182,9 +184,8 @@ function ppp_display_social() {
 function ppp_display_schedule() {
 	?>
 	<style type="text/css">
-		.wp-list-table .column-post_id { width: 5%; }
 		.wp-list-table .column-day { width: 5%; }
-		.wp-list-table .column-date { width: 15%; }
+		.wp-list-table .column-date { width: 20%; }
 		.wp-list-table .column-post_title { width: 25%; }
 		.wp-list-table .column-content { width: 50%; }
 	</style>
