@@ -137,6 +137,7 @@ class PostPromoterPro {
 		             );
 
 		add_submenu_page( 'ppp-options', __( 'Social Settings', 'ppp-txt' ), __( 'Social Settings', 'ppp-txt' ), 'manage_options', 'ppp-social-settings', 'ppp_display_social' );
+		add_submenu_page( 'ppp-options', __( 'Schedule', 'ppp-txt' ), __( 'Schedule', 'ppp-txt' ), 'manage_options', 'ppp-schedule-info', 'ppp_display_schedule' );
 		add_submenu_page( 'ppp-options', __( 'System Info', 'ppp-txt' ), __( 'System Info', 'ppp-txt' ), 'manage_options', 'ppp-system-info', 'ppp_display_sysinfo' );
 	}
 
@@ -152,7 +153,6 @@ class PostPromoterPro {
 		register_setting( 'ppp-social-settings', 'ppp_social_settings' );
 		register_setting( 'ppp-share-settings', 'ppp_share_settings' );
 		do_action( 'ppp_register_additional_settings' );
-
 	}
 
 	/**
