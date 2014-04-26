@@ -22,10 +22,17 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	$times = array();
 	foreach ( $tweet_times as $key => $data ) {
 		$days_ahead = substr( $key, -1 );
-		$share_time = explode( ':', $data['time'] );
+		$share_time = explode( ':', $data );
 
+		if ( strtolower( substr( $share_time[1], -2 ) == 'pm' ) && $hours != 12 ) {
+			$hours = $hours + 12;
+		}
+
+		if ( strtolower( substr( $share_time[1], -2 ) == 'am' ) && $hours == 12 ) {
+			$hours = 00;
+		}
 		$hours   = (int)$share_time[0] + $offset;
-		$hours   = strtolower( substr( $share_time[1], -2 ) == 'pm' ) ? $hours + 12 : $hours;
+
 		$minutes = (int)substr( $share_time[1], 0, 2 );
 
 		$timestamp = mktime( $hours, $minutes, 0, $month, $day + $days_ahead, $year );
