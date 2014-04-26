@@ -33,6 +33,7 @@ class PostPromoterPro {
 		$ppp_share_settings  = get_option( 'ppp_share_settings' );
 
 		include PPP_PATH . '/includes/share-functions.php';
+		include PPP_PATH . '/includes/cron-functions.php';
 		include PPP_PATH . '/includes/libs/social-loader.php';
 
 		if ( is_admin() ) {
