@@ -98,27 +98,10 @@ function ppp_share_post( $post_id, $name ) {
 	global $ppp_options, $ppp_social_settings, $ppp_share_settings, $ppp_twitter_oauth;
 	$post = get_post( $post_id, OBJECT );
 
-	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
-	if ( !empty( $ppp_post_override ) ) {
-		$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
-		$name_array = explode( '_', $name );
-		$day = 'day' . $name_array[1];
-		$tweet_text = $ppp_post_override_data[$day]['text'];
-	}
 
-	$tweet_text = isset( $tweet_text ) ? $tweet_text : $post->post_title;
+	$share_message = ppp_build_share_message( $post_id, $name );
 
-	$tweet_link = get_permalink( $post_id );
-
-	if ( isset( $ppp_share_settings['ppp_unique_links'] ) ) {
-		$tweet_link .= strpos( $tweet_link, '?' ) ? '&' : '?' ;
-		$name_parts = explode( '_', $name );
-		$tweet_link .= 'ppp=' . $post_id . '-' . $name_parts[1];
-	}
-
-	$tweet = $tweet_text . ' ' . $tweet_link;
-
-	$status['twitter'] = apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( $tweet ) );
+	$status['twitter'] = ppp_send_tweet( $share_message );
 
 	if ( $ppp_options['enable_debug'] == '1' ) {
 		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
@@ -159,4 +142,47 @@ function ppp_set_social_tokens() {
 		define( 'PPP_TW_CONSUMER_KEY', $social_tokens->twitter->consumer_token );
 		define( 'PPP_TW_CONSUMER_SECRET', $social_tokens->twitter->consumer_secret );
 	}
+}
+
+function ppp_generate_share_content( $post_id, $name ) {
+	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
+
+	if ( !empty( $ppp_post_override ) ) {
+		$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
+		$name_array = explode( '_', $name );
+		$day = 'day' . $name_array[1];
+		$share_content = $ppp_post_override_data[$day]['text'];
+	}
+
+	$share_content = isset( $share_content ) ? $share_content : get_the_title( $post_id );
+
+	return apply_filters( 'ppp_share_content', $share_content );
+}
+
+function ppp_generate_link( $post_id, $name ) {
+	global $ppp_share_settings;
+	$share_link = get_permalink( $post_id );
+
+	if ( isset( $ppp_share_settings['ppp_unique_links'] ) ) {
+		$share_link .= strpos( $share_link, '?' ) ? '&' : '?' ;
+		$name_parts = explode( '_', $name );
+
+		$query_string_var = apply_filters( 'ppp_query_string_var', 'ppp' );
+
+		$share_link .= $query_string_var . '=' . $post_id . '-' . $name_parts[1];
+	}
+
+
+	return apply_filters( 'ppp_share_link', $share_link );
+}
+
+function ppp_build_share_message( $post_id, $name ) {
+	$share_content = ppp_generate_share_content( $post_id, $name );
+	$share_link    = ppp_generate_link( $post_id, $name );
+
+	return apply_filters( 'ppp_build_share_message', $share_content . ' ' . $share_link );
+}
+
+function ppp_send_tweet( $message ) {
+	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( $message ) );
 }
