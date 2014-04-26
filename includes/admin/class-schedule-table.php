@@ -95,6 +95,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 	function prepare_items() {
 		$columns  = $this->get_columns();
 		$hidden   = array();
+		$data     = array();
 		$this->_column_headers = array( $columns, $hidden );
 
 		$per_page = 25;
