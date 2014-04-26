@@ -45,7 +45,7 @@ function ppp_admin_page() {
 					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br />
 						<span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can changes this on a per post basis as well', 'ppp-txt' ); ?></span></th>
 					<td>
-						<strong>Days After Publish</strong>
+						<strong><?php _e( 'Days After Publish', 'ppp-txt' ); ?></strong>
 						<table id="ppp-days-table">
 							<tr>
 								<td><label for="ppp_options[times][day1]">1</label></td>
@@ -138,7 +138,7 @@ function ppp_display_social() {
 						<?php } else { ?>
 						<div class="ppp-twitter-profile">
 							<img class="ppp-social-icon" src="<?php echo $ppp_social_settings['twitter']['user']->profile_image_url_https; ?>" />
-							<div class="ppp-twitter-info">Signed in as:<br /><?php echo $ppp_social_settings['twitter']['user']->name; ?></div>
+							<div class="ppp-twitter-info"><?php _e( 'Signed in as', 'ppp-txt' ); ?>:<br /><?php echo $ppp_social_settings['twitter']['user']->name; ?></div>
 						</div>
 						<br /><span style="font-size: x-small;"><?php _e( '<a href="https://twitter.com/settings/applications" target="blank">Revoke Access</a>', 'ppp-txt' ); ?></span>
 						<?php } ?>
