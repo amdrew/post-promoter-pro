@@ -60,7 +60,7 @@ function ppp_share_post( $post_id, $name ) {
 
 	$status['twitter'] = ppp_send_tweet( $share_message );
 
-	if ( $ppp_options['enable_debug'] == '1' ) {
+	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
 		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
 	}
 }
@@ -156,5 +156,6 @@ function ppp_build_share_message( $post_id, $name ) {
  * @return object          The Results from the Twitter API
  */
 function ppp_send_tweet( $message ) {
+	global $ppp_twitter_oauth;
 	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( $message ) );
 }

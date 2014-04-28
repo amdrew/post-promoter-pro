@@ -96,7 +96,8 @@ class PPP_Schedule_Table extends WP_List_Table {
 		$columns  = $this->get_columns();
 		$hidden   = array();
 		$data     = array();
-		$this->_column_headers = array( $columns, $hidden );
+		$sortable = false;
+		$this->_column_headers = array( $columns, $hidden, $sortable );
 
 		$per_page = 25;
 		$current_page = $this->get_pagenum();
@@ -111,7 +112,8 @@ class PPP_Schedule_Table extends WP_List_Table {
 			$name_parts = explode( '_', $event_info['args'][1] );
 			$day        = $name_parts[1];
 
-			$data[$hash_key] = array(  'post_title'   => get_the_title( $event_info['args'][0] ),
+			$data[$hash_key] = array(  'post_id'      => $event_info['args'][0],
+				                       'post_title'   => get_the_title( $event_info['args'][0] ),
 			                           'day'          => $day,
 			                           'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
 			                           'content'      => ppp_build_share_message( $event_info['args'][0], $event_info['args'][1] ) );
