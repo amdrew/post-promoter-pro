@@ -18,6 +18,17 @@
 		}
 	});
 
+	$('.ppp-analytics-checkbox').click( function() {
+		var clicked = $(this);
+		var status  = $(this).is(':checked');
+		$('#ppp-analytics-options input').each(function() {
+			if ($(this).attr('id') != clicked.attr('id')) {
+				$(this).attr('checked', false);
+				$(this).attr('disabled', status);
+			}
+		});
+	});
+
 })(jQuery);
 
 function PPPCountChar(val) {

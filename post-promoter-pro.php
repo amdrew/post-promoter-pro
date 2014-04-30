@@ -32,6 +32,7 @@ class PostPromoterPro {
 		$ppp_social_settings = get_option( 'ppp_social_settings' );
 		$ppp_share_settings  = get_option( 'ppp_share_settings' );
 
+		include PPP_PATH . '/includes/general-functions.php';
 		include PPP_PATH . '/includes/share-functions.php';
 		include PPP_PATH . '/includes/cron-functions.php';
 		include PPP_PATH . '/includes/libs/social-loader.php';
@@ -50,7 +51,7 @@ class PostPromoterPro {
 			add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
 			add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'load_styes' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ) );
 			add_action( 'trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 		}
 
@@ -90,7 +91,10 @@ class PostPromoterPro {
 	 * @access public
 	 */
 	public function load_custom_scripts( $hook ) {
-		if ( 'toplevel_page_ppp-options' != $hook && 'post-new.php' != $hook && 'post.php' != $hook )
+		if ( 'toplevel_page_ppp-options' != $hook
+			  && 'post-promoter_page_ppp-social-settings' != $hook
+			  && 'post-new.php' != $hook
+			  && 'post.php' != $hook )
 			return;
 
 		wp_enqueue_script( 'jquery-ui-core' );
@@ -100,7 +104,7 @@ class PostPromoterPro {
 		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'/includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
 	}
 
-	public function load_styes() {
+	public function load_styles() {
 		wp_register_style( 'ppp_admin_css', PPP_URL . '/includes/scripts/css/admin-style.css', false, PPP_VERSION );
 		wp_enqueue_style( 'ppp_admin_css' );
 	}

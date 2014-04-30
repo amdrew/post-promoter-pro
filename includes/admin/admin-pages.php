@@ -145,20 +145,44 @@ function ppp_display_social() {
 					</td>
 				</tr>
 
+				<?php
+				$uq_status = ( isset( $ppp_share_settings['ppp_unique_links'] ) && $ppp_share_settings['ppp_unique_links'] == '1' ) ? $ppp_share_settings['ppp_unique_links'] : 0;
+				$ga_status = ( isset( $ppp_share_settings['ppp_ga_tags'] ) && $ppp_share_settings['ppp_ga_tags'] == '1' ) ? $ppp_share_settings['ppp_ga_tags'] : 0;
+				?>
 				<tr valign="top">
 					<th scope="row" valign="top">
-						<?php _e( 'Sharing Options', 'ppp-txt' ); ?></span>
+						<?php _e( 'Analytics', 'ppp-txt' ); ?></span>
 					</th>
-					<td>
-						<input id="ppp_unique_links"
-						       name="ppp_share_settings[ppp_unique_links]"
-						       type="checkbox"
-						       value="1"
-						       <?php checked( '1', $ppp_share_settings['ppp_unique_links'], true ); ?>
-						/>&nbsp<label for="ppp_unique_links"><?php _e( 'Make each link unique.', 'ppp-txt' ); ?></label><br />
-						<small><?php _e( 'Appends a query string to shared links for analytics. For example:', 'ppp-txt' ); ?><br />
+					<td id="ppp-analytics-options">
+						<p>
+							<input id="ppp_unique_links"
+							       class="ppp-analytics-checkbox"
+							       name="ppp_share_settings[ppp_unique_links]"
+							       type="checkbox"
+							       value="1"
+							       <?php if ( !empty( $ga_status ) ): ?> disabled<?php endif; ?>
+							       <?php checked( '1', $uq_status, true ); ?>
+							/>&nbsp<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
+							<small><?php _e( 'Appends a query string to shared links for analytics.', 'ppp-txt' ); ?><br /></small>
+						</p>
+						<br />
+						<p>
+							<input id="ppp_ga_tags"
+							       class="ppp-analytics-checkbox"
+							       name="ppp_share_settings[ppp_ga_tags]"
+							       type="checkbox"
+							       value="1"
+							       <?php if ( !empty( $uq_status ) ): ?> disabled<?php endif; ?>
+							       <?php checked( '1', $ga_status, true ); ?>
+							/>&nbsp<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
+							<small><?php _e( 'Results can be seen in the Acquisition Menu under "Campaigns"', 'ppp-txt' ); ?></small>
+						</p>
+						<p id="ppp-link-example">
+						<hr />
+						<small>Here is an example of what your link will look like: <br />
 							<?php $post = wp_get_recent_posts( array( 'numberposts' => 1 ) ); ?>
 							<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'] ); ?></code></small>
+						</p>
 					</td>
 				</tr>
 
