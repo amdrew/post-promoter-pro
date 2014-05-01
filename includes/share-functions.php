@@ -145,7 +145,7 @@ function ppp_generate_link_tracking( $share_link, $post_id, $name ) {
 		$utm['medium']   = 'social';
 		$utm['term']     =  ppp_get_post_slug_by_id( $post_id );
 		$utm['content']  = $name_parts[1]; // The day after publishing
-		$utm['campaign'] = 'Post Promoter Pro WP';
+		$utm['campaign'] = 'PostPromoterPro';
 
 		$utm_string  = strpos( $share_link, '?' ) ? '&' : '?' ;
 		$utm_string .= implode( '&', array_map( function ( $v, $k ) { return $k . '=' . $v; }, $utm, array_keys( $utm ) ) );
