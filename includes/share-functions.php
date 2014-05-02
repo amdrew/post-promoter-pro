@@ -148,7 +148,7 @@ function ppp_generate_link_tracking( $share_link, $post_id, $name ) {
 		$utm['campaign'] = 'PostPromoterPro';
 
 		$utm_string  = strpos( $share_link, '?' ) ? '&' : '?' ;
-		$utm_string .= implode( '&', array_map( function ( $v, $k ) { return $k . '=' . $v; }, $utm, array_keys( $utm ) ) );
+		$utm_string .= implode( '&', array_map( function ( $v, $k ) { return 'utm_' . $k . '=' . $v; }, $utm, array_keys( $utm ) ) );
 
 		$share_link .= $utm_string;
 	}
