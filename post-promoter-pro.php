@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: http://postpromoterpro.com
 Description: Schedule the promotion of blog posts for the next 6 days, with no further work.
-Version: 0.3.2
+Version: 0.3.3
 Author: Post Promoter Pro
 Author URI: http://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '0.3.2' );
+define( 'PPP_VERSION', '0.3.3' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
