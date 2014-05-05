@@ -74,7 +74,7 @@ function ppp_set_social_tokens() {
 
 	if ( !$social_tokens ) {
 		$license = trim( get_option( '_ppp_license_key' ) );
-		$url = PPP_STORE_URL . '/?ppp-get-tokens?&ppp-license-key=' . $license . '&ver=' . md5( time() . $license );
+		$url = PPP_STORE_URL . '/?ppp-get-tokens&ppp-license-key=' . $license . '&ver=' . md5( time() . $license );
 		$response = wp_remote_get( $url, array( 'timeout' => 15, 'sslverify' => false ) );
 
 		if ( is_wp_error( $response ) ) {
