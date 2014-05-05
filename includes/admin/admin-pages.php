@@ -219,9 +219,8 @@ function ppp_display_schedule() {
 	$schedule_table->prepare_items();
 	?>
 	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Scheduled Shares', 'ppp-txt' ); ?></h2>
-		<div class="wrap">
-			<?php $schedule_table->display() ?>
-		</div>
+	<div class="wrap">
+		<?php $schedule_table->display() ?>
 	</div>
 	<?php
 }
