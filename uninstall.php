@@ -15,3 +15,5 @@ delete_option( 'ppp_options' );
 delete_option( '_ppp_license_key' );
 delete_option( 'ppp_social_settings' );
 delete_option( 'ppp_share_settings' );
+delete_option( '_ppp_license_key_status' );
+delete_transient( 'ppp_social_tokens' );
