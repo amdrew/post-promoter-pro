@@ -73,12 +73,12 @@ class PostPromoterPro {
 
 	public function activation_setup() {
 		$default_settings['post_types']['post'] = '1';
-		$default_settings['times']['day1']      = '08:00';
-		$default_settings['times']['day2']      = '10:00';
-		$default_settings['times']['day3']      = '12:00';
-		$default_settings['times']['day4']      = '16:00';
-		$default_settings['times']['day5']      = '10:30';
-		$default_settings['times']['day6']      = '20:00';
+		$default_settings['times']['day1']      = '8:00am';
+		$default_settings['times']['day2']      = '10:00am';
+		$default_settings['times']['day3']      = '12:00pm';
+		$default_settings['times']['day4']      = '4:00pm';
+		$default_settings['times']['day5']      = '10:30am';
+		$default_settings['times']['day6']      = '8:00pm';
 
 
 		update_option( 'ppp_options', $default_settings );
