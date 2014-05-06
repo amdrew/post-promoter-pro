@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: http://postpromoterpro.com
 Description: Schedule the promotion of blog posts for the next 6 days, with no further work.
-Version: 1.0.1
+Version: 1.0.1.1
 Author: Post Promoter Pro
 Author URI: http://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '1.0.1' );
+define( 'PPP_VERSION', '1.0.1.1' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -195,7 +195,7 @@ class PostPromoterPro {
 	public function no_license_nag() {
 		?>
 		<div class="updated">
-			<p><?php printf( __( 'Post Promoter Pro requires your license key to work, pelase <a href="%s">enter it now</a>.', 'ppp-text' ), admin_url( 'admin.php?page=ppp-options' ) ); ?></p>
+			<p><?php printf( __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-text' ), admin_url( 'admin.php?page=ppp-options' ) ); ?></p>
 		</div>
 		<?php
 	}

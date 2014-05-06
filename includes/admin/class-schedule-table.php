@@ -32,7 +32,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function no_items() {
-		printf( __( 'No shares scheduled. Go <a href="%s">write somehing</a>!', 'ppp-txt' ), admin_url( 'post-new.php' ) );
+		printf( __( 'No shares scheduled. Go <a href="%s">write something</a>!', 'ppp-txt' ), admin_url( 'post-new.php' ) );
 	}
 
 	/**
