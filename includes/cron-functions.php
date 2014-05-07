@@ -61,6 +61,55 @@ function ppp_remove_scheduled_shares( $post_id ) {
 }
 
 /**
+ * Given an array of arguements, remove a share
+ * @param  array $args Array containing 2 values $post_id and $name
+ * @return void
+ */
+function ppp_remove_scheduled_share( $args ) {
+	wp_clear_scheduled_hook( 'ppp_share_post_event', $args );
+	return;
+}
+
+function ppp_list_view_maybe_delete() {
+	if ( !isset( $_GET['page'] ) || $_GET['page'] !== 'ppp-schedule-info' ) {
+		return;
+	}
+
+	if ( !isset( $_GET['action'] ) || $_GET['action'] !== 'delete_item' ) {
+		return;
+	}
+
+
+	$post_id = isset( $_GET['post_id'] ) ? $_GET['post_id'] : 0;
+	$name    = isset( $_GET['name'] ) ? $_GET['name'] : '';
+	$day     = isset( $_GET['day'] ) ? $_GET['day'] : 0;
+
+	if ( !empty( $post_id ) && !empty( $name ) || empty( $day ) ) {
+		ppp_remove_scheduled_share( array( (int)$post_id, $name ) ); // Remove the item in cron
+
+		// Remove the item from postmeta if it exists.
+		$current_post_meta = get_post_meta( $post_id, '_ppp_post_override_data', true );
+
+		if ( isset( $current_post_meta['day'.$day] ) ) {
+			unset( $current_post_meta['day'.$day ] );
+			update_post_meta( $post_id, '_ppp_post_override_data', $current_post_meta );
+		}
+
+		// Display the notice
+		add_action( 'admin_notices', 'ppp_item_deleted_notice' );
+	}
+
+}
+
+function ppp_item_deleted_notice() {
+	?>
+	<div class="updated">
+		<p><?php _e( 'Scheduled item has been deleted.', 'ppp-text' ); ?></p>
+	</div>
+	<?php
+}
+
+/**
  * Get all the crons hooked into 'ppp_share_post_event'
  * @return array All crons scheduled for Post Promoter Pro
  */

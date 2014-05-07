@@ -74,7 +74,9 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 * @return string       The HTML to display for this column.
 	 */
 	public function column_post_title( $item ) {
-		$actions = array( 'edit'      => sprintf( __( '<a href="%s">Edit</a>', 'ppp-txt' ), admin_url( 'post.php?post=' . $item['post_id'] . '&action=edit#ppp_schedule_metabox' ) ) );
+		$actions = array( 'edit' => sprintf( __( '<a href="%s">Edit</a>', 'ppp-txt' ), admin_url( 'post.php?post=' . $item['post_id'] . '&action=edit#ppp_schedule_metabox' ) ),
+		                  'delete' => sprintf( __( '<a href="%s">Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=delete_item&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&day=' . $item['day'] ) )
+		                );
 
 		return sprintf( '%1$s %2$s', $item['post_title'], $this->row_actions( $actions ) );
 	}
@@ -116,7 +118,8 @@ class PPP_Schedule_Table extends WP_List_Table {
 				                       'post_title'   => get_the_title( $event_info['args'][0] ),
 			                           'day'          => $day,
 			                           'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
-			                           'content'      => ppp_build_share_message( $event_info['args'][0], $event_info['args'][1] ) );
+			                           'content'      => ppp_build_share_message( $event_info['args'][0], $event_info['args'][1] ),
+			                           'name'         => 'sharedate_' . $day . '_' . $event_info['args'][0] );
 		}
 
 		$total_items = count( $data );
