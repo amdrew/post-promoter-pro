@@ -113,9 +113,17 @@ function ppp_admin_page() {
 * @return void
 */
 function ppp_display_social() {
+	if ( isset( $_GET['ppp_twitter_disconnect'] ) ) {
+		$ppp_social_settings = get_option( 'ppp_social_settings' );
+		if ( isset( $ppp_social_settings['twitter'] ) ) {
+			unset( $ppp_social_settings['twitter'] );
+			update_option( 'ppp_social_settings', $ppp_social_settings );
+		}
+	}
+
 	global $ppp_twitter_oauth;
-	$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 	$ppp_share_settings = get_option( 'ppp_share_settings' );
+	$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 	?>
 	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Social Settings', 'ppp-txt' ); ?></h2>
 		<div class="wrap">
@@ -140,7 +148,9 @@ function ppp_display_social() {
 							<img class="ppp-social-icon" src="<?php echo $ppp_social_settings['twitter']['user']->profile_image_url_https; ?>" />
 							<div class="ppp-twitter-info"><?php _e( 'Signed in as', 'ppp-txt' ); ?>:<br /><?php echo $ppp_social_settings['twitter']['user']->name; ?></div>
 						</div>
-						<br /><span style="font-size: x-small;"><?php _e( '<a href="https://twitter.com/settings/applications" target="blank">Revoke Access</a>', 'ppp-txt' ); ?></span>
+						<br />
+						<a class="button-primary" href="<?php echo admin_url( 'admin.php?page=ppp-social-settings&ppp_twitter_disconnect=true' ); ?>" ><?php _e( 'Disconnect from Twitter', 'ppp-txt' ); ?></a>&nbsp;
+						<a class="button-secondary" href="https://twitter.com/settings/applications" target="blank"><?php _e( 'Revoke Access via Twitter', 'ppp-txt' ); ?></a>
 						<?php } ?>
 					</td>
 				</tr>
