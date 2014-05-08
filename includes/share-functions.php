@@ -72,6 +72,10 @@ function ppp_share_post( $post_id, $name ) {
  * @return void
  */
 function ppp_set_social_tokens() {
+	if ( defined( 'PPP_TW_CONSUMER_KEY' ) && defined( 'PPP_TW_CONSUMER_SECRET' ) ) {
+		return;
+	}
+
 	$social_tokens = get_transient( 'ppp_social_tokens' );
 
 	if ( !$social_tokens ) {

@@ -31,6 +31,8 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 					require_once ( PPP_PATH . '/includes/libs/twitter/twitteroauth.php' );
 				}
 
+				ppp_set_social_tokens();
+
 				if ( ! defined( 'PPP_TW_CONSUMER_KEY' ) || ! defined( 'PPP_TW_CONSUMER_SECRET' ) ) {
 					return false;
 				}
