@@ -60,7 +60,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 	public function get_columns() {
 		$columns = array(
 			'post_title'     => __( 'Post Title', 'ppp-txt' ),
-			'day'            => __( 'Day', 'ppp-text' ),
+			'day'            => __( 'Day', 'ppp-txt' ),
 			'date'           => __( 'Scheduled Date', 'ppp-txt' ),
 			'content'        => __( 'Share Message', 'ppp-txt' )
 		);

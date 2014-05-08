@@ -104,7 +104,7 @@ function ppp_list_view_maybe_delete() {
 function ppp_item_deleted_notice() {
 	?>
 	<div class="updated">
-		<p><?php _e( 'Scheduled item has been deleted.', 'ppp-text' ); ?></p>
+		<p><?php _e( 'Scheduled item has been deleted.', 'ppp-txt' ); ?></p>
 	</div>
 	<?php
 }

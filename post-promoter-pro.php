@@ -25,6 +25,7 @@ class PostPromoterPro {
 	private static $ppp_instance;
 
 	private function __construct() {
+		add_action( 'init', array( $this, 'ppp_loaddomain' ), 1 );
 		register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
 
 		global $ppp_options, $ppp_social_settings, $ppp_share_settings;
@@ -196,7 +197,7 @@ class PostPromoterPro {
 	public function no_license_nag() {
 		?>
 		<div class="updated">
-			<p><?php printf( __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-text' ), admin_url( 'admin.php?page=ppp-options' ) ); ?></p>
+			<p><?php printf( __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-options' ) ); ?></p>
 		</div>
 		<?php
 	}
