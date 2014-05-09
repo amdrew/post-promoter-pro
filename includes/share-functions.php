@@ -55,8 +55,16 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
  */
 function ppp_share_post( $post_id, $name ) {
 	global $ppp_options, $ppp_social_settings, $ppp_share_settings, $ppp_twitter_oauth;
-	$post = get_post( $post_id, OBJECT );
 
+	// If we've already started to share this, don't share it again.
+	// Compensates for wp-cron's race conditions
+	if ( get_transient( 'ppp_sharing' . $name ) === 'true' ) {
+		return;
+	}
+
+	// For 60 seconds, don't allow another share to go for this post
+	set_transient( 'ppp_sharing' . $name, 'true', 60 );
+	$post = get_post( $post_id, OBJECT );
 
 	$share_message = ppp_build_share_message( $post_id, $name );
 
