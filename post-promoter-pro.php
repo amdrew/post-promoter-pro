@@ -138,7 +138,7 @@ class PostPromoterPro {
 	public function ppp_setup_admin_menu() {
 		add_menu_page( __( 'Post Promoter', 'ppp-txt' ),
 		               __( 'Post Promoter', 'ppp-txt' ),
-		               'manage_options',
+		               apply_filters( 'ppp_manage_role', 'administrator' ),
 		               'ppp-options',
 		               'ppp_admin_page'
 		             );
