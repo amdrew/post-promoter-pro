@@ -41,6 +41,7 @@ class PostPromoterPro {
 		if ( is_admin() ) {
 			include PPP_PATH . '/includes/admin/admin-pages.php';
 			include PPP_PATH . '/includes/admin/meta-boxes.php';
+			include PPP_PATH . '/includes/admin/welcome.php';
 
 			add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
 
