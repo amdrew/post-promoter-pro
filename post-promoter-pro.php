@@ -75,6 +75,11 @@ class PostPromoterPro {
 	}
 
 	public function activation_setup() {
+		// If the settings already exist, don't do this
+		if ( get_option( 'ppp_options' ) ) {
+			return;
+		}
+
 		$default_settings['post_types']['post'] = '1';
 		$default_settings['times']['day1']      = '8:00am';
 		$default_settings['times']['day2']      = '10:00am';
@@ -85,6 +90,7 @@ class PostPromoterPro {
 
 
 		update_option( 'ppp_options', $default_settings );
+		set_transient( '_ppp_activation_redirect', 'true', 30 );
 	}
 
 	/**
