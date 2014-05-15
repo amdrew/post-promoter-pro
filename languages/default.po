@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Post Promoter Pro\n"
-"POT-Creation-Date: 2014-05-07 19:14-0700\n"
-"PO-Revision-Date: 2014-05-07 19:14-0700\n"
+"POT-Creation-Date: 2014-05-14 22:44-0700\n"
+"PO-Revision-Date: 2014-05-14 22:45-0700\n"
 "Last-Translator: \n"
 "Language-Team: Filament Studios <chris@filament-studios.com>\n"
 "Language: en_US\n"
@@ -72,67 +72,71 @@ msgstr ""
 msgid "Tools for troubleshooting and advanced usage"
 msgstr ""
 
-#: includes/admin/admin-pages.php:93
+#: includes/admin/admin-pages.php:94
 msgid "Enable Debug"
 msgstr ""
 
-#: includes/admin/admin-pages.php:104 includes/admin/admin-pages.php:207
+#: includes/admin/admin-pages.php:98
+msgid "Delete All Data On Uninstall"
+msgstr ""
+
+#: includes/admin/admin-pages.php:110 includes/admin/admin-pages.php:213
 msgid "Save Changes"
 msgstr ""
 
-#: includes/admin/admin-pages.php:128
+#: includes/admin/admin-pages.php:134
 msgid "Post Promoter Pro - Social Settings"
 msgstr ""
 
-#: includes/admin/admin-pages.php:138
+#: includes/admin/admin-pages.php:144
 msgid "Twitter"
 msgstr ""
 
-#: includes/admin/admin-pages.php:149
+#: includes/admin/admin-pages.php:155
 msgid "Signed in as"
 msgstr ""
 
-#: includes/admin/admin-pages.php:152
+#: includes/admin/admin-pages.php:158
 msgid "Disconnect from Twitter"
 msgstr ""
 
-#: includes/admin/admin-pages.php:153
+#: includes/admin/admin-pages.php:159
 msgid "Revoke Access via Twitter"
 msgstr ""
 
-#: includes/admin/admin-pages.php:164
+#: includes/admin/admin-pages.php:170
 msgid "Analytics"
 msgstr ""
 
-#: includes/admin/admin-pages.php:175
+#: includes/admin/admin-pages.php:181
 msgid "Simple Tracking"
 msgstr ""
 
-#: includes/admin/admin-pages.php:176
+#: includes/admin/admin-pages.php:182
 msgid "Appends a query string to shared links for analytics."
 msgstr ""
 
-#: includes/admin/admin-pages.php:187
+#: includes/admin/admin-pages.php:193
 msgid "Google Analytics Tags"
 msgstr ""
 
-#: includes/admin/admin-pages.php:188
+#: includes/admin/admin-pages.php:194
 msgid "Results can be seen in the Acquisition Menu under \"Campaigns\""
 msgstr ""
 
-#: includes/admin/admin-pages.php:231
+#: includes/admin/admin-pages.php:237
 msgid "Post Promoter Pro - Scheduled Shares"
 msgstr ""
 
-#: includes/admin/admin-pages.php:246
+#: includes/admin/admin-pages.php:252
 msgid "Post Promoter Pro - System Info"
 msgstr ""
 
-#: includes/admin/admin-pages.php:325
+#: includes/admin/admin-pages.php:331
 msgid "Your server supports fsockopen."
 msgstr ""
 
-#: includes/admin/admin-pages.php:325
+#: includes/admin/admin-pages.php:331
 msgid "Your server does not support fsockopen."
 msgstr ""
 
@@ -175,6 +179,16 @@ msgstr ""
 msgid "<a href=\"%s\">Delete</a>"
 msgstr ""
 
+#: includes/admin/class-schedule-table.php:79
+#, php-format
+msgid "<a href=\"%s\">Share Now</a>"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:80
+#, php-format
+msgid "<a href=\"%s\">Share Now & Delete</a>"
+msgstr ""
+
 #: includes/admin/meta-boxes.php:35
 msgid "Do not schedule social media promotion for this post."
 msgstr ""
@@ -200,8 +214,136 @@ msgstr ""
 msgid "Do not include links in your text, this will be added automatically."
 msgstr ""
 
-#: includes/cron-functions.php:107
+#: includes/admin/welcome.php:52 includes/admin/welcome.php:53
+msgid "Welcome to Post Promoter Pro"
+msgstr ""
+
+#: includes/admin/welcome.php:61 includes/admin/welcome.php:62
+msgid "Getting started with Post Promoter Pro"
+msgstr ""
+
+#: includes/admin/welcome.php:126
+msgid "What's New"
+msgstr ""
+
+#: includes/admin/welcome.php:130
+msgid "Getting Started"
+msgstr ""
+
+#: includes/admin/welcome.php:148 includes/admin/welcome.php:222
+#, php-format
+msgid "Welcome to Post Promoter Pro %s"
+msgstr ""
+
+#: includes/admin/welcome.php:149 includes/admin/welcome.php:223
+msgid ""
+"The simplest way to promote your WordPress content with maximum results."
+msgstr ""
+
+#: includes/admin/welcome.php:150 includes/admin/welcome.php:224
+#, php-format
+msgid "Version %s"
+msgstr ""
+
+#: includes/admin/welcome.php:155
+msgid "More actions in the Schedule View"
+msgstr ""
+
+#: includes/admin/welcome.php:161
+msgid "Share now"
+msgstr ""
+
+#: includes/admin/welcome.php:162
+msgid ""
+"New actions allowing you to \"Share Now\" or \"Share Now and Delete\" a "
+"scheduled item."
+msgstr ""
+
+#: includes/admin/welcome.php:163
+msgid ""
+"If a conversation is happening in your social circles right now, why not "
+"share what you've got right now."
+msgstr ""
+
+#: includes/admin/welcome.php:169
+msgid "Keep your data on uninstall"
+msgstr ""
+
+#: includes/admin/welcome.php:175
+msgid "Prevent data loss while debugging."
+msgstr ""
+
+#: includes/admin/welcome.php:176
+msgid ""
+"With 1.2, deleting all the options and crons when uninstalling the plugin is "
+"Opt-In. This allows you to remove the plugin, upgrade, or reinstall without "
+"losing your data. "
+msgstr ""
+
+#: includes/admin/welcome.php:177
+msgid ""
+"If at any time you wish to fully remove Post Promoter Pro and it's options, "
+"simply click the checkbox, and then uninstall."
+msgstr ""
+
+#: includes/admin/welcome.php:183
+msgid "Additional Updates"
+msgstr ""
+
+#: includes/admin/welcome.php:187
+msgid "Improved WP Cron Integration"
+msgstr ""
+
+#: includes/admin/welcome.php:188
+msgid ""
+"A rare case when a share is tried to be made twice at the same time is "
+"prevented."
+msgstr ""
+
+#: includes/admin/welcome.php:190
+msgid "Customize the role"
+msgstr ""
+
+#: includes/admin/welcome.php:191
+msgid ""
+"Using the new <code>ppp_manage_role</code> filter, you can change what roles "
+"can use Post Promoter Pro. By default it is administrators"
+msgstr ""
+
+#: includes/admin/welcome.php:195
+msgid "Better i18n"
+msgstr ""
+
+#: includes/admin/welcome.php:196
+msgid ""
+"Thanks to feedback from you, we've improved the i18n of the plugin, makeing "
+"it easier to translate and use in your language."
+msgstr ""
+
+#: includes/admin/welcome.php:198
+msgid "This fancy Welcome Page"
+msgstr ""
+
+#: includes/admin/welcome.php:199
+msgid ""
+"A great way to keep you informed of the changes and getting you started with "
+"Post Promoter Pro."
+msgstr ""
+
+#: includes/admin/welcome.php:205
+msgid "Start Using Post Promoter Pro"
+msgstr ""
+
+#: includes/admin/welcome.php:228
+msgid "Post Promoter Pro makes sharing your content as easy as possible."
+msgstr ""
+
+#: includes/cron-functions.php:134
 msgid "Scheduled item has been deleted."
+msgstr ""
+
+#: includes/cron-functions.php:142
+msgid "Item has been shared."
 msgstr ""
 
 #: includes/libs/twitter.php:108
@@ -210,27 +352,27 @@ msgid ""
 "reauthorize to continue promoting your content."
 msgstr ""
 
-#: post-promoter-pro.php:126
+#: post-promoter-pro.php:133
 msgid "Settings"
 msgstr ""
 
-#: post-promoter-pro.php:139 post-promoter-pro.php:140
+#: post-promoter-pro.php:146 post-promoter-pro.php:147
 msgid "Post Promoter"
 msgstr ""
 
-#: post-promoter-pro.php:146
+#: post-promoter-pro.php:153
 msgid "Social Settings"
 msgstr ""
 
-#: post-promoter-pro.php:147
+#: post-promoter-pro.php:154
 msgid "Schedule"
 msgstr ""
 
-#: post-promoter-pro.php:148
+#: post-promoter-pro.php:155
 msgid "System Info"
 msgstr ""
 
-#: post-promoter-pro.php:200
+#: post-promoter-pro.php:207
 #, php-format
 msgid ""
 "Post Promoter Pro requires your license key to work, please <a href=\"%s"
