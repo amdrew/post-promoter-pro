@@ -128,7 +128,7 @@ function ppp_generate_share_content( $post_id, $name ) {
 		$share_content = $ppp_post_override_data[$day]['text'];
 	}
 
-	$share_content = isset( $share_content ) ? $share_content : get_the_title( $post_id );
+	$share_content = ( isset( $share_content ) && !empty( $share_content ) ) ? $share_content : get_the_title( $post_id );
 
 	return apply_filters( 'ppp_share_content', $share_content );
 }
