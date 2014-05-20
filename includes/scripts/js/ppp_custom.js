@@ -29,6 +29,17 @@
 		});
 	});
 
+	$('#bitly-login').click( function() {
+		var data = {};
+		data.action   = 'ppp_bitly_connect';
+		data.username = $('#bitly-username').val();
+		data.password = $('#bitly-password').val();
+
+		$.post(ajaxurl, data, function(response) {
+			alert('Got this from the server: ' + response);
+		});
+	});
+
 })(jQuery);
 
 function PPPCountChar(val) {

@@ -202,6 +202,30 @@ function ppp_display_social() {
 					</td>
 				</tr>
 
+				<?php
+				$shortener = isset( $ppp_share_settings['shortener'] ) ? $ppp_share_settings['shortener'] : false;
+				?>
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<?php _e( 'URL Shortener', 'ppp-txt' ); ?></span>
+					</th>
+					<td id="ppp-shortener-options">
+						<p>
+							<select name="ppp_share_settings[shortener]">
+								<option value="-1"><?php _e( 'Select a Service', 'ppp-txt' ); ?></option>
+								<option value="bitly" <?php selected( $shortener, 'bitly', true ); ?>>Bit.ly</option>
+							</select>
+						</p>
+						<p style="display: <?php echo $shortener === 'bitly' ? '' : 'none'; ?>">
+							<?php if ( !isset( $ppp_social_settings['bitly']['user'] ) ) : ?>
+							<input type="text" id="bitly-username" name="ppp_bitly_username" placeholder="<?php _e( 'Bit.ly Username', 'ppp-txt' ); ?>" value="" /><br />
+							<input type="password" id="bitly-password" name="ppp_bitly_password" placeholder="<?php _e( 'Bit.ly Password', 'ppp-txt' ); ?>" value="" /><br /><br />
+							<a href="#" id="bitly-login" class="button-primary"><?php _e( 'Connect with Bit.ly', 'ppp-txt' ); ?></a>
+							<?php endif; ?>
+						</p>
+					</td>
+				</tr>
+
 				<?php settings_fields( 'ppp-share-settings' ); ?>
 
 				<input type="hidden" name="action" value="update" />

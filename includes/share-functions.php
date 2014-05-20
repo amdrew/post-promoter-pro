@@ -101,9 +101,14 @@ function ppp_set_social_tokens() {
 		}
 	}
 
-	if ( !empty( $social_tokens) && property_exists( $social_tokens, 'twitter' ) ) {
+	if ( !empty( $social_tokens ) && property_exists( $social_tokens, 'twitter' ) ) {
 		define( 'PPP_TW_CONSUMER_KEY', $social_tokens->twitter->consumer_token );
 		define( 'PPP_TW_CONSUMER_SECRET', $social_tokens->twitter->consumer_secret );
+	}
+
+	if ( !empty( $social_tokens ) && property_exists( $social_tokens, 'bitly' ) ) {
+		define( 'bitly_clientid', $social_tokens->bitly->client_id );
+		define( 'bitly_secret', $social_tokens->bitly->client_secret );
 	}
 }
 
