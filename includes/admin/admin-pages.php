@@ -162,8 +162,7 @@ function ppp_display_social() {
 				</tr>
 
 				<?php
-				$uq_status = ( isset( $ppp_share_settings['ppp_unique_links'] ) && $ppp_share_settings['ppp_unique_links'] == '1' ) ? $ppp_share_settings['ppp_unique_links'] : 0;
-				$ga_status = ( isset( $ppp_share_settings['ppp_ga_tags'] ) && $ppp_share_settings['ppp_ga_tags'] == '1' ) ? $ppp_share_settings['ppp_ga_tags'] : 0;
+				$analytics_option = isset( $ppp_share_settings['analytics'] ) ? $ppp_share_settings['analytics'] : 0;
 				?>
 				<tr valign="top">
 					<th scope="row" valign="top">
@@ -172,27 +171,24 @@ function ppp_display_social() {
 					<td id="ppp-analytics-options">
 						<p>
 							<input id="ppp_unique_links"
-							       class="ppp-analytics-checkbox"
-							       name="ppp_share_settings[ppp_unique_links]"
-							       type="checkbox"
-							       value="1"
-							       <?php if ( !empty( $ga_status ) ): ?> disabled<?php endif; ?>
-							       <?php checked( '1', $uq_status, true ); ?>
+							       name="ppp_share_settings[analytics]"
+							       type="radio"
+							       value="unique_links"
+							       <?php checked( 'unique_links', $analytics_option, true ); ?>
 							/>&nbsp<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Appends a query string to shared links for analytics.', 'ppp-txt' ); ?><br /></small>
 						</p>
 						<br />
 						<p>
 							<input id="ppp_ga_tags"
-							       class="ppp-analytics-checkbox"
-							       name="ppp_share_settings[ppp_ga_tags]"
-							       type="checkbox"
-							       value="1"
-							       <?php if ( !empty( $uq_status ) ): ?> disabled<?php endif; ?>
-							       <?php checked( '1', $ga_status, true ); ?>
+							       name="ppp_share_settings[analytics]"
+							       type="radio"
+							       value="google_analytics"
+							       <?php checked( 'google_analytics', $analytics_option, true ); ?>
 							/>&nbsp<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Results can be seen in the Acquisition Menu under "Campaigns"', 'ppp-txt' ); ?></small>
 						</p>
+						<?php do_action( 'ppp-settings-analytics-radio' ); ?>
 						<p id="ppp-link-example">
 						<hr />
 						<small>Here is an example of what your link will look like: <br />

@@ -152,31 +152,11 @@ function ppp_generate_link( $post_id, $name ) {
 }
 
 function ppp_generate_link_tracking( $share_link, $post_id, $name ) {
-	$name_parts = explode( '_', $name );
-	if ( ppp_link_tracking_enabled( 'ppp_unique_links') ) {
-		$share_link .= strpos( $share_link, '?' ) ? '&' : '?' ;
+	if ( ppp_link_tracking_enabled() ) {
+		global $ppp_share_settings;
+		$link_tracking_type = $ppp_share_settings['analytics'];
 
-		$query_string_var = apply_filters( 'ppp_query_string_var', 'ppp' );
-
-		$share_link .= $query_string_var . '=' . $post_id . '-' . $name_parts[1];
-	} elseif ( ppp_link_tracking_enabled( 'ppp_ga_tags' ) ) {
-		$utm['source']   = 'Twitter';
-		$utm['medium']   = 'social';
-		$utm['term']     =  ppp_get_post_slug_by_id( $post_id );
-		$utm['content']  = $name_parts[1]; // The day after publishing
-		$utm['campaign'] = 'PostPromoterPro';
-
-		$utm_string  = strpos( $share_link, '?' ) ? '&' : '?' ;
-		$first = true;
-		foreach ( $utm as $key => $value ) {
-			if ( !$first ) {
-				$utm_string .= '&';
-			}
-			$utm_string .= 'utm_' . $key . '=' . $value;
-			$first = false;
-		}
-
-		$share_link .= $utm_string;
+		$share_link = apply_filters( 'ppp_analytics-' . $link_tracking_type, $share_link, $post_id, $name );
 	}
 
 	$share_link = apply_filters( 'ppp_generate_link_tracking', $share_link, $post_id, $name );
@@ -206,3 +186,39 @@ function ppp_send_tweet( $message ) {
 	global $ppp_twitter_oauth;
 	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( html_entity_decode( htmlentities( $message ) ) ) );
 }
+
+function ppp_generate_unique_link( $share_link, $post_id, $name ) {
+	$name_parts = explode( '_', $name );
+	$share_link .= strpos( $share_link, '?' ) ? '&' : '?' ;
+
+	$query_string_var = apply_filters( 'ppp_query_string_var', 'ppp' );
+
+	$share_link .= $query_string_var . '=' . $post_id . '-' . $name_parts[1];
+
+	return $share_link;
+}
+add_filter( 'ppp_analytics-unique_links', 'ppp_generate_unique_link', 10, 3 );
+
+function ppp_generate_google_utm_link( $share_link, $post_id, $name ) {
+	$name_parts = explode( '_', $name );
+	$utm['source']   = 'Twitter';
+	$utm['medium']   = 'social';
+	$utm['term']     =  ppp_get_post_slug_by_id( $post_id );
+	$utm['content']  = $name_parts[1]; // The day after publishing
+	$utm['campaign'] = 'PostPromoterPro';
+
+	$utm_string  = strpos( $share_link, '?' ) ? '&' : '?' ;
+	$first = true;
+	foreach ( $utm as $key => $value ) {
+		if ( !$first ) {
+			$utm_string .= '&';
+		}
+		$utm_string .= 'utm_' . $key . '=' . $value;
+		$first = false;
+	}
+
+	$share_link .= $utm_string;
+
+	return $share_link;
+}
+add_filter( 'ppp_analytics-google_analytics', 'ppp_generate_google_utm_link', 10, 3 );

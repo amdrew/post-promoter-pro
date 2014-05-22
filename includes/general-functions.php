@@ -1,23 +1,14 @@
 <?php
 
-function ppp_link_tracking_enabled( $option = false ) {
+function ppp_link_tracking_enabled() {
 	global $ppp_share_settings;
+	$result = false;
 
-	if ( !empty( $option ) ) {
-		return isset( $ppp_share_settings[$option] );
+	if ( isset( $ppp_share_settings['analytics'] ) && !empty( $ppp_share_settings['analytics'] ) ) {
+		$result =  true;
 	}
 
-	if ( isset( $ppp_share_settings['ppp_unique_links'] ) &&
-		 $ppp_share_settings['ppp_unique_links'] == '1' ) {
-		return true;
-	}
-
-	if ( isset( $ppp_share_settings['ppp_ga_tags'] ) &&
-		 $ppp_share_settings['ppp_ga_tags'] == '1' ) {
-		return true;
-	}
-
-	return apply_filters( 'ppp_is_link_tracking_enabled', false );
+	return apply_filters( 'ppp_is_link_tracking_enabled', $result );
 }
 
 function ppp_get_post_slug_by_id( $post_id ) {

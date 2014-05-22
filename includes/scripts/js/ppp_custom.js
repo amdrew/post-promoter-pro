@@ -18,22 +18,12 @@
 		}
 	});
 
-	$('.ppp-analytics-checkbox').click( function() {
-		var clicked = $(this);
-		var status  = $(this).is(':checked');
-		$('#ppp-analytics-options input').each(function() {
-			if ($(this).attr('id') != clicked.attr('id')) {
-				$(this).attr('checked', false);
-				$(this).attr('disabled', status);
-			}
-		});
-	});
-
 	$('#bitly-login').click( function() {
 		var data = {};
 		data.action   = 'ppp_bitly_connect';
 		data.username = $('#bitly-username').val();
 		data.password = $('#bitly-password').val();
+		data.apikey   = $('#bitly-apikey').val();
 
 		$.post(ajaxurl, data, function(response) {
 			alert('Got this from the server: ' + response);
@@ -53,4 +43,4 @@ function PPPCountChar(val) {
 	} else if ( len > 117 ) {
 		lengthField.css('color', '#FF3333');
 	}
-};
+}

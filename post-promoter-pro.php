@@ -10,7 +10,7 @@ License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '1.2.0.1' );
+define( 'PPP_VERSION', '1.3' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -39,12 +39,14 @@ class PostPromoterPro {
 		include PPP_PATH . '/includes/libs/social-loader.php';
 
 		if ( is_admin() ) {
+			include PPP_PATH . '/includes/admin/upgrades.php';
 			include PPP_PATH . '/includes/admin/admin-pages.php';
 			include PPP_PATH . '/includes/admin/admin-ajax.php';
 			include PPP_PATH . '/includes/admin/meta-boxes.php';
 			include PPP_PATH . '/includes/admin/welcome.php';
 
 			add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
+			add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );
 
 			// Handle licenses
 			add_action( 'admin_init', array( $this, 'plugin_updater' ) );
