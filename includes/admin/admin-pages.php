@@ -146,7 +146,7 @@ function ppp_display_social() {
 						<?php $ppp_twitter_oauth->ppp_initialize_twitter(); ?>
 						<?php $ppp_social_settings = get_option( 'ppp_social_settings' ); ?>
 
-						<?php if ( !isset( $ppp_social_settings['twitter']['user'] ) ) { ?>
+						<?php if ( !ppp_twitter_enabled() ) { ?>
 							<?php $tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url(); ?>
 							<a href="<?php echo $tw_authurl; ?>"><img src="<?php echo PPP_URL; ?>/includes/images/sign-in-with-twitter-gray.png" /></a>
 						<?php } else { ?>
@@ -213,8 +213,9 @@ function ppp_display_social() {
 							</select>
 						</p>
 						<p style="display: <?php echo $shortener === 'bitly' ? '' : 'none'; ?>">
-							<?php if ( !isset( $ppp_social_settings['bitly']['user'] ) ) : ?>
+							<?php if ( !ppp_bitly_enabled() ) : ?>
 							<input type="text" id="bitly-username" name="ppp_bitly_username" placeholder="<?php _e( 'Bit.ly Username', 'ppp-txt' ); ?>" value="" /><br />
+							<input type="text" id="bitly-apikey" name="ppp_bitly_apikey" placeholder="<?php _e( 'Bit.ly API Key', 'ppp-txt' ); ?>" value="" /><br />
 							<input type="password" id="bitly-password" name="ppp_bitly_password" placeholder="<?php _e( 'Bit.ly Password', 'ppp-txt' ); ?>" value="" /><br /><br />
 							<a href="#" id="bitly-login" class="button-primary"><?php _e( 'Connect with Bit.ly', 'ppp-txt' ); ?></a>
 							<?php endif; ?>
