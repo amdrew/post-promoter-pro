@@ -43,7 +43,7 @@ function ppp_admin_page() {
 
 				<tr valign="top">
 					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br />
-						<span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can changes this on a per post basis as well', 'ppp-txt' ); ?></span></th>
+						<span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can change this on a per post basis as well', 'ppp-txt' ); ?></span></th>
 					<td>
 						<strong><?php _e( 'Days After Publish', 'ppp-txt' ); ?></strong>
 						<table id="ppp-days-table">
