@@ -32,5 +32,10 @@ function ppp_v13_upgrades() {
 	}
 
 	update_option( 'ppp_share_settings', $ppp_share_settings );
+
+	global $ppp_options;
+	$ppp_options['default_text'] = '{post_title}';
+
+	update_option( 'ppp_options', $ppp_options );
 	var_dump('ran 1.3 upgrades');
 }

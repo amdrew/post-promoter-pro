@@ -42,6 +42,28 @@ function ppp_admin_page() {
 				<?php } ?>
 
 				<tr valign="top">
+					<th scope="row"><?php _e( 'Default Share Text', 'ppp-txt' ); ?></th>
+					<td>
+						<?php $default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : ''; ?>
+						<input name="ppp_options[default_text]" value="<?php echo $default_text; ?>" placeholder="Post Title will be used if empty" size="50" />
+						<small><br />
+						<a href="#" onclick="jQuery('#ppp-text-helper').toggle(); return false;"><?php _e( 'Default Text Tips', 'ppp-txt' ); ?></a>
+						<p id="ppp-text-helper" style="display: none">
+							<?php _e( 'The typical length of a link shortened on Twitter is 23 characters, so keep that in mind when writing your default text.', 'ppp-txt' ); ?>
+							<br />
+							<?php _e( 'Status updates over 140 charcters will fail to post.', 'ppp-txt' ); ?>
+							<br />
+							<?php _e( 'Possible Replacements:', 'ppp-txt' ); ?>
+							<br />
+							<?php foreach( ppp_get_text_tokens() as $token ): ?>
+								<code>{<?php echo $token['token']; ?>}</code> - <?php echo $token['description']; ?><br />
+							<?php endforeach; ?>
+							</small>
+						</p>
+					</td>
+				</tr>
+
+				<tr valign="top">
 					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br />
 						<span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can change this on a per post basis as well', 'ppp-txt' ); ?></span></th>
 					<td>

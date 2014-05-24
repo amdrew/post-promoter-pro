@@ -119,6 +119,8 @@ function ppp_set_social_tokens() {
  * @return string          The Content to include in the social media post
  */
 function ppp_generate_share_content( $post_id, $name ) {
+	global $ppp_options;
+	$default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : '';
 	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
 
 	if ( !empty( $ppp_post_override ) ) {
@@ -128,9 +130,13 @@ function ppp_generate_share_content( $post_id, $name ) {
 		$share_content = $ppp_post_override_data[$day]['text'];
 	}
 
+	// If an override was found, use it, otherwise try the default text content
+	$share_content = ( isset( $share_content ) && !empty( $share_content ) ) ? $share_content : $default_text;
+
+	// If the content is still empty, just use the post title
 	$share_content = ( isset( $share_content ) && !empty( $share_content ) ) ? $share_content : get_the_title( $post_id );
 
-	return apply_filters( 'ppp_share_content', $share_content );
+	return apply_filters( 'ppp_share_content', $share_content, array( 'post_id' => $post_id ) );
 }
 
 /**
@@ -151,11 +157,20 @@ function ppp_generate_link( $post_id, $name ) {
 	return apply_filters( 'ppp_share_link', $share_link );
 }
 
+/**
+ * Given a link, determine if link tracking needs to be applied
+ * @param  string $share_link The Link to share
+ * @param  int    $post_id    The Post ID the link belongs to
+ * @param  string $name       The Name string from the cron
+ * @return string             The URL to post, with proper analytics applied if necessary
+ */
 function ppp_generate_link_tracking( $share_link, $post_id, $name ) {
 	if ( ppp_link_tracking_enabled() ) {
 		global $ppp_share_settings;
 		$link_tracking_type = $ppp_share_settings['analytics'];
 
+		// Given the setting name, devs can extend this and apply a filter of ppp_analytics-[setting value]
+		// to apply their own rules for link tracking
 		$share_link = apply_filters( 'ppp_analytics-' . $link_tracking_type, $share_link, $post_id, $name );
 	}
 
@@ -187,6 +202,13 @@ function ppp_send_tweet( $message ) {
 	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( html_entity_decode( htmlentities( $message ) ) ) );
 }
 
+/**
+ * The core option of Unique Links for anaytlics tracking
+ * @param  string $share_link The link to share
+ * @param  int    $post_id    The Post ID of the link
+ * @param  string $name       The Name attribute from the cron
+ * @return string             The String with the unique links analytics applied
+ */
 function ppp_generate_unique_link( $share_link, $post_id, $name ) {
 	$name_parts = explode( '_', $name );
 	$share_link .= strpos( $share_link, '?' ) ? '&' : '?' ;
@@ -199,6 +221,13 @@ function ppp_generate_unique_link( $share_link, $post_id, $name ) {
 }
 add_filter( 'ppp_analytics-unique_links', 'ppp_generate_unique_link', 10, 3 );
 
+/**
+ * The core option of Google Analytics Tags for anaytlics tracking
+ * @param  string $share_link The link to share
+ * @param  int    $post_id    The Post ID of the link
+ * @param  string $name       The Name attribute from the cron
+ * @return string             The String with the GA Tags applied
+ */
 function ppp_generate_google_utm_link( $share_link, $post_id, $name ) {
 	$name_parts = explode( '_', $name );
 	$utm['source']   = 'Twitter';
