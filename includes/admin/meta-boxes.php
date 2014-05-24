@@ -98,9 +98,9 @@ function ppp_save_post_meta_boxes( $post_id, $post ) {
 
 	update_post_meta( $post->ID, '_ppp_post_exclude', $ppp_post_exclude );
 	update_post_meta( $post->ID, '_ppp_post_override', $ppp_post_override );
-	if ( !empty( $ppp_post_override_data ) ) {
-		update_post_meta( $post->ID, '_ppp_post_override_data', $ppp_post_override_data );
-	}
+
+	// Fixes a bug when all items are unchecked from being checked, removed if statement
+	update_post_meta( $post->ID, '_ppp_post_override_data', $ppp_post_override_data );
 
 	return $post->ID;
 }

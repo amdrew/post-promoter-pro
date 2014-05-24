@@ -157,7 +157,11 @@ function ppp_get_shceduled_crons() {
 			continue;
 		}
 
-		$ppp_crons[$timestamp] = $cron;
+		foreach ( $cron['ppp_share_post_event'] as $key => $single_event ) {
+			$single_event['timestamp'] = $timestamp;
+			$ppp_crons[$key] = $single_event;
+		}
+
 	}
 
 	return $ppp_crons;
