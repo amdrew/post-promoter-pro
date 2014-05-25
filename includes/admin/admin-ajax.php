@@ -2,11 +2,8 @@
 
 add_action( 'wp_ajax_ppp_bitly_connect', 'ppp_get_bitly_auth' );
 function ppp_get_bitly_auth() {
-	$whatever = intval( $_POST['whatever'] );
+	global $ppp_bitly_oauth;
 
-	$whatever += 10;
-
-        echo $whatever;
-
+	var_dump( $ppp_bitly_oauth->ppp_get_bitly_auth( $_POST['username'], $_POST['password'], $_POST['apikey'] ) );
 	die(); // this is required to return a proper result
 }

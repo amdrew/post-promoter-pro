@@ -63,6 +63,8 @@ function ppp_admin_page() {
 					</td>
 				</tr>
 
+				<?php $share_days_count = ppp_share_days_count(); ?>
+				<?php $day = 1; ?>
 				<tr valign="top">
 					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br />
 						<span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can change this on a per post basis as well', 'ppp-txt' ); ?></span></th>
@@ -70,26 +72,18 @@ function ppp_admin_page() {
 						<strong><?php _e( 'Days After Publish', 'ppp-txt' ); ?></strong>
 						<table id="ppp-days-table">
 							<tr>
-								<td><label for="ppp_options[times][day1]">1</label></td>
-								<td><label for="ppp_options[times][day2]">2</label></td>
-								<td><label for="ppp_options[times][day3]">3</label></td>
-								<td><label for="ppp_options[times][day4]">4</label></td>
-								<td><label for="ppp_options[times][day5]">5</label></td>
-								<td><label for="ppp_options[times][day6]">6</label></td>
+								<?php while( $day <= $share_days_count ): ?>
+									<td><label for="ppp_options[times][day<?php echo $day; ?>]"><?php echo $day; ?></label></td>
+									<?php $day++; ?>
+								<?php endwhile; ?>
 							</tr>
 							<tr>
-								<td><input id="day1" type="text" name="ppp_options[times][day1]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day1'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day1'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day2" type="text" name="ppp_options[times][day2]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day2'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day2'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day3" type="text" name="ppp_options[times][day3]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day3'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day3'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day4" type="text" name="ppp_options[times][day4]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day4'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day4'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day5" type="text" name="ppp_options[times][day5]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day5'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day5'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day6" type="text" name="ppp_options[times][day6]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day6'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day6'] ); ?>"<?php ;}?> size="8" /></td>
+								<?php $day = 1; ?>
+								<?php while( $day <= $share_days_count ): ?>
+								<td><input id="day<?php echo $day; ?>" type="text" name="ppp_options[times][day<?php echo $day; ?>]" class="share-time-selector"
+									value="<?php echo htmlspecialchars( ppp_get_day_default_time( $day ) ); ?>" size="8" /></td>
+									<?php $day++; ?>
+								<?php endwhile; ?>
 							</tr>
 						</table>
 					</td>
@@ -149,7 +143,7 @@ function ppp_display_social() {
 		}
 	}
 
-	global $ppp_twitter_oauth;
+	global $ppp_twitter_oauth, $ppp_bitly_oauth;
 	$ppp_share_settings = get_option( 'ppp_share_settings' );
 	$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 	?>
@@ -231,17 +225,12 @@ function ppp_display_social() {
 						<p>
 							<select name="ppp_share_settings[shortener]">
 								<option value="-1"><?php _e( 'Select a Service', 'ppp-txt' ); ?></option>
-								<option value="bitly" <?php selected( $shortener, 'bitly', true ); ?>>Bit.ly</option>
+								<?php do_action( 'ppp_url_shorteners', $shortener ); ?>
 							</select>
 						</p>
-						<p style="display: <?php echo $shortener === 'bitly' ? '' : 'none'; ?>">
-							<?php if ( !ppp_bitly_enabled() ) : ?>
-							<input type="text" id="bitly-username" name="ppp_bitly_username" placeholder="<?php _e( 'Bit.ly Username', 'ppp-txt' ); ?>" value="" /><br />
-							<input type="text" id="bitly-apikey" name="ppp_bitly_apikey" placeholder="<?php _e( 'Bit.ly API Key', 'ppp-txt' ); ?>" value="" /><br />
-							<input type="password" id="bitly-password" name="ppp_bitly_password" placeholder="<?php _e( 'Bit.ly Password', 'ppp-txt' ); ?>" value="" /><br /><br />
-							<a href="#" id="bitly-login" class="button-primary"><?php _e( 'Connect with Bit.ly', 'ppp-txt' ); ?></a>
-							<?php endif; ?>
-						</p>
+						<?php if ( $shortener ) : ?>
+							<?php do_action( 'ppp_shortener_settings-' . $shortener ); ?>
+						<?php endif; ?>
 					</td>
 				</tr>
 

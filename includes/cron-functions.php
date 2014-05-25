@@ -51,7 +51,7 @@ add_action( 'ppp_share_post_event', 'ppp_share_post', 10, 2 );
 function ppp_remove_scheduled_shares( $post_id ) {
 	do_action( 'ppp_pre_remove_scheduled_shares', $post_id );
 	$days_ahead = 1;
-	while ( $days_ahead <= 6 ) {
+	while ( $days_ahead <= ppp_share_days_count() ) {
 		$name = 'sharedate_' . $days_ahead . '_' . $post_id;
 		wp_clear_scheduled_hook( 'ppp_share_post_event', array( $post_id, $name ) );
 

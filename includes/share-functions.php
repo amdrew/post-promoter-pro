@@ -17,7 +17,7 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
 	$override_times = wp_list_pluck( $ppp_post_override_data, 'time' );
 
-	$tweet_times = ( empty( $ppp_post_override ) ) ? $ppp_options['times'] : $override_times;
+	$tweet_times = ( empty( $ppp_post_override ) ) ? ppp_get_default_times() : $override_times;
 
 	$times = array();
 	foreach ( $tweet_times as $key => $data ) {
@@ -45,6 +45,28 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	}
 
 	return apply_filters( 'ppp_get_timestamps', $times );
+}
+
+function ppp_get_default_times() {
+	$number_of_days = ppp_share_days_count();
+	$day = 1;
+	$times = array();
+	while ( $day <= $number_of_days ) {
+		$times['day' . $day] = ppp_get_day_default_time( $day );
+		$day++;
+	}
+
+	return $times;
+}
+
+function ppp_get_day_default_time( $day ) {
+	global $ppp_options;
+
+	if ( isset( $ppp_options['times']['day' . $day] ) ) {
+		return $ppp_options['times']['day' . $day];
+	}
+
+	return '8:00am';
 }
 
 /**
@@ -201,53 +223,3 @@ function ppp_send_tweet( $message ) {
 	global $ppp_twitter_oauth;
 	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( html_entity_decode( htmlentities( $message ) ) ) );
 }
-
-/**
- * The core option of Unique Links for anaytlics tracking
- * @param  string $share_link The link to share
- * @param  int    $post_id    The Post ID of the link
- * @param  string $name       The Name attribute from the cron
- * @return string             The String with the unique links analytics applied
- */
-function ppp_generate_unique_link( $share_link, $post_id, $name ) {
-	$name_parts = explode( '_', $name );
-	$share_link .= strpos( $share_link, '?' ) ? '&' : '?' ;
-
-	$query_string_var = apply_filters( 'ppp_query_string_var', 'ppp' );
-
-	$share_link .= $query_string_var . '=' . $post_id . '-' . $name_parts[1];
-
-	return $share_link;
-}
-add_filter( 'ppp_analytics-unique_links', 'ppp_generate_unique_link', 10, 3 );
-
-/**
- * The core option of Google Analytics Tags for anaytlics tracking
- * @param  string $share_link The link to share
- * @param  int    $post_id    The Post ID of the link
- * @param  string $name       The Name attribute from the cron
- * @return string             The String with the GA Tags applied
- */
-function ppp_generate_google_utm_link( $share_link, $post_id, $name ) {
-	$name_parts = explode( '_', $name );
-	$utm['source']   = 'Twitter';
-	$utm['medium']   = 'social';
-	$utm['term']     =  ppp_get_post_slug_by_id( $post_id );
-	$utm['content']  = $name_parts[1]; // The day after publishing
-	$utm['campaign'] = 'PostPromoterPro';
-
-	$utm_string  = strpos( $share_link, '?' ) ? '&' : '?' ;
-	$first = true;
-	foreach ( $utm as $key => $value ) {
-		if ( !$first ) {
-			$utm_string .= '&';
-		}
-		$utm_string .= 'utm_' . $key . '=' . $value;
-		$first = false;
-	}
-
-	$share_link .= $utm_string;
-
-	return $share_link;
-}
-add_filter( 'ppp_analytics-google_analytics', 'ppp_generate_google_utm_link', 10, 3 );

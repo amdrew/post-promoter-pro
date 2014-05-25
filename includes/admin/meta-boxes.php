@@ -40,7 +40,7 @@ function ppp_schedule_callback() {
 		<div class="post-override-matrix" style="<?php echo $override_style; ?>">
 			<?php
 			$day = 1;
-			while( $day <= 6 ) {
+			while( $day <= ppp_share_days_count() ) {
 				$enabled = isset( $ppp_post_override_data['day' . $day]['enabled'] ) ? '1' : false;
 				$readonly = time() > strtotime( $post->post_date . ' +' . $day . ' day' ) ? true : false;
 				?>
@@ -54,7 +54,7 @@ function ppp_schedule_callback() {
 					placeholder="<?php _e( 'Time', 'ppp-txt' ); ?>"
 					name="_ppp_post_override_data[day<?php echo $day; ?>][time]"
 					class="share-time-selector"
-					value="<?php echo ( isset( $ppp_post_override_data['day' . $day]['time'] ) ) ? $ppp_post_override_data['day' . $day]['time'] : $ppp_options['times']['day' . $day]; ?>"
+					value="<?php echo ( isset( $ppp_post_override_data['day' . $day]['time'] ) ) ? $ppp_post_override_data['day' . $day]['time'] : ppp_get_day_default_time( $day ); ?>"
 					size="8"
 				/>
 				<input <?php if ( !$enabled ): ?>disabled<?php endif; ?>

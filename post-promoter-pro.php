@@ -37,9 +37,11 @@ class PostPromoterPro {
 		include PPP_PATH . '/includes/share-functions.php';
 		include PPP_PATH . '/includes/cron-functions.php';
 		include PPP_PATH . '/includes/libs/social-loader.php';
+		include PPP_PATH . '/includes/filters.php';
 
 		if ( is_admin() ) {
 			include PPP_PATH . '/includes/admin/upgrades.php';
+			include PPP_PATH . '/includes/admin/actions.php';
 			include PPP_PATH . '/includes/admin/admin-pages.php';
 			include PPP_PATH . '/includes/admin/admin-ajax.php';
 			include PPP_PATH . '/includes/admin/meta-boxes.php';
