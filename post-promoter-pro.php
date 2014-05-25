@@ -64,6 +64,7 @@ class PostPromoterPro {
 		}
 
 		add_action( 'save_post', 'ppp_schedule_share', 10, 2);
+		add_action( 'save_post', 'ppp_share_on_publish', 10, 2);
 	}
 
 	/**

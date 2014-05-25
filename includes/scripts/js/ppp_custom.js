@@ -1,6 +1,10 @@
 (function ($) {
 	$('.share-time-selector').timepicker({ 'step': 15 });
 
+	$('#ppp_share_on_publish').click( function() {
+		$('#ppp_share_on_publish_text').toggle();
+	});
+
 	$('#_ppp_post_override').click( function() {
 		$('.post-override-matrix').toggle();
 	});

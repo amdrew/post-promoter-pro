@@ -12,7 +12,7 @@ function ppp_register_meta_boxes() {
 	}
 
 	foreach ( $ppp_options['post_types'] as $post_type => $value ) {
-		add_meta_box( 'ppp_schedule_metabox', 'Post Promoter Pro', 'ppp_schedule_callback', $post_type, 'normal', 'low' );
+		add_meta_box( 'ppp_schedule_metabox', 'Post Promoter Pro', 'ppp_schedule_callback', $post_type, 'normal', 'high' );
 	}
 }
 add_action( 'add_meta_boxes', 'ppp_register_meta_boxes', 12 );
@@ -23,14 +23,35 @@ add_action( 'add_meta_boxes', 'ppp_register_meta_boxes', 12 );
  */
 function ppp_schedule_callback() {
 	global $post, $ppp_options;
+	$default_text = !empty( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : __( 'Social Text', 'ppp-txt' );
 
 	$ppp_post_exclude = get_post_meta( $post->ID, '_ppp_post_exclude', true );
+
+	$ppp_share_on_publish = get_post_meta( $post->ID, '_ppp_share_on_publish', true );
+	$ppp_share_on_publish_text = get_post_meta( $post->ID, '_ppp_share_on_publish_text', true );
+
 	$ppp_post_override = get_post_meta( $post->ID, '_ppp_post_override', true );
 	$ppp_post_override_data = get_post_meta( $post->ID, '_ppp_post_override_data', true );
 
 	$exclude_style = ( !empty( $ppp_post_exclude ) ) ? 'display: none;' : '';
 	$override_style = ( empty( $ppp_post_override ) ) ? 'display: none;' : '';
 	?>
+	<p>
+	<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
+	<input <?php if ( $disabled ): ?>disabled<?php endif; ?> type="checkbox" name="_ppp_share_on_publish" id="ppp_share_on_publish" value="1" <?php checked( '1', $ppp_share_on_publish, true ); ?> />&nbsp;
+		<label for="ppp_share_on_publish"><?php _e( 'Share this post at the time of publishing?', 'ppp-txt' ); ?></label>
+		<p id="ppp_share_on_publish_text" style="display: <?php echo ( $ppp_share_on_publish ) ? '' : 'none'; ?>">
+				<input
+				<?php if ( $disabled ): ?>disabled readonly<?php endif; ?>
+				onkeyup="PPPCountChar(this)"
+				class="ppp-share-text"
+				type="text"
+				placeholder="<?php echo $default_text; ?>"
+				name="_ppp_share_on_publish_text"
+				<?php if ( isset( $ppp_share_on_publish_text ) ) {?>value="<?php echo htmlspecialchars( $ppp_share_on_publish_text ); ?>"<?php ;}?>
+			/><span class="ppp-text-length"></span>
+		</p>
+	</p>
 	<input type="checkbox" name="_ppp_post_exclude" id="_ppp_post_exclude" value="1" <?php checked( '1', $ppp_post_exclude, true ); ?> />&nbsp;
 		<label for="_ppp_post_exclude"><?php _e( 'Do not schedule social media promotion for this post.', 'ppp-txt' ); ?></label>
 	<br />
@@ -62,7 +83,7 @@ function ppp_schedule_callback() {
 					onkeyup="PPPCountChar(this)"
 					class="ppp-share-text"
 					type="text"
-					placeholder="<?php _e( 'Social Text', 'ppp-txt' ); ?>"
+					placeholder="<?php echo $default_text; ?>"
 					id="day<?php echo $day; ?>"
 					name="_ppp_post_override_data[day<?php echo $day; ?>][text]"
 					<?php if ( isset( $ppp_post_override_data['day' . $day]['text'] ) ) {?>value="<?php echo htmlspecialchars( $ppp_post_override_data['day' . $day]['text'] ); ?>"<?php ;}?>
@@ -73,8 +94,8 @@ function ppp_schedule_callback() {
 				$day++;
 			}
 			?>
-			<p><?php _e( 'Do not include links in your text, this will be added automatically.', 'ppp-txt' ); ?></p>
 		</div>
+		<p><?php _e( 'Do not include links in your text, this will be added automatically.', 'ppp-txt' ); ?></p>
 	</div>
 	<?php
 }
@@ -93,10 +114,18 @@ function ppp_save_post_meta_boxes( $post_id, $post ) {
 	}
 
 	$ppp_post_exclude = ( isset( $_REQUEST['_ppp_post_exclude'] ) ) ? $_REQUEST['_ppp_post_exclude'] : '0';
+
+	$ppp_share_on_publish = ( isset( $_REQUEST['_ppp_share_on_publish'] ) ) ? $_REQUEST['_ppp_share_on_publish'] : '0';
+	$ppp_share_on_publish_text = ( isset( $_REQUEST['_ppp_share_on_publish_text'] ) ) ? $_REQUEST['_ppp_share_on_publish_text'] : '';
+
 	$ppp_post_override = ( isset( $_REQUEST['_ppp_post_override'] ) ) ? $_REQUEST['_ppp_post_override'] : '0';
 	$ppp_post_override_data = isset( $_REQUEST['_ppp_post_override_data'] ) ? $_REQUEST['_ppp_post_override_data'] : array();
 
 	update_post_meta( $post->ID, '_ppp_post_exclude', $ppp_post_exclude );
+
+	update_post_meta( $post->ID, '_ppp_share_on_publish', $ppp_share_on_publish );
+	update_post_meta( $post->ID, '_ppp_share_on_publish_text', $ppp_share_on_publish_text );
+
 	update_post_meta( $post->ID, '_ppp_post_override', $ppp_post_override );
 
 	// Fixes a bug when all items are unchecked from being checked, removed if statement

@@ -1,5 +1,37 @@
 <?php
 /**
+ * Determine if we should share this post when it's being published
+ * @param  int    $post_id The Post ID being published
+ * @param  object $post    The Post Object
+ * @return void
+ */
+function ppp_share_on_publish( $post_id, $post ) {
+	global $ppp_options;
+
+	$allowed_post_types = isset( $ppp_options['post_types'] ) ? $ppp_options['post_types'] : array();
+	$allowed_post_types = apply_filters( 'ppp_schedule_share_post_types', $allowed_post_types );
+
+	if ( !isset( $_POST['post_status'] ) || !array_key_exists( $post->post_type, $allowed_post_types ) ) {
+		return;
+	}
+
+	if ( !get_post_meta( $post_id, '_ppp_share_on_publish', true ) ) {
+		return;
+	}
+
+	$ppp_share_on_publish_text = get_post_meta( $post_id, '_ppp_share_on_publish_text', true );
+	$share_content = ( !empty( $ppp_share_on_publish_text ) ) ? $ppp_share_on_publish_text : ppp_generate_share_content( $post_id, null, false );
+	$name = 'sharedate_0_' . $post_id;
+	$share_link = ppp_generate_link( $post_id, $name );
+
+	$status['twitter'] = ppp_send_tweet( $share_content . ' ' . $share_link );
+
+	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
+		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
+	}
+}
+
+/**
  * Create timestamps and unique identifiers for each cron.
  * @param  int $month
  * @param  int $day
@@ -154,12 +186,12 @@ function ppp_set_social_tokens() {
  * @param  string $name    The 'Name' from the cron
  * @return string          The Content to include in the social media post
  */
-function ppp_generate_share_content( $post_id, $name ) {
+function ppp_generate_share_content( $post_id, $name, $is_scheduled = true ) {
 	global $ppp_options;
 	$default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : '';
 	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
 
-	if ( !empty( $ppp_post_override ) ) {
+	if ( $is_scheduled && !empty( $ppp_post_override ) ) {
 		$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
 		$name_array = explode( '_', $name );
 		$day = 'day' . $name_array[1];
@@ -221,7 +253,7 @@ function ppp_generate_link_tracking( $share_link, $post_id, $name ) {
  * @param  string $name    The 'name' element from the Cron
  * @return string          The Full text for the social share
  */
-function ppp_build_share_message( $post_id, $name ) {
+function ppp_build_share_message( $post_id, $name, $scheduled = true ) {
 	$share_content = ppp_generate_share_content( $post_id, $name );
 	$share_link    = ppp_generate_link( $post_id, $name );
 
