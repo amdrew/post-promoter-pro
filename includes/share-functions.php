@@ -5,29 +5,31 @@
  * @param  object $post    The Post Object
  * @return void
  */
-function ppp_share_on_publish( $post_id, $post ) {
-	global $ppp_options;
+function ppp_share_on_publish( $new_status, $old_status, $post ) {
+	if ( $new_status === 'publish' && $old_status !== 'publish' ) {
+		global $ppp_options;
 
-	$allowed_post_types = isset( $ppp_options['post_types'] ) ? $ppp_options['post_types'] : array();
-	$allowed_post_types = apply_filters( 'ppp_schedule_share_post_types', $allowed_post_types );
+		$allowed_post_types = isset( $ppp_options['post_types'] ) ? $ppp_options['post_types'] : array();
+		$allowed_post_types = apply_filters( 'ppp_schedule_share_post_types', $allowed_post_types );
 
-	if ( !isset( $_POST['post_status'] ) || !array_key_exists( $post->post_type, $allowed_post_types ) ) {
-		return;
-	}
+		if ( !isset( $post->post_status ) || !array_key_exists( $post->post_type, $allowed_post_types ) ) {
+			return;
+		}
 
-	if ( !get_post_meta( $post_id, '_ppp_share_on_publish', true ) ) {
-		return;
-	}
+		if ( !get_post_meta( $post->ID, '_ppp_share_on_publish', true ) ) {
+			return;
+		}
 
-	$ppp_share_on_publish_text = get_post_meta( $post_id, '_ppp_share_on_publish_text', true );
-	$share_content = ( !empty( $ppp_share_on_publish_text ) ) ? $ppp_share_on_publish_text : ppp_generate_share_content( $post_id, null, false );
-	$name = 'sharedate_0_' . $post_id;
-	$share_link = ppp_generate_link( $post_id, $name );
+		$ppp_share_on_publish_text = get_post_meta( $post->ID, '_ppp_share_on_publish_text', true );
+		$share_content = ( !empty( $ppp_share_on_publish_text ) ) ? $ppp_share_on_publish_text : ppp_generate_share_content( $post->ID, null, false );
+		$name = 'sharedate_0_' . $post->ID;
+		$share_link = ppp_generate_link( $post->ID, $name );
 
-	$status['twitter'] = ppp_send_tweet( $share_content . ' ' . $share_link );
+		$status['twitter'] = ppp_send_tweet( $share_content . ' ' . $share_link );
 
-	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
-		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
+		if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
+			update_post_meta( $post->ID, '_ppp-' . $name . '-status', $status );
+		}
 	}
 }
 
