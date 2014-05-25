@@ -35,6 +35,7 @@ function ppp_v13_upgrades() {
 
 	global $ppp_options;
 	$ppp_options['default_text'] = '{post_title}';
+	$ppp_options['days'] = array( 'day1' => 'on', 'day2' => 'on', 'day3' => 'on', 'day4' => 'on', 'day5' => 'on', 'day6' => 'on');
 
 	update_option( 'ppp_options', $ppp_options );
 	var_dump('ran 1.3 upgrades');

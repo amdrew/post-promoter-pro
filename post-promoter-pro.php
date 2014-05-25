@@ -87,11 +87,18 @@ class PostPromoterPro {
 
 		$default_settings['post_types']['post'] = '1';
 		$default_settings['times']['day1']      = '8:00am';
+		$default_settings['days']['day1']       = 'on';
 		$default_settings['times']['day2']      = '10:00am';
+		$default_settings['days']['day2']       = 'on';
 		$default_settings['times']['day3']      = '12:00pm';
+		$default_settings['days']['day3']       = 'on';
 		$default_settings['times']['day4']      = '4:00pm';
+		$default_settings['days']['day4']       = 'on';
 		$default_settings['times']['day5']      = '10:30am';
+		$default_settings['days']['day5']       = 'on';
 		$default_settings['times']['day6']      = '8:00pm';
+		$default_settings['days']['day6']       = 'on';
+
 
 
 		update_option( 'ppp_options', $default_settings );

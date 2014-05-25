@@ -7,6 +7,7 @@ function ppp_admin_page() {
 	global $ppp_options;
 	$license 	= get_option( '_ppp_license_key' );
 	$status 	= get_option( '_ppp_license_key_status' );
+	$share_days_count = ppp_share_days_count();
 	?>
 	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
 	<div class="wrap">
@@ -63,7 +64,6 @@ function ppp_admin_page() {
 					</td>
 				</tr>
 
-				<?php $share_days_count = ppp_share_days_count(); ?>
 				<?php $day = 1; ?>
 				<tr valign="top">
 					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br />
@@ -73,7 +73,12 @@ function ppp_admin_page() {
 						<table id="ppp-days-table">
 							<tr>
 								<?php while( $day <= $share_days_count ): ?>
-									<td><label for="ppp_options[times][day<?php echo $day; ?>]"><?php echo $day; ?></label></td>
+									<td><label for="ppp_options[days][day<?php echo $day; ?>]"><?php echo $day; ?></label>
+									<input id="day<?php echo $day; ?>"
+										       type="checkbox"
+										       name="ppp_options[days][day<?php echo $day; ?>]"
+										       value="on"
+										       <?php checked( true, ppp_is_day_enabled( $day ), true ); ?>/></td>
 									<?php $day++; ?>
 								<?php endwhile; ?>
 							</tr>

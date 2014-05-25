@@ -47,12 +47,26 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	return apply_filters( 'ppp_get_timestamps', $times );
 }
 
+/**
+ * Returns if a day is enabled by default
+ * @return  bool Day is enabled or not
+ */
+function ppp_is_day_enabled( $day ) {
+	global $ppp_options;
+
+	$day_status = ( ( isset( $ppp_options['days']['day' . $day] ) && $ppp_options['days']['day' . $day] === 'on' ) ) ? true : false;
+
+	return apply_filters( 'ppp_is_day_enabled', $day_status, $day );
+}
+
 function ppp_get_default_times() {
 	$number_of_days = ppp_share_days_count();
 	$day = 1;
 	$times = array();
 	while ( $day <= $number_of_days ) {
-		$times['day' . $day] = ppp_get_day_default_time( $day );
+		if ( ppp_is_day_enabled( $day ) ) {
+			$times['day' . $day] = ppp_get_day_default_time( $day );
+		}
 		$day++;
 	}
 
