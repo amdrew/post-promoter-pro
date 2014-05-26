@@ -64,6 +64,9 @@ function ppp_schedule_callback() {
 			while( $day <= ppp_share_days_count() ) {
 				$enabled = isset( $ppp_post_override_data['day' . $day]['enabled'] ) ? '1' : false;
 				$readonly = time() > strtotime( $post->post_date . ' +' . $day . ' day' ) ? true : false;
+				if ( $post->post_status !== 'publish' && $post->post_status != 'future' ) {
+					$readonly = false;
+				}
 				?>
 				<p>
 				<label for="day<?php echo $day; ?>"><?php printf( __( 'Day %s', 'ppp-txt' ), $day ); ?></label>&nbsp;
