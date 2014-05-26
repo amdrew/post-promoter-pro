@@ -106,3 +106,22 @@ function ppp_generate_google_utm_link( $share_link, $post_id, $name ) {
 	return $share_link;
 }
 add_filter( 'ppp_analytics-google_analytics', 'ppp_generate_google_utm_link', 10, 3 );
+
+/**
+ * Convert a link to bitly
+ * @param  string $link The link, before shortening
+ * @return string       The link, after being sent to bitly, if successful
+ */
+function ppp_apply_bitly( $link ) {
+	global $ppp_bitly_oauth;
+
+	$result = $ppp_bitly_oauth->ppp_make_bitly_link( $link );
+	$result = json_decode( $result, true );
+
+	if ( isset ( $result['status_code'] ) && $result['status_code'] == 200 ) {
+		return $result['data']['url'];
+	} else {
+		return $link;
+	}
+}
+add_filter( 'ppp_apply_shortener-bitly', 'ppp_apply_bitly', 10, 1 );

@@ -6,8 +6,8 @@
  * @param  object $post
  * @return void
  */
-function ppp_schedule_share( $post_id ) {
-	global $post, $ppp_options;
+function ppp_schedule_share( $post_id, $post ) {
+	global $ppp_options;
 
 	$allowed_post_types = isset( $ppp_options['post_types'] ) ? $ppp_options['post_types'] : array();
 	$allowed_post_types = apply_filters( 'ppp_schedule_share_post_types', $allowed_post_types );
@@ -16,7 +16,7 @@ function ppp_schedule_share( $post_id ) {
 		return;
 	}
 
-	$ppp_post_exclude = get_post_meta( $post->ID, '_ppp_post_exclude', true );
+	$ppp_post_exclude = get_post_meta( $post_id, '_ppp_post_exclude', true );
 	if ( $ppp_post_exclude ) { // If the post meta says to exclude from social media posts, delete all scheduled and return
 		ppp_remove_scheduled_shares( $post_id );
 		return;
@@ -42,7 +42,7 @@ function ppp_schedule_share( $post_id ) {
 	}
 
 	if ( $_POST['post_status'] === 'publish' && $_POST['original_post_status'] !== 'publish' ) {
-		ppp_share_on_publish( $_POST['post_status'], $_POST['old_status'], $post );
+		ppp_share_on_publish( $_POST['post_status'], $_POST['original_post_status'], $post );
 	}
 }
 add_action( 'ppp_share_post_event', 'ppp_share_post', 10, 2 );

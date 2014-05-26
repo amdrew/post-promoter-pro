@@ -24,13 +24,26 @@
 
 	$('#bitly-login').click( function() {
 		var data = {};
+		var button = $('#bitly-login');
+		button.removeClass('button-primary');
+		button.addClass('button-secondary');
+		button.css('opacity', '.5');
+		$('.spinner').show();
+		$('#ppp-bitly-invalid-login').hide();
 		data.action   = 'ppp_bitly_connect';
 		data.username = $('#bitly-username').val();
 		data.password = $('#bitly-password').val();
-		data.apikey   = $('#bitly-apikey').val();
 
 		$.post(ajaxurl, data, function(response) {
-			alert('Got this from the server: ' + response);
+			if (response == '1') {
+				window.location.replace( '/wp-admin/admin.php?page=ppp-social-settings' );
+			} else if (response === 'INVALID_LOGIN') {
+				$('.spinner').hide();
+				$('#ppp-bitly-invalid-login').show();
+				button.addClass('button-primary');
+				button.removeClass('button-secondary');
+				button.css('opacity', '1');
+			}
 		});
 	});
 

@@ -61,3 +61,13 @@ function ppp_get_text_tokens() {
 function ppp_share_days_count() {
 	return apply_filters( 'ppp_share_days_count', 6 );
 }
+
+/**
+ * Returns if the shortener option is chosen
+ * @return boolean	True/False if the shortener has been selected
+ */
+function ppp_is_shortener_enabled() {
+	global $ppp_share_settings;
+
+	return ( isset( $ppp_share_settings['shortener'] ) && !empty( $ppp_share_settings['shortener'] ) && $ppp_share_settings != '-1' );
+}

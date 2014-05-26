@@ -149,6 +149,8 @@ function ppp_display_social() {
 		}
 	}
 
+	do_action( 'ppp_social_settings_pre_form' );
+
 	global $ppp_twitter_oauth, $ppp_bitly_oauth;
 	$ppp_share_settings = get_option( 'ppp_share_settings' );
 	$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
@@ -215,7 +217,7 @@ function ppp_display_social() {
 						<hr />
 						<small>Here is an example of what your link will look like: <br />
 							<?php $post = wp_get_recent_posts( array( 'numberposts' => 1 ) ); ?>
-							<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'] ); ?></code></small>
+							<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'], false ); ?></code></small>
 						</p>
 					</td>
 				</tr>
@@ -276,6 +278,9 @@ function ppp_display_schedule() {
 	<div class="wrap">
 		<?php $schedule_table->display() ?>
 	</div>
+	<?php if ( ppp_is_shortener_enabled() ): ?>
+		<small><?php _e( 'NOTICE: Schedule view does not show shortened links, they will be shortened at the time of sharing', 'ppp-txt' ); ?></small>
+	<?php endif; ?>
 	<?php
 }
 

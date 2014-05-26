@@ -23,7 +23,7 @@ function ppp_share_on_publish( $new_status, $old_status, $post ) {
 		$ppp_share_on_publish_text = get_post_meta( $post->ID, '_ppp_share_on_publish_text', true );
 		$share_content = ( !empty( $ppp_share_on_publish_text ) ) ? $ppp_share_on_publish_text : ppp_generate_share_content( $post->ID, null, false );
 		$name = 'sharedate_0_' . $post->ID;
-		$share_link = ppp_generate_link( $post->ID, $name );
+		$share_link = ppp_generate_link( $post->ID, $name, true );
 
 		$status['twitter'] = ppp_send_tweet( $share_content . ' ' . $share_link );
 
@@ -215,12 +215,17 @@ function ppp_generate_share_content( $post_id, $name, $is_scheduled = true ) {
  * @param  string $name    The 'Name from the cron'
  * @return string          The URL to the post, to share
  */
-function ppp_generate_link( $post_id, $name ) {
+function ppp_generate_link( $post_id, $name, $scheduled = true ) {
 	global $ppp_share_settings;
 	$share_link = get_permalink( $post_id );
 
 	if ( ppp_link_tracking_enabled() ) {
 		$share_link = ppp_generate_link_tracking( $share_link, $post_id, $name );
+	}
+
+	if ( ppp_is_shortener_enabled() && $scheduled ) {
+		$shortener_name = $ppp_share_settings['shortener'];
+		$share_link = apply_filters( 'ppp_apply_shortener-' . $shortener_name, $share_link );
 	}
 
 
@@ -257,7 +262,7 @@ function ppp_generate_link_tracking( $share_link, $post_id, $name ) {
  */
 function ppp_build_share_message( $post_id, $name, $scheduled = true ) {
 	$share_content = ppp_generate_share_content( $post_id, $name );
-	$share_link    = ppp_generate_link( $post_id, $name );
+	$share_link    = ppp_generate_link( $post_id, $name, $scheduled );
 
 	return apply_filters( 'ppp_build_share_message', $share_content . ' ' . $share_link );
 }

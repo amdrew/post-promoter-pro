@@ -127,7 +127,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 				                       'post_title'   => get_the_title( $ppp_data['args'][0] ),
 			                           'day'          => $day,
 			                           'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
-			                           'content'      => ppp_build_share_message( $ppp_data['args'][0], $ppp_data['args'][1] ),
+			                           'content'      => ppp_build_share_message( $ppp_data['args'][0], $ppp_data['args'][1], false ),
 			                           'name'         => 'sharedate_' . $day . '_' . $ppp_data['args'][0],
 			                           'conflict'     => $conflict );
 		}
