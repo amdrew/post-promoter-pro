@@ -1,5 +1,15 @@
 <?php
 
+function ppp_capture_twitter_oauth() {
+	if ( isset( $_REQUEST['oauth_verifier'] ) && isset( $_REQUEST['oauth_token'] ) ) {
+		global $ppp_twitter_oauth;
+		$ppp_twitter_oauth->ppp_initialize_twitter();
+		wp_redirect( admin_url( 'admin.php?page=ppp-social-settings' ) );
+		die();
+	}
+}
+add_action( 'admin_init', 'ppp_capture_twitter_oauth', 10 );
+
 /**
  * Adds the Bit.ly Shortener to the list of available shorteners
  * @param  string $selected_shortener The currently selected url shortener

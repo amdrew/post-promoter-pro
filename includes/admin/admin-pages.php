@@ -151,7 +151,7 @@ function ppp_display_social() {
 
 	do_action( 'ppp_social_settings_pre_form' );
 
-	global $ppp_twitter_oauth, $ppp_bitly_oauth;
+	global $ppp_twitter_oauth, $ppp_bitly_oauth, $ppp_social_settings;
 	$ppp_share_settings = get_option( 'ppp_share_settings' );
 	$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 	?>
@@ -167,7 +167,6 @@ function ppp_display_social() {
 					} ?>
 					<th scope="row"><?php _e( 'Twitter', 'ppp-txt' ); ?></th>
 					<td>
-						<?php $ppp_twitter_oauth->ppp_initialize_twitter(); ?>
 						<?php $ppp_social_settings = get_option( 'ppp_social_settings' ); ?>
 
 						<?php if ( !ppp_twitter_enabled() ) { ?>
