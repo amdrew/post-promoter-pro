@@ -136,4 +136,4 @@ function ppp_save_post_meta_boxes( $post_id, $post ) {
 
 	return $post->ID;
 }
-add_action( 'save_post', 'ppp_save_post_meta_boxes', 1, 2 ); // save the custom fields
+add_action( 'save_post', 'ppp_save_post_meta_boxes', 10, 2 ); // save the custom fields

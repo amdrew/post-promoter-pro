@@ -6,7 +6,12 @@
  * @return void
  */
 function ppp_share_on_publish( $new_status, $old_status, $post ) {
-	if ( $new_status === 'publish' && $old_status !== 'publish' ) {
+	// don't publish password protected posts
+	if ( '' !== $post->post_password ) {
+		return;
+	}
+
+	if ( $new_status == 'publish' && $old_status != 'publish' ) {
 		global $ppp_options;
 
 		$allowed_post_types = isset( $ppp_options['post_types'] ) ? $ppp_options['post_types'] : array();
@@ -16,11 +21,21 @@ function ppp_share_on_publish( $new_status, $old_status, $post ) {
 			return;
 		}
 
-		if ( !get_post_meta( $post->ID, '_ppp_share_on_publish', true ) ) {
+		$from_meta = get_post_meta( $post->ID, '_ppp_share_on_publish', true );
+		$from_post = isset( $_POST['_ppp_share_on_publish'] );
+
+
+		if ( false === $from_meta && false === $from_post ) {
 			return;
 		}
 
-		$ppp_share_on_publish_text = get_post_meta( $post->ID, '_ppp_share_on_publish_text', true );
+		// Determine if we're seeing the share on publish in meta or $_POST
+		if ( $from_meta && !$from_post ) {
+			$ppp_share_on_publish_text = get_post_meta( $post->ID, '_ppp_share_on_publish_text', true );
+		} else {
+			$ppp_share_on_publish_text = isset( $_POST['_ppp_share_on_publish_text'] ) ? $_POST['_ppp_share_on_publish_text'] : '';
+		}
+
 		$share_content = ( !empty( $ppp_share_on_publish_text ) ) ? $ppp_share_on_publish_text : ppp_generate_share_content( $post->ID, null, false );
 		$name = 'sharedate_0_' . $post->ID;
 		$share_link = ppp_generate_link( $post->ID, $name, true );

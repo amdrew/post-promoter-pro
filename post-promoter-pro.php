@@ -63,7 +63,7 @@ class PostPromoterPro {
 			add_action( 'admin_head', 'ppp_list_view_maybe_take_action', 10 );
 		}
 
-		add_action( 'save_post', 'ppp_schedule_share', 10, 2);
+		add_action( 'save_post', 'ppp_schedule_share', 20, 2);
 		add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
 	}
 
