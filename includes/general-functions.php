@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Returns if a link tracking method is enabled
+ * @return boolean True if a form of link tracking is enabled, false if not
+ */
 function ppp_link_tracking_enabled() {
 	global $ppp_share_settings;
 	$result = false;
@@ -11,6 +15,11 @@ function ppp_link_tracking_enabled() {
 	return apply_filters( 'ppp_is_link_tracking_enabled', $result );
 }
 
+/**
+ * Get a post slug via the ID
+ * @param  int $post_id The post ID
+ * @return string       The slug of the post
+ */
 function ppp_get_post_slug_by_id( $post_id ) {
 	$post_data = get_post( $post_id, ARRAY_A );
 	$slug = $post_data['post_name'];
