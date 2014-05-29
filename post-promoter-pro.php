@@ -3,7 +3,7 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: http://postpromoterpro.com
 Description: Schedule the promotion of blog posts for the next 6 days, with no further work.
-Version: 1.2.0.1
+Version: 1.3
 Author: Post Promoter Pro
 Author URI: http://postpromoterpro.com
 License: GPLv2
