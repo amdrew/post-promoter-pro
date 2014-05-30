@@ -289,5 +289,5 @@ function ppp_build_share_message( $post_id, $name, $scheduled = true ) {
  */
 function ppp_send_tweet( $message ) {
 	global $ppp_twitter_oauth;
-	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( html_entity_decode( htmlentities( $message ) ) ) );
+	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( html_entity_decode( $message ) ) );
 }
