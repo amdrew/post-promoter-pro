@@ -24,8 +24,7 @@ function ppp_share_on_publish( $new_status, $old_status, $post ) {
 		$from_meta = get_post_meta( $post->ID, '_ppp_share_on_publish', true );
 		$from_post = isset( $_POST['_ppp_share_on_publish'] );
 
-
-		if ( false === $from_meta && false === $from_post ) {
+		if ( empty( $from_meta ) && empty( $from_post ) ) {
 			return;
 		}
 
