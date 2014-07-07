@@ -136,6 +136,13 @@ function ppp_tw_add_admin_tab( $tabs ) {
 }
 add_filter( 'ppp_admin_tabs', 'ppp_tw_add_admin_tab', 10, 1 );
 
+function ppp_tw_register_admin_social_content( $content ) {
+	$content[] = 'tw';
+
+	return $content;
+}
+add_filter( 'ppp_admin_social_content', 'ppp_tw_register_admin_social_content', 10, 1 );
+
 function ppp_tw_add_meta_tab( $tabs ) {
 	global $ppp_social_settings;
 	if ( !isset( $ppp_social_settings['twitter'] ) ) {

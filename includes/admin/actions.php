@@ -11,7 +11,7 @@ add_action( 'admin_init', 'ppp_disconnect_social', 10 );
 function ppp_generate_metabox_tabs() {
 	global $visibleKey;
 
-	$tabs = apply_filters( 'ppp_admin_tabs', array() );
+	$tabs = apply_filters( 'ppp_metabox_tabs', array() );
 	$i = 0;
 	foreach ( $tabs as $key => $values ) {
 		if ( $i === 0 ) {
@@ -36,7 +36,7 @@ add_action( 'ppp_metabox_tabs_display', 'ppp_generate_metabox_tabs', 10 );
 function ppp_generate_social_account_tabs() {
 	global $visibleSettingTab;
 
-	$tabs = apply_filters( 'ppp_metabox_tabs', array() );
+	$tabs = apply_filters( 'ppp_admin_tabs', array() );
 	$i = 0;
 	?><h2 id="ppp-social-connect-tabs" class="nav-tab-wrapper"><?php
 	foreach ( $tabs as $key => $values ) {
@@ -80,7 +80,7 @@ add_action( 'ppp_metabox_content_display', 'ppp_generate_metabox_content', 10, 1
 
 function ppp_generate_social_account_content() {
 	global $visibleSettingTab;
-	$tab_content = apply_filters( 'ppp_metabox_content', array() );
+	$tab_content = apply_filters( 'ppp_admin_social_content', array() );
 	if ( empty( $tab_content ) ) {
 		printf( __( 'No social media accounts active. <a href="%s">Connect with your accounts now</a>.', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-social-settings' ) );
 	} else {

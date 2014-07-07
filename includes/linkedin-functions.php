@@ -20,7 +20,7 @@ function ppp_li_connect_display() {
 	global $ppp_linkedin_oauth, $ppp_social_settings;
 	if ( !ppp_linkedin_enabled() ) { ?>
 		<?php $li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( get_bloginfo( 'url' ) . $_SERVER['REQUEST_URI'] ); ?>
-		<a href="<?php echo $li_authurl; ?>"><?php _e( 'Connect to Linkedin', 'ppp-txt' ); ?></a>
+		<a class="button-primary" href="<?php echo $li_authurl; ?>"><?php _e( 'Connect to Linkedin', 'ppp-txt' ); ?></a>
 	<?php } else { ?>
 		<div class="ppp-social-profile ppp-linkedin-profile">
 			<div class="ppp-linkedin-info">
@@ -126,6 +126,13 @@ function ppp_li_add_admin_tab( $tabs ) {
 	return $tabs;
 }
 add_filter( 'ppp_admin_tabs', 'ppp_li_add_admin_tab', 10, 1 );
+
+function ppp_li_register_admin_social_content( $content ) {
+	$content[] = 'li';
+
+	return $content;
+}
+add_filter( 'ppp_admin_social_content', 'ppp_li_register_admin_social_content', 10, 1 );
 
 function ppp_li_add_meta_tab( $tabs ) {
 	global $ppp_social_settings;
