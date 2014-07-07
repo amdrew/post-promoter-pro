@@ -1,16 +1,16 @@
 (function ($) {
 	$('.share-time-selector').timepicker({ 'step': 15 });
 
-	$('#ppp_share_on_publish').click( function() {
-		$('#ppp_share_on_publish_text').toggle();
+	$('input[id*="_share_on_publish"]').click( function() {
+		$(this).parent().siblings('.ppp_share_on_publish_text').toggle();
 	});
 
-	$('#_ppp_post_override').click( function() {
-		$('.post-override-matrix').toggle();
+	$('input[id*="_post_override"]').click( function() {
+		$(this).siblings('.post-override-matrix').toggle();
 	});
 
-	$('#_ppp_post_exclude').click( function() {
-		$('#ppp-post-override-wrap').toggle();
+	$('input[id*="_post_exclude"]').click( function() {
+		$(this).siblings('.ppp-post-override-wrap').toggle();
 	});
 
 	$('.ppp-share-enable-day').click( function() {
@@ -45,6 +45,28 @@
 				button.css('opacity', '1');
 			}
 		});
+	});
+
+	$('#ppp-tabs li').click( function(e) {
+		e.preventDefault();
+		$('#ppp-tabs li').removeClass('tabs');
+		$(this).addClass('tabs');
+		var clickedId = $(this).children(':first').attr('href');
+
+		$('#ppp_schedule_metabox .wp-tab-panel').hide();
+		$(clickedId).show();
+		return false;
+	});
+
+	$('#ppp-social-connect-tabs a').click( function(e) {
+		e.preventDefault();
+		$('#ppp-social-connect-tabs a').removeClass('nav-tab-active');
+		$(this).addClass('nav-tab-active');
+		var clickedId = $(this).attr('href');
+
+		$('.ppp-social-connect').hide();
+		$(clickedId).show();
+		return false;
 	});
 
 })(jQuery);

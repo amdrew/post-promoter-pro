@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Returns if a link tracking method is enabled
  * @return boolean True if a form of link tracking is enabled, false if not
@@ -25,34 +24,6 @@ function ppp_get_post_slug_by_id( $post_id ) {
 	$slug = $post_data['post_name'];
 
 	return $slug;
-}
-
-/**
- * Return if twitter account is found
- * @return bool If the Twitter object exists
- */
-function ppp_twitter_enabled() {
-	global $ppp_social_settings;
-
-	if ( isset( $ppp_social_settings['twitter'] ) && !empty( $ppp_social_settings['twitter'] ) ) {
-		return true;
-	}
-
-	return false;
-}
-
-/**
- * Return if bitly account is found
- * @return bool If the Bitly object exists
- */
-function ppp_bitly_enabled() {
-	global $ppp_social_settings;
-
-	if ( isset( $ppp_social_settings['bitly'] ) && !empty( $ppp_social_settings['bitly'] ) ) {
-		return true;
-	}
-
-	return false;
 }
 
 /**
@@ -86,4 +57,11 @@ function ppp_is_shortener_enabled() {
  */
 function ppp_entities_and_slashes( $string ) {
 	return stripslashes( html_entity_decode( $string ) );
+}
+
+function ppp_add_image_sizes() {
+	add_image_size( 'ppp-tw-share-image', 528, 222, true );
+	add_image_size( 'ppp-li-share-image', 180, 110, true );
+
+	do_action( 'ppp_add_image_sizes' );
 }
