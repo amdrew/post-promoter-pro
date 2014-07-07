@@ -120,6 +120,13 @@ var_dump($args); exit;
 	$ppp_linkedin_oauth->ppp_linkedin_share( $args );
 }
 
+function ppp_li_add_admin_tab( $tabs ) {
+	$tabs['li'] = array( 'name' => __( 'LinkedIn', 'ppp-txt' ), 'class' => 'icon-ppp-li' );
+
+	return $tabs;
+}
+add_filter( 'ppp_admin_tabs', 'ppp_li_add_admin_tab', 10, 1 );
+
 function ppp_li_add_meta_tab( $tabs ) {
 	global $ppp_social_settings;
 	if ( ! ppp_linkedin_enabled() ) {

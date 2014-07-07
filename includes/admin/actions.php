@@ -11,7 +11,7 @@ add_action( 'admin_init', 'ppp_disconnect_social', 10 );
 function ppp_generate_metabox_tabs() {
 	global $visibleKey;
 
-	$tabs = apply_filters( 'ppp_metabox_tabs', array() );
+	$tabs = apply_filters( 'ppp_admin_tabs', array() );
 	$i = 0;
 	foreach ( $tabs as $key => $values ) {
 		if ( $i === 0 ) {

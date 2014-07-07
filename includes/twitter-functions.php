@@ -129,6 +129,13 @@ function ppp_set_tw_token_constants( $social_tokens ) {
 }
 add_action( 'ppp_set_social_token_constants', 'ppp_set_tw_token_constants', 10, 1 );
 
+function ppp_tw_add_admin_tab( $tabs ) {
+	$tabs['tw'] = array( 'name' => __( 'Twitter', 'ppp-txt' ), 'class' => 'icon-ppp-tw' );
+
+	return $tabs;
+}
+add_filter( 'ppp_admin_tabs', 'ppp_tw_add_admin_tab', 10, 1 );
+
 function ppp_tw_add_meta_tab( $tabs ) {
 	global $ppp_social_settings;
 	if ( !isset( $ppp_social_settings['twitter'] ) ) {
