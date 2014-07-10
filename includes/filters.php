@@ -85,7 +85,18 @@ add_filter( 'ppp_analytics-unique_links', 'ppp_generate_unique_link', 10, 3 );
  */
 function ppp_generate_google_utm_link( $share_link, $post_id, $name ) {
 	$name_parts = explode( '_', $name );
-	$utm['source']   = 'Twitter';
+
+	switch( $name_parts[3] ) {
+		case 'li':
+			$network = 'LinkedIn';
+			break;
+		case 'tw':
+		default:
+			$network = 'Twitter';
+			break;
+	}
+
+	$utm['source']   = $network;
 	$utm['medium']   = 'social';
 	$utm['term']     =  ppp_get_post_slug_by_id( $post_id );
 	$utm['content']  = $name_parts[1]; // The day after publishing

@@ -40,7 +40,9 @@ if( !class_exists( 'PPP_Bitly' ) ) {
 				global $ppp_social_settings;
 
 				if ( isset( $ppp_social_settings['bitly'] ) ) {
-					define( 'bitly_accesstoken', $ppp_social_settings['bitly']['access_token'] );
+					if ( !defined( 'bitly_accesstoken' ) ) {
+						define( 'bitly_accesstoken', $ppp_social_settings['bitly']['access_token'] );
+					}
 					$this->bitly = new Bitly( bitly_clientid, bitly_secret, bitly_accesstoken );
 				} else {
 					$this->bitly = new Bitly( bitly_clientid, bitly_secret );

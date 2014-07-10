@@ -116,8 +116,8 @@ function ppp_li_share( $title, $description, $link, $media ) {
 		'submitted-url' => $link,
 		'submitted-image-url' => $media
 		);
-var_dump($args); exit;
-	$ppp_linkedin_oauth->ppp_linkedin_share( $args );
+
+	return $ppp_linkedin_oauth->ppp_linkedin_share( $args );
 }
 
 function ppp_li_add_admin_tab( $tabs ) {
@@ -169,7 +169,7 @@ function ppp_li_add_metabox_content( $post ) {
 	?>
 	<p>
 	<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
-	<input <?php if ( $disabled ): ?>disabled<?php endif; ?> type="checkbox" name="_ppp_li_share_on_publish" id="ppp_li_share_on_publish" value="1" <?php checked( '1', $ppp_li_share_on_publish, true ); ?> />&nbsp;
+	<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_li_share_on_publish" id="ppp_li_share_on_publish" value="1" <?php checked( '1', $ppp_li_share_on_publish, true ); ?> />&nbsp;
 		<label for="ppp_li_share_on_publish"><?php _e( 'Share this post on LinkedIn at the time of publishing?', 'ppp-txt' ); ?></label>
 		<p class="ppp_share_on_publish_text" style="display: <?php echo ( $ppp_li_share_on_publish ) ? '' : 'none'; ?>">
 				<span class="left" id="ppp-li-image">
@@ -177,7 +177,7 @@ function ppp_li_add_metabox_content( $post ) {
 				</span>
 				<?php _e( 'Link Title', 'ppp-txt' ); ?>:<br />
 				<input
-				<?php if ( $disabled ): ?>disabled readonly<?php endif; ?>
+				<?php if ( $disabled ): ?>readonly<?php endif; ?>
 				onkeyup="PPPCountChar(this)"
 				class="ppp-share-text"
 				type="text"
@@ -187,7 +187,7 @@ function ppp_li_add_metabox_content( $post ) {
 			/>
 			<br />
 			<?php _e( 'Link Description', 'ppp-txt' ); ?>:<br />
-			<textarea name="_ppp_li_share_on_publish_desc"><?php echo $ppp_share_on_publish_desc; ?></textarea>
+			<textarea <?php if ( $disabled ): ?>readonly<?php endif; ?> name="_ppp_li_share_on_publish_desc"><?php echo $ppp_share_on_publish_desc; ?></textarea>
 			<br /><?php _e( 'Note: If set, the Featured image will be attached to this share', 'ppp-txt' ); ?>
 		</p>
 	</p>
@@ -221,6 +221,7 @@ function ppp_li_save_post_meta_boxes( $post_id, $post ) {
 add_action( 'save_post', 'ppp_li_save_post_meta_boxes', 10, 2 ); // save the custom fields
 
 function ppp_li_share_on_publish( $old_status, $new_status, $post ) {
+	global $ppp_options;
 	$from_meta = get_post_meta( $post->ID, '_ppp_li_share_on_publish', true );
 	$from_post = isset( $_POST['_ppp_li_share_on_publish'] );
 
@@ -240,9 +241,18 @@ function ppp_li_share_on_publish( $old_status, $new_status, $post ) {
 	$thumbnail = ppp_post_has_media( $post->ID, 'li', true );
 
 	$name = 'sharedate_0_' . $post->ID . '_li';
+
+	$default_title = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : '';
+	// If an override was found, use it, otherwise try the default text content
+	$share_title = ( isset( $ppp_share_on_publish_title ) && !empty( $ppp_share_on_publish_title ) ) ? $ppp_share_on_publish_title : $default_title;
+
+	// If the content is still empty, just use the post title
+	$share_title = ( isset( $share_title ) && !empty( $share_title ) ) ? $share_title : get_the_title( $post->ID );
+
+	$share_title = apply_filters( 'ppp_share_content', $share_title, array( 'post_id' => $post->ID ) );
 	$share_link = ppp_generate_link( $post->ID, $name, true );
 
-	$status['linkedin'] = ppp_li_share( $ppp_share_on_publish_title, $ppp_share_on_publish_desc, $share_link, $thumbnail );
+	$status['linkedin'] = ppp_li_share( $share_title, $ppp_share_on_publish_desc, $share_link, $thumbnail );
 
 	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
 		update_post_meta( $post->ID, '_ppp-' . $name . '-status', $status );

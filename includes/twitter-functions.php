@@ -185,11 +185,11 @@ function ppp_tw_add_metabox_content( $post ) {
 	?>
 			<p>
 			<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
-			<input <?php if ( $disabled ): ?>disabled<?php endif; ?> type="checkbox" name="_ppp_share_on_publish" id="ppp_share_on_publish" value="1" <?php checked( '1', $ppp_share_on_publish, true ); ?> />&nbsp;
+			<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_share_on_publish" id="ppp_share_on_publish" value="1" <?php checked( '1', $ppp_share_on_publish, true ); ?> />&nbsp;
 				<label for="ppp_share_on_publish"><?php _e( 'Tweet this post at the time of publishing?', 'ppp-txt' ); ?></label>
 				<p class="ppp_share_on_publish_text" style="display: <?php echo ( $ppp_share_on_publish ) ? '' : 'none'; ?>">
 						<input
-						<?php if ( $disabled ): ?>disabled readonly<?php endif; ?>
+						<?php if ( $disabled ): ?>readonly<?php endif; ?>
 						onkeyup="PPPCountChar(this)"
 						class="ppp-share-text"
 						type="text"
@@ -198,7 +198,7 @@ function ppp_tw_add_metabox_content( $post ) {
 						<?php if ( isset( $ppp_share_on_publish_text ) ) {?>value="<?php echo htmlspecialchars( $ppp_share_on_publish_text ); ?>"<?php ;}?>
 					/><span class="ppp-text-length"></span>
 					<br />
-					<input <?php if ( $disabled ): ?>disabled readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
+					<input <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
 						&nbsp;<label for="ppp-share-on-publish-image"><?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?></label>
 				</p>
 			</p>
@@ -220,8 +220,8 @@ function ppp_tw_add_metabox_content( $post ) {
 						?>
 						<p>
 						<label for="day<?php echo $day; ?>"><?php printf( __( 'Day %s', 'ppp-txt' ), $day ); ?></label>&nbsp;
-						<input <?php if ( $readonly ): ?>disabled<?php endif; ?> type="checkbox" class="ppp-share-enable-day" value="1" name="_ppp_post_override_data[day<?php echo $day; ?>][enabled]" <?php checked( '1', $enabled, true ); ?>/>&nbsp;
-						<input <?php if ( !$enabled ): ?>disabled<?php endif; ?>
+						<input <?php if ( $readonly ): ?>readonly<?php endif; ?> type="checkbox" class="ppp-share-enable-day" value="1" name="_ppp_post_override_data[day<?php echo $day; ?>][enabled]" <?php checked( '1', $enabled, true ); ?>/>&nbsp;
+						<input <?php if ( !$enabled ): ?>readonly<?php endif; ?>
 							 <?php if ( !$enabled || $readonly ): ?>readonly<?php endif; ?>
 							id="day<?php echo $day; ?>"
 							type="text"
@@ -231,7 +231,7 @@ function ppp_tw_add_metabox_content( $post ) {
 							value="<?php echo ( isset( $ppp_post_override_data['day' . $day]['time'] ) ) ? $ppp_post_override_data['day' . $day]['time'] : ppp_get_day_default_time( $day ); ?>"
 							size="8"
 						/>
-						<input <?php if ( !$enabled ): ?>disabled<?php endif; ?>
+						<input <?php if ( !$enabled ): ?>readonly<?php endif; ?>
 							 <?php if ( !$enabled || $readonly ): ?>readonly<?php endif; ?>
 							onkeyup="PPPCountChar(this)"
 							class="ppp-share-text"
@@ -245,7 +245,7 @@ function ppp_tw_add_metabox_content( $post ) {
 						<br />
 						<?php $use_image = isset( $ppp_post_override_data['day' . $day]['use_image'] ) ? '1' : false; ?>
 						<span class="ppp-override-meta">
-							<input <?php if ( $readonly ): ?>disabled<?php endif; ?> type="checkbox" name="_ppp_post_override_data[day<?php echo $day; ?>][use_image]" value="1" <?php checked( '1', $use_image, true ); ?> />&nbsp;<?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?>
+							<input <?php if ( $readonly ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_post_override_data[day<?php echo $day; ?>][use_image]" value="1" <?php checked( '1', $use_image, true ); ?> />&nbsp;<?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?>
 						</span>
 						</p>
 						<?php
@@ -298,6 +298,8 @@ add_action( 'save_post', 'ppp_tw_save_post_meta_boxes', 10, 2 ); // save the cus
 
 
 function ppp_tw_share_on_publish( $old_status, $new_status, $post ) {
+	global $ppp_options;
+
 	$from_meta = get_post_meta( $post->ID, '_ppp_share_on_publish', true );
 	$from_post = isset( $_POST['_ppp_share_on_publish'] );
 
