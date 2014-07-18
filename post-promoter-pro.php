@@ -59,7 +59,7 @@ class PostPromoterPro {
 			add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ) );
-			add_action( 'trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
+			add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 			add_action( 'admin_head', 'ppp_list_view_maybe_take_action', 10 );
 		}
 
