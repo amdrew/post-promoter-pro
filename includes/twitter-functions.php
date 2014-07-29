@@ -67,7 +67,8 @@ add_action( 'ppp_disconnect-twitter', 'ppp_disconnect_twitter', 10 );
  */
 function ppp_send_tweet( $message, $post_id, $use_media = false ) {
 	global $ppp_twitter_oauth;
-	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( ppp_entities_and_slashes( $message ), ppp_post_has_media( $post_id, 'tw', $use_media ) ) );
+
+	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( ppp_entities_and_slashes( $message ), $use_media ) );
 }
 
 /**
@@ -266,7 +267,7 @@ add_action( 'ppp_generate_metabox_content-tw', 'ppp_tw_add_metabox_content', 10,
  * @return int          The Post ID
  */
 function ppp_tw_save_post_meta_boxes( $post_id, $post ) {
-	global $ppp_options;
+	global $ppp_options, $post;
 
 	if ( !isset( $ppp_options['post_types'] ) || !is_array( $ppp_options['post_types'] ) || !array_key_exists( $post->post_type, $ppp_options['post_types'] ) ) {
 		return;
