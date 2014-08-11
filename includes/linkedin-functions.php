@@ -13,6 +13,10 @@ function ppp_linkedin_enabled() {
 	return false;
 }
 
+/**
+ * Display the linked in Connection area
+ * @return void
+ */
 function ppp_li_connect_display() {
 	?>
 	<div>
@@ -35,6 +39,10 @@ function ppp_li_connect_display() {
 }
 add_action( 'ppp_connect_display-li', 'ppp_li_connect_display' );
 
+/**
+ * Capture the oauth return from linkedin
+ * @return void
+ */
 function ppp_capture_linkedin_oauth() {
 	if ( isset( $_REQUEST['li_access_token'] ) && ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] == 'ppp-social-settings' ) ) {
 		global $ppp_linkedin_oauth;
@@ -45,6 +53,10 @@ function ppp_capture_linkedin_oauth() {
 }
 add_action( 'admin_init', 'ppp_capture_linkedin_oauth', 10 );
 
+/**
+ * Capture the disconnect request from Linkedin
+ * @return void
+ */
 function ppp_disconnect_linkedin() {
 	global $ppp_social_settings;
 	$ppp_social_settings = get_option( 'ppp_social_settings' );
@@ -56,6 +68,11 @@ function ppp_disconnect_linkedin() {
 }
 add_action( 'ppp_disconnect-linkedin', 'ppp_disconnect_linkedin', 10 );
 
+/**
+ * Add query vars for Linkedin
+ * @param  array $vars Currenty Query Vars
+ * @return array       Query vars array with linkedin added
+ */
 function ppp_li_query_vars( $vars ) {
 	$vars[] = 'li_access_token';
 	$vars[] = 'expires_in';
@@ -81,6 +98,10 @@ function ppp_li_execute_refresh() {
 }
 add_action( 'admin_init', 'ppp_li_execute_refresh' );
 
+/**
+ * Displays notice when the Linkedin Token is nearing expiration
+ * @return void
+ */
 function ppp_linkedin_refresh_notice() {
 	global $ppp_linkedin_oauth, $ppp_social_settings;
 
@@ -100,6 +121,11 @@ function ppp_linkedin_refresh_notice() {
 	<?php
 }
 
+/**
+ * Define the linkedin tokens as constants
+ * @param  array $social_tokens The Keys
+ * @return void
+ */
 function ppp_set_li_token_constants( $social_tokens ) {
 	if ( !empty( $social_tokens ) && property_exists( $social_tokens, 'linkedin' ) ) {
 		define( 'LINKEDIN_KEY', $social_tokens->linkedin->api_key );
@@ -108,6 +134,14 @@ function ppp_set_li_token_constants( $social_tokens ) {
 }
 add_action( 'ppp_set_social_token_constants', 'ppp_set_li_token_constants', 10, 1 );
 
+/**
+ * Share a post to Linkedin
+ * @param  string $title       The Title of the Linkedin Post
+ * @param  string $description The Description of the post
+ * @param  string $link        The URL to the post
+ * @param  mixed  $media       False for no media, url to the image if exists
+ * @return array               The results array from the API
+ */
 function ppp_li_share( $title, $description, $link, $media ) {
 	global $ppp_linkedin_oauth;
 	$args = array (
@@ -120,6 +154,11 @@ function ppp_li_share( $title, $description, $link, $media ) {
 	return $ppp_linkedin_oauth->ppp_linkedin_share( $args );
 }
 
+/**
+ * Add the LinkedIn tab to the social media area
+ * @param  array $tabs The existing tabs
+ * @return array       The tabs with LinkedIn Added
+ */
 function ppp_li_add_admin_tab( $tabs ) {
 	$tabs['li'] = array( 'name' => __( 'LinkedIn', 'ppp-txt' ), 'class' => 'icon-ppp-li' );
 
@@ -127,6 +166,11 @@ function ppp_li_add_admin_tab( $tabs ) {
 }
 add_filter( 'ppp_admin_tabs', 'ppp_li_add_admin_tab', 10, 1 );
 
+/**
+ * Add the content box for LinkedIn in the social media settings
+ * @param  array $content The existing content blocks
+ * @return array          With LinkedIn
+ */
 function ppp_li_register_admin_social_content( $content ) {
 	$content[] = 'li';
 
@@ -134,6 +178,11 @@ function ppp_li_register_admin_social_content( $content ) {
 }
 add_filter( 'ppp_admin_social_content', 'ppp_li_register_admin_social_content', 10, 1 );
 
+/**
+ * Add LinkedIn to the Meta Box Tabs
+ * @param  array $tabs Existing Metabox Tabs
+ * @return array       Metabox tabs with LinkedIn
+ */
 function ppp_li_add_meta_tab( $tabs ) {
 	global $ppp_social_settings;
 	if ( ! ppp_linkedin_enabled() ) {
@@ -146,6 +195,11 @@ function ppp_li_add_meta_tab( $tabs ) {
 }
 add_filter( 'ppp_metabox_tabs', 'ppp_li_add_meta_tab', 10, 1 );
 
+/**
+ * Add LinkedIn to the Metabox Content
+ * @param  array $content The existing metabox content
+ * @return array          With LinkedIn
+ */
 function ppp_li_register_metabox_content( $content ) {
 	global $ppp_social_settings;
 	if ( ! ppp_linkedin_enabled() ) {
@@ -158,6 +212,11 @@ function ppp_li_register_metabox_content( $content ) {
 }
 add_filter( 'ppp_metabox_content', 'ppp_li_register_metabox_content', 10, 1 );
 
+/**
+ * Render the Metabox content for LinkedIn
+ * @param  [type] $post [description]
+ * @return [type]       [description]
+ */
 function ppp_li_add_metabox_content( $post ) {
 	global $ppp_options;
 	$default_text = !empty( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : __( 'Social Text', 'ppp-txt' );
@@ -220,6 +279,13 @@ function ppp_li_save_post_meta_boxes( $post_id, $post ) {
 }
 add_action( 'save_post', 'ppp_li_save_post_meta_boxes', 10, 2 ); // save the custom fields
 
+/**
+ * Share a linkedin post on Publish
+ * @param  string $old_status The old post status
+ * @param  string $new_status The new post status
+ * @param  object $post       The Post object
+ * @return void
+ */
 function ppp_li_share_on_publish( $old_status, $new_status, $post ) {
 	global $ppp_options;
 	$from_meta = get_post_meta( $post->ID, '_ppp_li_share_on_publish', true );
