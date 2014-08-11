@@ -41,7 +41,14 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 
 	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
 	$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
+	$override_enabled = wp_list_pluck( $ppp_post_override_data, 'enabled' );
 	$override_times = wp_list_pluck( $ppp_post_override_data, 'time' );
+
+	foreach ( $override_times as $key => $time ) {
+		if ( !isset( $override_enabled[$key] ) ) {
+			unset( $override_times[$key] );
+		}
+	}
 
 	$tweet_times = ( empty( $ppp_post_override ) ) ? ppp_get_default_times() : $override_times;
 
@@ -135,7 +142,11 @@ function ppp_share_post( $post_id, $name ) {
 
 	$share_message = ppp_tw_build_share_message( $post_id, $name );
 
-	$status['twitter'] = ppp_send_tweet( $share_message, $post_id );
+	$name_parts = explode( '_', $name );
+	$media = ppp_post_has_media( $post_id, 'tw', ppp_tw_use_media( $post_id, $name_parts[1] ) );
+
+	$status['twitter'] = ppp_send_tweet( $share_message, $post_id, $media );
+
 
 	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
 		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
