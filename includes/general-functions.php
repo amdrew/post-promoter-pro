@@ -7,7 +7,7 @@ function ppp_link_tracking_enabled() {
 	global $ppp_share_settings;
 	$result = false;
 
-	if ( isset( $ppp_share_settings['analytics'] ) && !empty( $ppp_share_settings['analytics'] ) ) {
+	if ( isset( $ppp_share_settings['analytics'] ) && $ppp_share_settings['analytics'] !== 'none' ) {
 		$result =  true;
 	}
 
