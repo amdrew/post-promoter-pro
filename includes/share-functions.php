@@ -47,6 +47,11 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 
 	$times = array();
 	foreach ( $tweet_times as $key => $data ) {
+
+		if ( empty( $ppp_post_override_data[$key]['enabled'] ) || $ppp_post_override_data[$key]['enabled'] !== '1' ) {
+			continue;
+		}
+
 		$days_ahead = substr( $key, -1 );
 		$share_time = explode( ':', $data );
 		$hours = (int) $share_time[0];
