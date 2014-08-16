@@ -269,6 +269,10 @@ add_action( 'ppp_generate_metabox_content-tw', 'ppp_tw_add_metabox_content', 10,
 function ppp_tw_save_post_meta_boxes( $post_id, $post ) {
 	global $ppp_options, $post;
 
+	if ( empty ( $post ) ) { // if $post is empty, like on a brand spanking new post, just return, we're not saving
+		return;
+	}
+
 	if ( !isset( $ppp_options['post_types'] ) || !is_array( $ppp_options['post_types'] ) || !array_key_exists( $post->post_type, $ppp_options['post_types'] ) ) {
 		return;
 	}
@@ -319,9 +323,10 @@ function ppp_tw_share_on_publish( $old_status, $new_status, $post ) {
 
 	$share_content = ( !empty( $ppp_share_on_publish_text ) ) ? $ppp_share_on_publish_text : ppp_tw_generate_share_content( $post->ID, null, false );
 	$name = 'sharedate_0_' . $post->ID;
+	$media = ppp_post_has_media( $post->ID, 'tw', $use_media );
 	$share_link = ppp_generate_link( $post->ID, $name, true );
 
-	$status['twitter'] = ppp_send_tweet( $share_content . ' ' . $share_link, $post->ID, $use_media );
+	$status['twitter'] = ppp_send_tweet( $share_content . ' ' . $share_link, $post->ID, $media );
 
 	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
 		update_post_meta( $post->ID, '_ppp-' . $name . '-status', $status );
