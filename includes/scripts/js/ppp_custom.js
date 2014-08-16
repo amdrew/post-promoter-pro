@@ -36,7 +36,8 @@
 
 		$.post(ajaxurl, data, function(response) {
 			if (response == '1') {
-				window.location.replace( '/wp-admin/admin.php?page=ppp-social-settings' );
+				var url = $('#bitly-redirect-url').val();
+				window.location.replace( url );
 			} else if (response === 'INVALID_LOGIN') {
 				$('.spinner').hide();
 				$('#ppp-bitly-invalid-login').show();

@@ -40,6 +40,7 @@ function ppp_display_bitly_settings() {
 			<div id="ppp-bitly-login-form-submit">
 				<a href="#" id="bitly-login" class="button-primary">Connect To Bit.ly</a><span class="spinner"></span>
 			</div>
+			<input type="hidden" id="bitly-redirect-url" value="<?php echo admin_url( 'admin.php?page=ppp-social-settings' ); ?>" />
 		</form>
 		<?php endif; ?>
 		<?php if ( ppp_bitly_enabled() ) : ?>
