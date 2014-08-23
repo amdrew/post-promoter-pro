@@ -53,9 +53,10 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	$tweet_times = ( empty( $ppp_post_override ) ) ? ppp_get_default_times() : $override_times;
 
 	$times = array();
+
 	foreach ( $tweet_times as $key => $data ) {
 
-		if ( empty( $ppp_post_override_data[$key]['enabled'] ) || $ppp_post_override_data[$key]['enabled'] !== '1' ) {
+		if ( $ppp_post_override && ( empty( $override_enabled[$key] ) || $override_enabled[$key] !== '1' ) ) {
 			continue;
 		}
 
