@@ -2,6 +2,7 @@
 include_once( PPP_PATH . '/includes/twitter-functions.php' );
 include_once( PPP_PATH . '/includes/linkedin-functions.php' );
 include_once( PPP_PATH . '/includes/bitly-functions.php' );
+include_once( PPP_PATH . '/includes/wpme-functions.php' );
 
 global $ppp_twitter_oauth, $ppp_bitly_oauth, $ppp_linkedin_oauth;
 
