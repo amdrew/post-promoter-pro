@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Post Promoter Pro
-Plugin URI: http://postpromoterpro.com
-Description: Schedule the promotion of blog posts for the next 6 days, with no further work.
+Plugin URI: https://postpromoterpro.com
+Description: Schedule the promotion of posts for the next 6 days, with no further work.
 Version: 2.0b3
 Author: Post Promoter Pro
-Author URI: http://postpromoterpro.com
+Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
