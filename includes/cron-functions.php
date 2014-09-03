@@ -18,6 +18,7 @@ function ppp_schedule_share( $post_id, $post ) {
 	$ppp_post_exclude = get_post_meta( $post_id, '_ppp_post_exclude', true );
 	if ( $ppp_post_exclude ) { // If the post meta says to exclude from social media posts, delete all scheduled and return
 		ppp_remove_scheduled_shares( $post_id );
+		return;
 	}
 
 	if ( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) ||
