@@ -61,7 +61,7 @@ function ppp_remove_scheduled_shares( $post_id ) {
 }
 
 /**
- * Given an array of arguements, remove a share
+ * Given an array of arguments, remove a share
  * @param  array $args Array containing 2 values $post_id and $name
  * @return void
  */
