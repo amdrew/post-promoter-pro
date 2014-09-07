@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Creates a listener for disconnecting a social media account
+ *
+ * Developers simply need to include the ?ppp_social_disconnect=true&ppp_network=[network_shortname]
+ * in their link to disconnect and then hook ppp_disconnect-[network_shortname]
+ * 
+ * @return void
+ */
 function ppp_disconnect_social() {
 	if ( isset( $_GET['ppp_social_disconnect'] ) && isset( $_GET['ppp_network'] ) ) {
 		$network = $_GET['ppp_network'];
@@ -8,6 +16,10 @@ function ppp_disconnect_social() {
 }
 add_action( 'admin_init', 'ppp_disconnect_social', 10 );
 
+/**
+ * Sets up and uses the social media metabox tabs
+ * @return void
+ */
 function ppp_generate_metabox_tabs() {
 	global $visibleKey;
 
@@ -33,6 +45,10 @@ function ppp_generate_metabox_tabs() {
 }
 add_action( 'ppp_metabox_tabs_display', 'ppp_generate_metabox_tabs', 10 );
 
+/**
+ * Sets up and uses the social media account tabs
+ * @return void
+ */
 function ppp_generate_social_account_tabs() {
 	global $visibleSettingTab;
 
@@ -60,6 +76,11 @@ function ppp_generate_social_account_tabs() {
 }
 add_action( 'ppp_social_media_tabs_display', 'ppp_generate_social_account_tabs', 10 );
 
+/**
+ * Sets up and displays the social media metaboxes
+ * @param  [type] $post [description]
+ * @return [type]       [description]
+ */
 function ppp_generate_metabox_content( $post ) {
 	global $visibleKey;
 	$tab_content = apply_filters( 'ppp_metabox_content', array() );
@@ -78,6 +99,10 @@ function ppp_generate_metabox_content( $post ) {
 }
 add_action( 'ppp_metabox_content_display', 'ppp_generate_metabox_content', 10, 1 );
 
+/**
+ * Sets up and displays the social media account settings
+ * @return [type] [description]
+ */
 function ppp_generate_social_account_content() {
 	global $visibleSettingTab;
 	$tab_content = apply_filters( 'ppp_admin_social_content', array() );
@@ -159,26 +184,28 @@ function ppp_list_view_maybe_take_action() {
 }
 add_action( 'admin_head', 'ppp_list_view_maybe_take_action', 10 );
 
-/**
- * When an entry is deleted from schedule view, register a notice
- * @return void
- */
-function ppp_item_deleted_notice() {
-	?>
-	<div class="updated">
-		<p><?php _e( 'Scheduled item has been deleted.', 'ppp-txt' ); ?></p>
-	</div>
-	<?php
-}
+	// These are used by the ppp_list_view_maybe_take_action function
+	
+	/**
+	 * When an entry is deleted from schedule view, register a notice
+	 * @return void
+	 */
+	function ppp_item_deleted_notice() {
+		?>
+		<div class="updated">
+			<p><?php _e( 'Scheduled item has been deleted.', 'ppp-txt' ); ?></p>
+		</div>
+		<?php
+	}
 
-/**
- * When an entry is shared from schedule view, register a notice
- * @return void
- */
-function ppp_item_posted_notice() {
-	?>
-	<div class="updated">
-		<p><?php _e( 'Item has been shared.', 'ppp-txt' ); ?></p>
-	</div>
-	<?php
-}
+	/**
+	 * When an entry is shared from schedule view, register a notice
+	 * @return void
+	 */
+	function ppp_item_posted_notice() {
+		?>
+		<div class="updated">
+			<p><?php _e( 'Item has been shared.', 'ppp-txt' ); ?></p>
+		</div>
+		<?php
+	}
