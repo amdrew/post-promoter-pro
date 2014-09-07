@@ -56,7 +56,7 @@ function ppp_is_shortener_enabled() {
  * Strips slashes and html_entities_decode for sending to the networks.
  */
 function ppp_entities_and_slashes( $string ) {
-	return stripslashes( html_entity_decode( $string ) );
+	return stripslashes( html_entity_decode( $string, ENT_COMPAT, 'UTF-8' ) );
 }
 
 /**
