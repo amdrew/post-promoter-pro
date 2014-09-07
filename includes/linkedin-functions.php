@@ -213,6 +213,15 @@ function ppp_li_register_metabox_content( $content ) {
 add_filter( 'ppp_metabox_content', 'ppp_li_register_metabox_content', 10, 1 );
 
 /**
+ * Registers the thumbnail size for LinkedIn
+ * @return void
+ */
+function ppp_li_register_thumbnail_size() {
+	add_image_size( 'ppp-li-share-image', 180, 110, true );
+}
+add_action( 'ppp_add_image_sizes', 'ppp_li_register_thumbnail_size' );
+
+/**
  * Render the Metabox content for LinkedIn
  * @param  [type] $post [description]
  * @return [type]       [description]

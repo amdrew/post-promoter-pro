@@ -60,7 +60,6 @@ class PostPromoterPro {
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ) );
 			add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
-			add_action( 'admin_head', 'ppp_list_view_maybe_take_action', 10 );
 		}
 
 		add_action( 'save_post', 'ppp_schedule_share', 99, 2);
@@ -81,6 +80,10 @@ class PostPromoterPro {
 		return self::$ppp_instance;
 	}
 
+	/**
+	 * On activation, setup the default options
+	 * @return void
+	 */
 	public function activation_setup() {
 		// If the settings already exist, don't do this
 		if ( get_option( 'ppp_options' ) ) {
@@ -192,11 +195,10 @@ class PostPromoterPro {
 		load_plugin_textdomain( 'ppp-txt', false, '/post-promoter-pro/languages/' );
 	}
 
-
 	/**
-	 * Setup the plugin updater
+	 * Sets up the EDD SL Plugin updated class
+	 * @return void
 	 */
-
 	public function plugin_updater() {
 		$license_key = trim( get_option( '_ppp_license_key' ) );
 
@@ -215,6 +217,10 @@ class PostPromoterPro {
 		);
 	}
 
+	/**
+	 * If no license key is saved, show a notice
+	 * @return void
+	 */
 	public function no_license_nag() {
 		?>
 		<div class="updated">
@@ -223,6 +229,10 @@ class PostPromoterPro {
 		<?php
 	}
 
+	/**
+	 * Deactivates the license key
+	 * @return void
+	 */
 	public function deactivate_license() {
 		// listen for our activate button to be clicked
 		if( isset( $_POST['ppp_license_deactivate'] ) ) {
@@ -259,6 +269,10 @@ class PostPromoterPro {
 		}
 	}
 
+	/**
+	 * Activates the license key provided
+	 * @return void
+	 */
 	public function activate_license() {
 		// listen for our activate button to be clicked
 		if( isset( $_POST['ppp_license_activate'] ) ) {
@@ -295,6 +309,11 @@ class PostPromoterPro {
 		}
 	}
 
+	/**
+	 * Sanatize the liscense key being provided
+	 * @param  string $new The License key provided
+	 * @return string      Sanitized license key
+	 */
 	public function ppp_sanitize_license( $new ) {
 		$old = get_option( '_ppp_license_key' );
 		if( $old && $old != $new ) {

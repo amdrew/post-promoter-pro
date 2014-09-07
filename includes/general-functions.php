@@ -59,9 +59,10 @@ function ppp_entities_and_slashes( $string ) {
 	return stripslashes( html_entity_decode( $string ) );
 }
 
+/**
+ * Runs hook for the social networks to add their thumbnail sizes
+ * @return void
+ */
 function ppp_add_image_sizes() {
-	add_image_size( 'ppp-tw-share-image', 528, 222, true );
-	add_image_size( 'ppp-li-share-image', 180, 110, true );
-
 	do_action( 'ppp_add_image_sizes' );
 }

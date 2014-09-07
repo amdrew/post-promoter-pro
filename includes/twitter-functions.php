@@ -40,6 +40,11 @@ function ppp_tw_connect_display() {
 }
 add_action( 'ppp_connect_display-tw', 'ppp_tw_connect_display' );
 
+
+/**
+ * Listen for the oAuth tokens and verifiers from Twitter when in admin
+ * @return void
+ */
 function ppp_capture_twitter_oauth() {
 	if ( isset( $_REQUEST['oauth_verifier'] ) && isset( $_REQUEST['oauth_token'] ) ) {
 		global $ppp_twitter_oauth;
@@ -50,6 +55,10 @@ function ppp_capture_twitter_oauth() {
 }
 add_action( 'admin_init', 'ppp_capture_twitter_oauth', 10 );
 
+/**
+ * Listen for the disconnect from Twitter
+ * @return void
+ */
 function ppp_disconnect_twitter() {
 	global $ppp_social_settings;
 	$ppp_social_settings = get_option( 'ppp_social_settings' );
@@ -111,6 +120,12 @@ function ppp_tw_generate_share_content( $post_id, $name, $is_scheduled = true ) 
 	return apply_filters( 'ppp_share_content', $share_content, array( 'post_id' => $post_id ) );
 }
 
+/**
+ * Return if media is supported for this scheduled tweet
+ * @param  int $post_id The Post ID
+ * @param  int $day     The day of this tween
+ * @return bool         Weather or not this tweet should contain a media post
+ */
 function ppp_tw_use_media( $post_id, $day ) {
 	if ( empty( $post_id ) || empty( $day ) ) {
 		return false;
@@ -122,6 +137,11 @@ function ppp_tw_use_media( $post_id, $day ) {
 	return $use_media;
 }
 
+/**
+ * Sets the constants for the oAuth tokens for Twitter
+ * @param  array $social_tokens The tokens stored in the transient
+ * @return void
+ */
 function ppp_set_tw_token_constants( $social_tokens ) {
 	if ( !empty( $social_tokens ) && property_exists( $social_tokens, 'twitter' ) ) {
 		define( 'PPP_TW_CONSUMER_KEY', $social_tokens->twitter->consumer_token );
@@ -130,6 +150,11 @@ function ppp_set_tw_token_constants( $social_tokens ) {
 }
 add_action( 'ppp_set_social_token_constants', 'ppp_set_tw_token_constants', 10, 1 );
 
+/**
+ * Register Twitter for the Social Media Accounts section
+ * @param  array $tabs Array of existing tabs
+ * @return array       The Array of existing tabs with Twitter added
+ */
 function ppp_tw_add_admin_tab( $tabs ) {
 	$tabs['tw'] = array( 'name' => __( 'Twitter', 'ppp-txt' ), 'class' => 'icon-ppp-tw' );
 
@@ -137,6 +162,11 @@ function ppp_tw_add_admin_tab( $tabs ) {
 }
 add_filter( 'ppp_admin_tabs', 'ppp_tw_add_admin_tab', 10, 1 );
 
+/**
+ * Register the Twitter connection area for the Social Media Accounts section
+ * @param  array $content The existing content tokens
+ * @return array          The content tokens with Twitter added
+ */
 function ppp_tw_register_admin_social_content( $content ) {
 	$content[] = 'tw';
 
@@ -144,6 +174,11 @@ function ppp_tw_register_admin_social_content( $content ) {
 }
 add_filter( 'ppp_admin_social_content', 'ppp_tw_register_admin_social_content', 10, 1 );
 
+/**
+ * Register the Twitter metabox tab
+ * @param  array $tabs The tabs
+ * @return array       The tabs with Twitter added
+ */
 function ppp_tw_add_meta_tab( $tabs ) {
 	global $ppp_social_settings;
 	if ( !isset( $ppp_social_settings['twitter'] ) ) {
@@ -156,6 +191,11 @@ function ppp_tw_add_meta_tab( $tabs ) {
 }
 add_filter( 'ppp_metabox_tabs', 'ppp_tw_add_meta_tab', 10, 1 );
 
+/**
+ * Register the metabox content for Twitter
+ * @param  array $content The existing metabox tokens
+ * @return array          The metabox tokens with Twitter added
+ */
 function ppp_tw_register_metabox_content( $content ) {
 	global $ppp_social_settings;
 	if ( !isset( $ppp_social_settings['twitter'] ) ) {
@@ -168,6 +208,20 @@ function ppp_tw_register_metabox_content( $content ) {
 }
 add_filter( 'ppp_metabox_content', 'ppp_tw_register_metabox_content', 10, 1 );
 
+/**
+ * Registers the thumbnail size for Twitter
+ * @return void
+ */
+function ppp_tw_register_thumbnail_size() {
+	add_image_size( 'ppp-tw-share-image', 528, 222, true );
+}
+add_action( 'ppp_add_image_sizes', 'ppp_tw_register_thumbnail_size' );
+
+/**
+ * The callback that adds Twitter metabox content
+ * @param  object $post The post object
+ * @return void         Displays the metabox content
+ */
 function ppp_tw_add_metabox_content( $post ) {
 	global $ppp_options;
 	$default_text = !empty( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : __( 'Social Text', 'ppp-txt' );
@@ -301,7 +355,13 @@ function ppp_tw_save_post_meta_boxes( $post_id, $post ) {
 }
 add_action( 'save_post', 'ppp_tw_save_post_meta_boxes', 10, 2 ); // save the custom fields
 
-
+/**
+ * Determines if the post should be shared on publish
+ * @param  string $old_status The old post status
+ * @param  string $new_status The new post status
+ * @param  object $post       The Post Object
+ * @return void               Shares the post
+ */
 function ppp_tw_share_on_publish( $old_status, $new_status, $post ) {
 	global $ppp_options;
 

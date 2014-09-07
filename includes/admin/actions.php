@@ -95,3 +95,90 @@ function ppp_generate_social_account_content() {
 	}
 }
 add_action( 'ppp_social_media_content_display', 'ppp_generate_social_account_content', 10, 1 );
+
+/**
+ * Listens for the share/delete actions on the schedule view
+ * @return void
+ */
+function ppp_list_view_maybe_take_action() {
+	if ( !isset( $_GET['page'] ) || $_GET['page'] !== 'ppp-schedule-info' ) {
+		return;
+	}
+
+	if ( !isset( $_GET['action'] ) ) {
+		return;
+	}
+
+	// Get the necessary info for the actions
+	$post_id = isset( $_GET['post_id'] ) ? $_GET['post_id'] : 0;
+	$name    = isset( $_GET['name'] ) ? $_GET['name'] : '';
+	$day     = isset( $_GET['day'] ) ? $_GET['day'] : 0;
+	$delete  = isset( $_GET['delete_too'] ) ? true : false;
+
+	switch( $_GET['action'] ) {
+		case 'delete_item':
+			if ( !empty( $post_id ) && !empty( $name ) || empty( $day ) ) {
+				ppp_remove_scheduled_share( array( (int)$post_id, $name ) ); // Remove the item in cron
+
+				// Remove the item from postmeta if it exists.
+				$current_post_meta = get_post_meta( $post_id, '_ppp_post_override_data', true );
+
+				if ( isset( $current_post_meta['day'.$day] ) ) {
+					unset( $current_post_meta['day'.$day ] );
+					update_post_meta( $post_id, '_ppp_post_override_data', $current_post_meta );
+				}
+
+				// Display the notice
+				add_action( 'admin_notices', 'ppp_item_deleted_notice' );
+			}
+			break;
+		case 'share_now':
+			if ( !empty( $post_id ) && !empty( $name ) ) {
+				ppp_share_post( $post_id, $name );
+
+				if ( $delete && !empty( $day ) ) {
+					ppp_remove_scheduled_share( array( (int)$post_id, $name ) ); // Remove the item in cron
+
+					// Remove the item from postmeta if it exists.
+					$current_post_meta = get_post_meta( $post_id, '_ppp_post_override_data', true );
+
+					if ( isset( $current_post_meta['day'.$day] ) ) {
+						unset( $current_post_meta['day'.$day ] );
+						update_post_meta( $post_id, '_ppp_post_override_data', $current_post_meta );
+					}
+
+					// Display the notice
+					add_action( 'admin_notices', 'ppp_item_deleted_notice' );
+				}
+				add_action( 'admin_notices', 'ppp_item_posted_notice' );
+			}
+			break;
+		default:
+			break;
+	}
+}
+add_action( 'admin_head', 'ppp_list_view_maybe_take_action', 10 );
+
+/**
+ * When an entry is deleted from schedule view, register a notice
+ * @return void
+ */
+function ppp_item_deleted_notice() {
+	?>
+	<div class="updated">
+		<p><?php _e( 'Scheduled item has been deleted.', 'ppp-txt' ); ?></p>
+	</div>
+	<?php
+}
+
+/**
+ * When an entry is shared from schedule view, register a notice
+ * @return void
+ */
+function ppp_item_posted_notice() {
+	?>
+	<div class="updated">
+		<p><?php _e( 'Item has been shared.', 'ppp-txt' ); ?></p>
+	</div>
+	<?php
+}

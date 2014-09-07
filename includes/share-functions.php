@@ -98,6 +98,10 @@ function ppp_is_day_enabled( $day ) {
 	return apply_filters( 'ppp_is_day_enabled', $day_status, $day );
 }
 
+/**
+ * Get the times set as defaults
+ * @return array The times set as default in the settings
+ */
 function ppp_get_default_times() {
 	$number_of_days = ppp_share_days_count();
 	$day = 1;
@@ -112,6 +116,11 @@ function ppp_get_default_times() {
 	return $times;
 }
 
+/**
+ * Get the default time for a specific day provided
+ * @param  int $day The day of the share
+ * @return string   Time in H:MMam/pm format
+ */
 function ppp_get_day_default_time( $day ) {
 	global $ppp_options;
 
@@ -231,6 +240,13 @@ function ppp_generate_link_tracking( $share_link, $post_id, $name ) {
 	return $share_link;
 }
 
+/**
+ * Determines if the post being shared should has media attached
+ * @param  int $post_id      Post ID
+ * @param  string $network   The Network being shared to
+ * @param  bool $use_media   If this share should use media or not
+ * @return mixed             If a thumbnail is found returns the URL, otherwise returns false
+ */
 function ppp_post_has_media( $post_id, $network, $use_media ) {
 	if ( !$use_media || empty( $post_id ) || empty( $network ) ) {
 		return false;
