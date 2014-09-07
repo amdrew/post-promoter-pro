@@ -238,6 +238,7 @@ function ppp_tw_add_metabox_content( $post ) {
 	$exclude_style = ( !empty( $ppp_post_exclude ) ) ? 'display: none;' : '';
 	$override_style = ( empty( $ppp_post_override ) ) ? 'display: none;' : '';
 	?>
+		<p>
 			<p>
 			<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
 			<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_share_on_publish" id="ppp_share_on_publish" value="1" <?php checked( '1', $ppp_share_on_publish, true ); ?> />&nbsp;
@@ -310,6 +311,7 @@ function ppp_tw_add_metabox_content( $post ) {
 				</div>
 				<p><?php _e( 'Do not include links in your text, this will be added automatically.', 'ppp-txt' ); ?></p>
 			</div>
+		</p>
 	<?php
 }
 add_action( 'ppp_generate_metabox_content-tw', 'ppp_tw_add_metabox_content', 10, 1 );
