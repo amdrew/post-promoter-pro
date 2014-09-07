@@ -13,6 +13,23 @@ function ppp_add_wpme_shortener( $selected_shortener ) {
 add_action( 'ppp_url_shorteners', 'ppp_add_wpme_shortener', 10, 1 );
 
 /**
+ * Displays the wpme settings area when wpme is selected as the URL shortener
+ * @return void
+ */
+function ppp_display_wpme_settings() {
+	?>
+	<p>
+		<strong>Note:</strong>
+		<em>
+			<p><?php _e( 'The WP.me URL shortener does not support the Analytics settings listed above. No analytics tracking will be available.', 'ppp-txt' ); ?></p>
+		</em>
+	</p>
+	<?php
+}
+add_action( 'ppp_shortener_settings-wpme', 'ppp_display_wpme_settings', 10 );
+
+
+/**
  * Convert a link to WP.me
  * @param string $link The link, before shortening
  * @return string      The link, after shortening through wp.me
