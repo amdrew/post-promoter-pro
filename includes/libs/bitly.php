@@ -16,9 +16,7 @@ if( !class_exists( 'PPP_Bitly' ) ) {
 		var $bitly;
 
 		public function __construct(){
-			if ( !isset( $_SESSION ) ) {
-			  	session_start();
-			}
+			ppp_maybe_start_session();
 		}
 
 		/**

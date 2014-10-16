@@ -1,4 +1,15 @@
 <?php
+
+/**
+ * Checks to see if a session is set and it's appropriate to start one, and starts it if necessary
+ * @return void
+ */
+function ppp_maybe_start_session() {
+	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && !isset( $_SESSION ) ) {
+		session_start();
+	}
+}
+
 /**
  * Returns if a link tracking method is enabled
  * @return boolean True if a form of link tracking is enabled, false if not
