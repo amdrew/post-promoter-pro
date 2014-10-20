@@ -150,10 +150,14 @@ function ppp_display_social() {
 		<form method="post" action="options.php">
 			<?php wp_nonce_field( 'ppp-share-settings' ); ?>
 			<table class="form-table">
+				<?php
+				require_once PPP_PATH . 'includes/admin/class-accounts-table.php';
 
-				<?php do_action( 'ppp_social_media_tabs_display' ); ?>
+				$accounts_table = new PPP_Accounts_Table();
+				$accounts_table->prepare_items();
 
-				<?php do_action( 'ppp_social_media_content_display' ); ?>
+				$accounts_table->display();
+				?>
 
 				<?php
 				$analytics_option = isset( $ppp_share_settings['analytics'] ) ? $ppp_share_settings['analytics'] : 0;
