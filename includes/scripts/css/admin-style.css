@@ -76,9 +76,9 @@
 .ppp-social-icon {
 	float: left;
 	padding: 5px;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
 }
 
 .ppp-twitter-info {
@@ -109,6 +109,30 @@
 
 .ppp_share_on_publish_text {
 	padding-left: 25px;
+}
+
+.fixed .column-icon {
+	width: 25px;
+}
+
+.icon.column-icon, .avatar.column-avatar, .name.column-name, .actions.column-actions, .extras.column-extras {
+	vertical-align: middle;
+}
+
+.icon.column-icon .dashicons {
+	font-size: 30px;
+}
+
+.column-avatar {
+	width: 65px;
+}
+
+.column-name {
+	width: 225px;
+}
+
+.column-actions {
+	width: 50%;
 }
 
 /* Dashicon Styles */
