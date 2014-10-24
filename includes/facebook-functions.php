@@ -63,6 +63,26 @@ function ppp_fb_account_list_actions( $string ) {
 }
 add_filter( 'ppp_account_list_actions-fb', 'ppp_fb_account_list_actions', 10, 1 );
 
+function ppp_fb_account_list_extras( $string ) {
+
+	if ( ppp_facebook_enabled() ) {
+		global $ppp_social_settings, $ppp_facebook_oauth;
+		$pages = $ppp_facebook_oauth->ppp_get_fb_user_pages( $ppp_social_settings['facebook']->access_token );
+		if ( !empty( $pages ) ) {
+			$string = '<label>' . __( 'Publish as:', 'ppp-txt' ) . '</label>';
+			$string .= '<select name="ppp_social_settings[facebook][page]">';
+			$string .= '<option value="me">' . __( 'Me', 'ppp-txt' ) . '</option>';
+			foreach ( $pages->data as $page ) {
+				$string .= '<option value="' . $page->name . '|' . $page->access_token . '|' . $page->id . '">' . $page->name . '</option>';
+			}
+			$string .= '</select>';
+		}
+	}
+
+	return $string;
+}
+add_filter( 'ppp_account_list_extras-fb', 'ppp_fb_account_list_extras', 10, 1 );
+
 /**
  * Sets the constants for the oAuth tokens for Twitter
  * @param  array $social_tokens The tokens stored in the transient
@@ -104,3 +124,56 @@ function ppp_disconnect_facebook() {
 	}
 }
 add_action( 'ppp_disconnect-facebook', 'ppp_disconnect_facebook', 10 );
+
+/**
+ * Add query vars for Facebook
+ * @param  array $vars Currenty Query Vars
+ * @return array       Query vars array with facebook added
+ */
+function ppp_fb_query_vars( $vars ) {
+	$vars[] = 'fb_access_token';
+	$vars[] = 'expires_in';
+
+	return $vars;
+}
+add_filter( 'query_vars', 'ppp_fb_query_vars' );
+
+/**
+ * Refreshes the Facebook Access Token
+ * @return void
+ */
+function ppp_fb_execute_refresh() {
+	if ( !ppp_facebook_enabled() ) {
+		return;
+	}
+
+	$expiration_date = get_option( '_ppp_facebook_refresh', true );
+
+	if ( current_time( 'timestamp' ) > $expiration_date ) {
+		add_action( 'admin_notices', 'ppp_facebook_refresh_notice' );
+	}
+}
+add_action( 'admin_init', 'ppp_fb_execute_refresh' );
+
+/**
+ * Displays notice when the Facebook Token is nearing expiration
+ * @return void
+ */
+function ppp_facebook_refresh_notice() {
+	global $ppp_facebook_oauth, $ppp_social_settings;
+
+	// Look for the tokens coming back
+	$ppp_facebook_oauth->ppp_initialize_facebook();
+	$expiration_date = get_option( '_ppp_facebook_refresh', true );
+
+	$token = $ppp_social_settings['facebook']->access_token;
+	$url = $ppp_facebook_oauth->ppp_get_facebook_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
+	$url = str_replace( '?ppp-social-auth', '?ppp-social-auth&ppp-refresh=true&access_token=' . $token, $url );
+
+	$days_left = round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+	?>
+	<div class="update-nag">
+		<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your Facebook authentcation expires in within %d days. Please <a href="%s">refresh access.</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
+	</div>
+	<?php
+}

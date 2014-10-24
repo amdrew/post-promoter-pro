@@ -112,6 +112,20 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 		}
 
+		public function ppp_get_fb_user_pages( $access_token ) {
+
+			// load facebook class
+			$facebook = $this->ppp_load_facebook();
+
+			// check facebook cleast is exists or not
+			if( !$facebook ) return false;
+
+			global $ppp_social_settings;
+			$pages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://graph.facebook.com/me/accounts?access_token=' . $access_token ) ) );
+
+			return $pages;
+		}
+
 		/**
 		 * Access Token
 		 *
