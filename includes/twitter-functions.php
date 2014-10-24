@@ -278,8 +278,10 @@ function ppp_tw_add_metabox_content( $post ) {
 						<?php if ( isset( $ppp_share_on_publish_text ) ) {?>value="<?php echo htmlspecialchars( $ppp_share_on_publish_text ); ?>"<?php ;}?>
 					/><span class="ppp-text-length"></span>
 					<br />
-					<input <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
+					<span>
+						<input class="ppp-tw-featured-image-input" <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
 						&nbsp;<label for="ppp-share-on-publish-image"><?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?></label>
+					</span>
 				</p>
 			</p>
 			<input type="checkbox" name="_ppp_post_exclude" id="_ppp_post_exclude" value="1" <?php checked( '1', $ppp_post_exclude, true ); ?> />&nbsp;
@@ -325,7 +327,7 @@ function ppp_tw_add_metabox_content( $post ) {
 						<br />
 						<?php $use_image = isset( $ppp_post_override_data['day' . $day]['use_image'] ) ? '1' : false; ?>
 						<span class="ppp-override-meta">
-							<input <?php if ( $readonly ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_post_override_data[day<?php echo $day; ?>][use_image]" value="1" <?php checked( '1', $use_image, true ); ?> />&nbsp;<?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?>
+							<input class="ppp-tw-featured-image-input" <?php if ( $readonly ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_post_override_data[day<?php echo $day; ?>][use_image]" value="1" <?php checked( '1', $use_image, true ); ?> />&nbsp;<?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?>
 						</span>
 						</p>
 						<?php

@@ -1,3 +1,6 @@
+var tweetLengthYellow = 100;
+var tweetLengthRed    = 117;
+
 (function ($) {
 	$('.share-time-selector').timepicker({ 'step': 15 });
 
@@ -70,17 +73,35 @@
 		return false;
 	});
 
+	$('.ppp-tw-featured-image-input').click( function() {
+
+		if($(this).is(':checked')) {
+			tweetLengthYellow = tweetLengthYellow - 22;
+			tweetLengthRed    = tweetLengthRed - 22;
+		} else {
+			tweetLengthYellow = tweetLengthYellow + 22;
+			tweetLengthRed    = tweetLengthRed + 22;
+		}
+		alert(tweetLengthYellow); alert(tweetLengthRed);
+	});
+
 })(jQuery);
 
 function PPPCountChar(val) {
 	var len = val.value.length;
 	var lengthField = jQuery(val).next('.ppp-text-length');
+
 	lengthField.text(len);
-	if (len < 100 ) {
-		lengthField.css('color', '#339933');
-	} else if ( len >= 100 && len < 117 ) {
-		lengthField.css('color', '#CC9933');
-	} else if ( len > 117 ) {
-		lengthField.css('color', '#FF3333');
+
+	PPPColorLengthChange(len, lengthField);
+}
+
+function PPPColorLengthChange(length, object) {
+	if (length < tweetLengthYellow ) {
+		object.css('color', '#339933');
+	} else if ( length >= tweetLengthYellow && length < tweetLengthRed ) {
+		object.css('color', '#CC9933');
+	} else if ( length > tweetLengthRed ) {
+		object.css('color', '#FF3333');
 	}
 }
