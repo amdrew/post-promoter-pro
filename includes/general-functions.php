@@ -5,7 +5,7 @@
  * @return void
  */
 function ppp_maybe_start_session() {
-	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && !isset( $_SESSION ) ) {
+	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && !isset( $_SESSION ) && !defined( 'DOING_AJAX' ) ) {
 		session_start();
 	}
 }

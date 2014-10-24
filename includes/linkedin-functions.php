@@ -13,31 +13,56 @@ function ppp_linkedin_enabled() {
 	return false;
 }
 
-/**
- * Display the linked in Connection area
- * @return void
- */
-function ppp_li_connect_display() {
-	?>
-	<div>
-	<?php
-	global $ppp_linkedin_oauth, $ppp_social_settings;
-	if ( !ppp_linkedin_enabled() ) { ?>
-		<?php $li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( get_bloginfo( 'url' ) . $_SERVER['REQUEST_URI'] ); ?>
-		<a class="button-primary" href="<?php echo $li_authurl; ?>"><?php _e( 'Connect to Linkedin', 'ppp-txt' ); ?></a>
-	<?php } else { ?>
-		<div class="ppp-social-profile ppp-linkedin-profile">
-			<div class="ppp-linkedin-info">
-				<?php _e( 'Signed in as', 'ppp-txt' ); ?>: <?php echo $ppp_social_settings['linkedin']->firstName . ' ' . $ppp_social_settings['linkedin']->lastName; ?>
-				<br />
-				<?php echo $ppp_social_settings['linkedin']->headline; ?>
-			</div>
-		</div>
-		<a class="button-primary" href="<?php echo admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=linkedin' ); ?>" ><?php _e( 'Disconnect from Linkedin', 'ppp-txt' ); ?></a>&nbsp;
-	</div>
-	<?php }
+function ppp_li_register_service( $services ) {
+	$services[] = 'li';
+
+	return $services;
 }
-add_action( 'ppp_connect_display-li', 'ppp_li_connect_display' );
+add_filter( 'ppp_register_social_service', 'ppp_li_register_service', 10, 1 );
+
+function ppp_li_account_list_icon( $string ) {
+	return '<span class="dashicons icon-ppp-li"></span>';
+}
+add_filter( 'ppp_account_list_icon-li', 'ppp_li_account_list_icon', 10, 1 );
+
+function ppp_li_account_list_avatar( $string ) {
+
+	if ( ppp_linkedin_enabled() ) {
+		global $ppp_social_settings;
+		$avatar_url = $ppp_social_settings['twitter']['user']->profile_image_url_https;
+		$string = '<img class="ppp-social-icon" src="' . $avatar_url . '" />';
+	}
+
+	return $string;
+}
+//add_filter( 'ppp_account_list_avatar-li', 'ppp_li_account_list_avatar', 10, 1 );
+
+function ppp_li_account_list_name( $string ) {
+
+	if ( ppp_linkedin_enabled() ) {
+		global $ppp_social_settings;
+		$string  = $ppp_social_settings['linkedin']->firstName . ' ' . $ppp_social_settings['linkedin']->lastName;
+		$string .= '<br />' . $ppp_social_settings['linkedin']->headline;
+	}
+
+	return $string;
+}
+add_filter( 'ppp_account_list_name-li', 'ppp_li_account_list_name', 10, 1 );
+
+function ppp_li_account_list_actions( $string ) {
+
+	if ( ! ppp_linkedin_enabled() ) {
+		global $ppp_linkedin_oauth, $ppp_social_settings;
+		$li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( get_bloginfo( 'url' ) . $_SERVER['REQUEST_URI'] );
+
+		$string = '<a class="button-primary" href="' . $li_authurl . '">' . __( 'Connect to Linkedin', 'ppp-txt' ) . '</a>';
+	} else {
+		$string  = '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=linkedin' ) . '" >' . __( 'Disconnect from Linkedin', 'ppp-txt' ) . '</a>&nbsp;';
+	}
+
+	return $string;
+}
+add_filter( 'ppp_account_list_actions-li', 'ppp_li_account_list_actions', 10, 1 );
 
 /**
  * Capture the oauth return from linkedin
