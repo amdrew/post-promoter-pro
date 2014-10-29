@@ -13,33 +13,57 @@ function ppp_twitter_enabled() {
 	return false;
 }
 
-function ppp_tw_connect_display() {
-	?>
-	<div>
-		<?php
+function ppp_tw_register_service( $services ) {
+	$services[] = 'tw';
+
+	return $services;
+}
+add_filter( 'ppp_register_social_service', 'ppp_tw_register_service', 10, 1 );
+
+function ppp_tw_account_list_icon( $string ) {
+	return '<span class="dashicons icon-ppp-tw"></span>';
+}
+add_filter( 'ppp_account_list_icon-tw', 'ppp_tw_account_list_icon', 10, 1 );
+
+function ppp_tw_account_list_avatar( $string ) {
+
+	if ( ppp_twitter_enabled() ) {
+		global $ppp_social_settings;
+		$avatar_url = $ppp_social_settings['twitter']['user']->profile_image_url_https;
+		$string = '<img class="ppp-social-icon" src="' . $avatar_url . '" />';
+	}
+
+	return $string;
+}
+add_filter( 'ppp_account_list_avatar-tw', 'ppp_tw_account_list_avatar', 10, 1 );
+
+function ppp_tw_account_list_name( $string ) {
+
+	if ( ppp_twitter_enabled() ) {
+		global $ppp_social_settings;
+		$string = $ppp_social_settings['twitter']['user']->name;
+	}
+
+	return $string;
+}
+add_filter( 'ppp_account_list_name-tw', 'ppp_tw_account_list_name', 10, 1 );
+
+function ppp_tw_account_list_actions( $string ) {
+
+	if ( ! ppp_twitter_enabled() ) {
 		global $ppp_twitter_oauth, $ppp_social_settings;
 		$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
+		$tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url();
 
-		if ( isset( $tw_auth['error'] ) ) {
-			?><div class="update error"><p><?php echo $tw_auth['error']; ?></p></div><?php
-		} ?>
-		<?php $ppp_social_settings = get_option( 'ppp_social_settings' ); ?>
+		$string = '<a href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
+	} else {
+		$string  = '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=twitter' ) . '" >' . __( 'Disconnect from Twitter', 'ppp-txt' ) . '</a>&nbsp;';
+		$string .= '<a class="button-secondary" href="https://twitter.com/settings/applications" target="blank">' . __( 'Revoke Access via Twitter', 'ppp-txt' ) . '</a>';
+	}
 
-		<?php if ( !ppp_twitter_enabled() ) { ?>
-			<?php $tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url(); ?>
-			<a href="<?php echo $tw_authurl; ?>"><img src="<?php echo PPP_URL; ?>/includes/images/sign-in-with-twitter-gray.png" /></a>
-		<?php } else { ?>
-		<div class="ppp-social-profile ppp-twitter-profile">
-			<img class="ppp-social-icon" src="<?php echo $ppp_social_settings['twitter']['user']->profile_image_url_https; ?>" />
-			<div class="ppp-twitter-info"><?php _e( 'Signed in as', 'ppp-txt' ); ?>:<br /><?php echo $ppp_social_settings['twitter']['user']->name; ?></div>
-		</div>
-		<a class="button-primary" href="<?php echo admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=twitter' ); ?>" ><?php _e( 'Disconnect from Twitter', 'ppp-txt' ); ?></a>&nbsp;
-		<a class="button-secondary" href="https://twitter.com/settings/applications" target="blank"><?php _e( 'Revoke Access via Twitter', 'ppp-txt' ); ?></a>
-	</div>
-	<?php }
+	return $string;
 }
-add_action( 'ppp_connect_display-tw', 'ppp_tw_connect_display' );
-
+add_filter( 'ppp_account_list_actions-tw', 'ppp_tw_account_list_actions', 10, 1 );
 
 /**
  * Listen for the oAuth tokens and verifiers from Twitter when in admin
@@ -254,8 +278,10 @@ function ppp_tw_add_metabox_content( $post ) {
 						<?php if ( isset( $ppp_share_on_publish_text ) ) {?>value="<?php echo htmlspecialchars( $ppp_share_on_publish_text ); ?>"<?php ;}?>
 					/><span class="ppp-text-length"></span>
 					<br />
-					<input <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
+					<span>
+						<input class="ppp-tw-featured-image-input" <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
 						&nbsp;<label for="ppp-share-on-publish-image"><?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?></label>
+					</span>
 				</p>
 			</p>
 			<input type="checkbox" name="_ppp_post_exclude" id="_ppp_post_exclude" value="1" <?php checked( '1', $ppp_post_exclude, true ); ?> />&nbsp;
@@ -301,7 +327,7 @@ function ppp_tw_add_metabox_content( $post ) {
 						<br />
 						<?php $use_image = isset( $ppp_post_override_data['day' . $day]['use_image'] ) ? '1' : false; ?>
 						<span class="ppp-override-meta">
-							<input <?php if ( $readonly ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_post_override_data[day<?php echo $day; ?>][use_image]" value="1" <?php checked( '1', $use_image, true ); ?> />&nbsp;<?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?>
+							<input class="ppp-tw-featured-image-input" <?php if ( $readonly ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_post_override_data[day<?php echo $day; ?>][use_image]" value="1" <?php checked( '1', $use_image, true ); ?> />&nbsp;<?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?>
 						</span>
 						</p>
 						<?php

@@ -40,13 +40,21 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	$offset = (int) -( get_option( 'gmt_offset' ) ); // Make the timestamp in the users' timezone, b/c that makes more sense
 
 	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
-	$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
-	$override_enabled = wp_list_pluck( $ppp_post_override_data, 'enabled' );
-	$override_times = wp_list_pluck( $ppp_post_override_data, 'time' );
+	if ( $ppp_post_override ) {
+		$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
+		foreach ( $ppp_post_override_data as $key => $values ) {
+			if ( !isset( $ppp_post_override_data[$key]['enabled'] ) ) {
+				$ppp_post_override_data[$key]['enabled'] = false;
+			}
+		}
 
-	foreach ( $override_times as $key => $time ) {
-		if ( !isset( $override_enabled[$key] ) ) {
-			unset( $override_times[$key] );
+		$override_enabled = wp_list_pluck( $ppp_post_override_data, 'enabled' );
+		$override_times = wp_list_pluck( $ppp_post_override_data, 'time' );
+
+		foreach ( $override_times as $key => $time ) {
+			if ( !isset( $override_enabled[$key] ) ) {
+				unset( $override_times[$key] );
+			}
 		}
 	}
 
