@@ -196,7 +196,11 @@ function ppp_display_social() {
 						<hr />
 						<small><?php _e( 'Here is an example of what your link will look like', 'ppp-txt' ); ?>: <br />
 							<?php $post = wp_get_recent_posts( array( 'numberposts' => 1 ) ); ?>
-							<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'], false ); ?></code></small>
+							<?php if( count( $post ) > 0 ): ?>
+								<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'], false ); ?></code></small>
+							<?php else: ?>
+								<em><?php _e( 'No posts available to generate link from.', 'ppp-txt' ); ?></em>
+							<?php endif; ?>
 						</p>
 					</td>
 				</tr>
