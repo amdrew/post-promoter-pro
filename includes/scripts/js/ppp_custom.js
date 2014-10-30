@@ -100,7 +100,7 @@ var tweetLengthRed    = 117;
 			tweetLengthYellow = tweetLengthYellow + 22;
 			tweetLengthRed    = tweetLengthRed + 22;
 		}
-		alert(tweetLengthYellow); alert(tweetLengthRed);
+
 	});
 
 })(jQuery);
