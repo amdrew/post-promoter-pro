@@ -90,6 +90,9 @@ function ppp_generate_google_utm_link( $share_link, $post_id, $name ) {
 		case 'li':
 			$network = 'LinkedIn';
 			break;
+		case 'fb':
+			$network = 'Facebook';
+			break;
 		case 'tw':
 		default:
 			$network = 'Twitter';

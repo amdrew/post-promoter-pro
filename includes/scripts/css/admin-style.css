@@ -2,7 +2,7 @@
 	float: left;
 }
 
-#ppp-li-image > img {
+#ppp-li-image > img, #ppp-fb-image > img {
 	padding: 5px;
 	border: 1px solid #ccc;
 	margin: 0 5px 25px 0;
