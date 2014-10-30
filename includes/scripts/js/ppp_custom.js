@@ -51,6 +51,24 @@ var tweetLengthRed    = 117;
 		});
 	});
 
+	$('#fb-page').change( function() {
+		var data = {};
+		var select = $('#fb-page');
+		select.attr('disabled', 'disabled');
+		select.css('opacity', '.5');
+		select.next('.spinner').show();
+		data.action   = 'fb_set_page';
+		data.account = select.val();
+		select.width('75%');
+
+		$.post(ajaxurl, data, function(response) {
+			select.removeAttr('disabled');
+			select.css('opacity', '1');
+			select.next('.spinner').hide();
+			select.width('100%');
+		});
+	});
+
 	$('#ppp-tabs li').click( function(e) {
 		e.preventDefault();
 		$('#ppp-tabs li').removeClass('tabs');

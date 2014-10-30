@@ -121,7 +121,14 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			if( !$facebook ) return false;
 
 			global $ppp_social_settings;
-			$pages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://graph.facebook.com/me/accounts?access_token=' . $access_token ) ) );
+			if ( !isset( $ppp_social_settings['facebook']->available_pages ) ) {
+				$pages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://graph.facebook.com/me/accounts?access_token=' . $access_token ) ) );
+
+				$ppp_social_settings['facebook']->available_pages = $pages;
+				update_option( 'ppp_social_settings', $ppp_social_settings );
+			} else {
+				$pages = $ppp_social_settings['facebook']->available_pages;
+			}
 
 			return $pages;
 		}
@@ -190,6 +197,29 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			}
 			$url = 'https://graph.facebook.com/' . $user . '/picture?type=' . $type;
 			return $url;
+		}
+
+		public function ppp_fb_share_link( $link, $message, $image ) {
+			global $ppp_social_settings;
+			$facebook_settings = $ppp_social_settings['facebook'];
+
+			if ( !isset( $facebook_settings->page ) || strtolower( $facebook_settings->page ) === 'me' ) {
+				$account      = 'me';
+				$access_token = $facebook_settings->access_token;
+			} else {
+				$page_info    = explode( '|', $facebook_settings->page );
+				$account      = $page_info[2];
+				$access_token = $page_info[1];
+			}
+
+			$url = 'https://graph.facebook.com/' . $account . '/feed?access_token=' . $access_token;
+			$args = array( 'link' => $link, 'message' => $message );
+			if ( !empty( $image ) ) {
+				$args['picture'] = $image;
+			}
+			$results = wp_remote_post( $url, array( 'body' => $args ) );
+
+			return $results;
 		}
 
 		/**
