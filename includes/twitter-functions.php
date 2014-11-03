@@ -374,10 +374,15 @@ function ppp_tw_save_post_meta_boxes( $post_id, $post ) {
 	update_post_meta( $post->ID, '_ppp_share_on_publish_text', $ppp_share_on_publish_text );
 	update_post_meta( $post->ID, '_ppp_share_on_publish_include_image', $ppp_share_on_publish_include_image );
 
-	update_post_meta( $post->ID, '_ppp_post_override', $ppp_post_override );
 
 	// Fixes a bug when all items are unchecked from being checked, removed if statement
-	update_post_meta( $post->ID, '_ppp_post_override_data', $ppp_post_override_data );
+	if ( $ppp_post_exclude === '1' ) {
+		delete_post_meta( $post->ID, '_ppp_post_override' );
+		delete_post_meta( $post->ID, '_ppp_post_override_data' );
+	} else {
+		update_post_meta( $post->ID, '_ppp_post_override', $ppp_post_override );
+		update_post_meta( $post->ID, '_ppp_post_override_data', $ppp_post_override_data );
+	}
 
 	return $post->ID;
 }
