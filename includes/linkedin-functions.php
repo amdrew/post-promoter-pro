@@ -88,7 +88,7 @@ function ppp_disconnect_linkedin() {
 	if ( isset( $ppp_social_settings['linkedin'] ) ) {
 		unset( $ppp_social_settings['linkedin'] );
 		update_option( 'ppp_social_settings', $ppp_social_settings );
-		delete_option( '_ppp_li_linkedin_expires' );
+		delete_option( '_ppp_linkedin_refresh' );
 	}
 }
 add_action( 'ppp_disconnect-linkedin', 'ppp_disconnect_linkedin', 10 );
@@ -358,3 +358,19 @@ function ppp_li_share_on_publish( $old_status, $new_status, $post ) {
 	}
 }
 add_action( 'ppp_share_on_publish', 'ppp_li_share_on_publish', 10, 3 );
+
+function ppp_li_account_list_extras( $string ) {
+	if ( ppp_linkedin_enabled() ) {
+		global $ppp_social_settings;
+
+		$days_left  = round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+		$refresh_in = round( ( get_option( '_ppp_linkedin_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+
+		$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
+		$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
+	}
+
+	return $string;
+
+}
+add_filter( 'ppp_account_list_extras-li', 'ppp_li_account_list_extras', 10, 1 );
