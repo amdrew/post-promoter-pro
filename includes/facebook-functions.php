@@ -80,9 +80,15 @@ function ppp_fb_account_list_extras( $string ) {
 			}
 			$string .= '</select><span class="spinner"></span>';
 		}
-	}
 
-	return $string;
+		$days_left  = round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+		$refresh_in = round( ( get_option( '_ppp_facebook_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+
+		$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
+		$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
+
+		return $string;
+	}
 }
 add_filter( 'ppp_account_list_extras-fb', 'ppp_fb_account_list_extras', 10, 1 );
 
@@ -123,7 +129,7 @@ function ppp_disconnect_facebook() {
 	if ( isset( $ppp_social_settings['facebook'] ) ) {
 		unset( $ppp_social_settings['facebook'] );
 		update_option( 'ppp_social_settings', $ppp_social_settings );
-		delete_option( '_ppp_li_facebook_expires' );
+		delete_option( '_ppp_facebook_refresh' );
 	}
 }
 add_action( 'ppp_disconnect-facebook', 'ppp_disconnect_facebook', 10 );
@@ -156,7 +162,7 @@ function ppp_fb_execute_refresh() {
 		add_action( 'admin_notices', 'ppp_facebook_refresh_notice' );
 	}
 }
-add_action( 'admin_init', 'ppp_fb_execute_refresh' );
+add_action( 'admin_init', 'ppp_fb_execute_refresh', 99 );
 
 /**
  * Displays notice when the Facebook Token is nearing expiration
