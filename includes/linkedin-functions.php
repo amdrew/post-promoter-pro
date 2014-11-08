@@ -115,9 +115,9 @@ function ppp_li_execute_refresh() {
 		return;
 	}
 
-	$expiration_date = get_option( '_ppp_linkedin_refresh', true );
+	$refresh_date = (int) get_option( '_ppp_linkedin_refresh', true );
 
-	if ( current_time( 'timestamp' ) > $expiration_date ) {
+	if ( current_time( 'timestamp' ) > $refresh_date ) {
 		add_action( 'admin_notices', 'ppp_linkedin_refresh_notice' );
 	}
 }
@@ -132,7 +132,6 @@ function ppp_linkedin_refresh_notice() {
 
 	// Look for the tokens coming back
 	$ppp_linkedin_oauth->ppp_initialize_linkedin();
-	$expiration_date = get_option( '_ppp_linkedin_refresh', true );
 
 	$token = $ppp_social_settings['linkedin']->access_token;
 	$url = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
