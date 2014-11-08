@@ -352,4 +352,7 @@ class PostPromoterPro {
 	}
 }
 
-$ppp_loaded = PostPromoterPro::getInstance();
+function ppp_load_postpromoterpro() {
+	$ppp_loaded = PostPromoterPro::getInstance();
+}
+add_action( 'plugins_loaded', 'ppp_load_postpromoterpro' );
