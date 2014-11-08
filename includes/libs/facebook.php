@@ -62,10 +62,11 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 				$data = new stdClass();
 				$data->access_token = $_REQUEST['fb_access_token'];
-				$data->expires_on = current_time( 'timestamp' ) + (int)$_REQUEST['expires_in'];
 
-				$int_expires = (int) $data->expires_on;
-				update_option( '_ppp_facebook_refresh', current_time( 'timestamp' ) + round( $int_expires/1.25 ) );
+				$expires_in = (int) $_REQUEST['expires_in'];
+				$data->expires_on = current_time( 'timestamp' ) + $expires_in;
+
+				update_option( '_ppp_facebook_refresh', current_time( 'timestamp' ) + round( $expires_in/1.25 ) );
 
 				// Now that we have a valid auth, get some user info
 				$user_info = $this->ppp_get_fb_user( $data->access_token );
