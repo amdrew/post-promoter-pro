@@ -74,7 +74,7 @@ function ppp_fb_account_list_extras( $string ) {
 			$string = '<label>' . __( 'Publish as:', 'ppp-txt' ) . '</label><br />';
 			$string .= '<select id="fb-page">';
 			$string .= '<option value="me">' . __( 'Me', 'ppp-txt' ) . '</option>';
-			foreach ( $pages->data as $page ) {
+			foreach ( $pages as $page ) {
 				$value = $page->name . '|' . $page->access_token . '|' . $page->id;
 				$string .= '<option ' . selected( $value, $selected, false ) . ' value="' . $value . '">' . $page->name . '</option>';
 			}
