@@ -130,7 +130,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 				$all_pages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://graph.facebook.com/me/accounts?access_token=' . $access_token ) ) );
 				$pages = array();
-				if ( !empty( $all_pages ) {
+				if ( !empty( $all_pages ) ) {
 					foreach ( $all_pages->data as $page ) {
 						if ( in_array( 'CREATE_CONTENT', $page->perms ) ) {
 							$pages[] = $page;
