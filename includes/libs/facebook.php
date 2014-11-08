@@ -63,7 +63,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 				$data = new stdClass();
 				$data->access_token = $_REQUEST['fb_access_token'];
 
-				$expires_in = (int) $_REQUEST['expires_in'];
+				$expires_in = 60 * 24 * 60 * 60; // days * hours * minutes * seconds
 				$data->expires_on = current_time( 'timestamp' ) + $expires_in;
 
 				update_option( '_ppp_facebook_refresh', current_time( 'timestamp' ) + round( $expires_in/1.25 ) );
