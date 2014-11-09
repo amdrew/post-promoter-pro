@@ -361,13 +361,14 @@ add_action( 'ppp_share_on_publish', 'ppp_li_share_on_publish', 10, 3 );
 
 function ppp_li_account_list_extras( $string ) {
 	if ( ppp_linkedin_enabled() ) {
-		global $ppp_social_settings;
+		global $ppp_social_settings, $ppp_options;
+		if ( $ppp_options['enable_debug'] ) {
+			$days_left  = round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+			$refresh_in = round( ( get_option( '_ppp_linkedin_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
 
-		$days_left  = round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
-		$refresh_in = round( ( get_option( '_ppp_linkedin_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
-
-		$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
-		$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
+			$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
+			$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
+		}
 	}
 
 	return $string;
