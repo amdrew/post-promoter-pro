@@ -66,7 +66,7 @@ add_filter( 'ppp_account_list_actions-fb', 'ppp_fb_account_list_actions', 10, 1 
 function ppp_fb_account_list_extras( $string ) {
 
 	if ( ppp_facebook_enabled() ) {
-		global $ppp_social_settings, $ppp_facebook_oauth;
+		global $ppp_social_settings, $ppp_facebook_oauth, $ppp_options;
 		$pages = $ppp_facebook_oauth->ppp_get_fb_user_pages( $ppp_social_settings['facebook']->access_token );
 		$selected = isset( $ppp_social_settings['facebook']->page ) ? $ppp_social_settings['facebook']->page : 'me';
 
@@ -81,14 +81,16 @@ function ppp_fb_account_list_extras( $string ) {
 			$string .= '</select><span class="spinner"></span>';
 		}
 
-		$days_left  = round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
-		$refresh_in = round( ( get_option( '_ppp_facebook_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+		if ( $ppp_options['enable_debug'] ) {
+			$days_left  = round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+			$refresh_in = round( ( get_option( '_ppp_facebook_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
 
-		$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
-		$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
-
-		return $string;
+			$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
+			$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
+		}
 	}
+
+	return $string;
 }
 add_filter( 'ppp_account_list_extras-fb', 'ppp_fb_account_list_extras', 10, 1 );
 
