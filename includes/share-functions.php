@@ -263,7 +263,7 @@ function ppp_post_has_media( $post_id, $network, $use_media ) {
 	$thumb_id = get_post_thumbnail_id( $post_id );
 	$thumb_url = wp_get_attachment_image_src( $thumb_id, 'ppp-' . $network . '-share-image', true );
 
-	if ( isset( $thumb_url[0] ) && ! empty( $thumb_url[0] ) ) {
+	if ( isset( $thumb_url[0] ) && ! empty( $thumb_url[0] ) && !strpos( $thumb_url[0], 'wp-includes/images/media/default.png' ) ) {
 		return $thumb_url[0];
 	}
 
