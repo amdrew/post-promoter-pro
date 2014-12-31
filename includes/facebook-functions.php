@@ -13,6 +13,11 @@ function ppp_facebook_enabled() {
 	return false;
 }
 
+/**
+ * Register Facebook as a service
+ * @param  array $services The Currently registered services
+ * @return array           The services with Facebook added
+ */
 function ppp_fb_register_service( $services ) {
 	$services[] = 'fb';
 
@@ -20,11 +25,21 @@ function ppp_fb_register_service( $services ) {
 }
 add_filter( 'ppp_register_social_service', 'ppp_fb_register_service', 10, 1 );
 
+/**
+ * Registers the facebook icon
+ * @param  string $string The item passed into the list icons
+ * @return string         The Facebook Icon
+ */
 function ppp_fb_account_list_icon( $string ) {
 	return '<span class="dashicons icon-ppp-fb"></span>';
 }
 add_filter( 'ppp_account_list_icon-fb', 'ppp_fb_account_list_icon', 10, 1 );
 
+/**
+ * Show the Facebook Avatar in the account list
+ * @param  string $string The list default
+ * @return string         The Facebook avatar
+ */
 function ppp_fb_account_list_avatar( $string ) {
 
 	if ( ppp_facebook_enabled() ) {
@@ -37,6 +52,11 @@ function ppp_fb_account_list_avatar( $string ) {
 }
 add_filter( 'ppp_account_list_avatar-fb', 'ppp_fb_account_list_avatar', 10, 1 );
 
+/**
+ * Adds Facebook name to the list-class
+ * @param  string $string The default name
+ * @return string         The name of the auth'd Facebook Profile
+ */
 function ppp_fb_account_list_name( $string ) {
 
 	if ( ppp_facebook_enabled() ) {
@@ -48,6 +68,11 @@ function ppp_fb_account_list_name( $string ) {
 }
 add_filter( 'ppp_account_list_name-fb', 'ppp_fb_account_list_name', 10, 1 );
 
+/**
+ * The Facebook actions for the list view
+ * @param  string $string The default list view actions
+ * @return string         The HTML for the actions
+ */
 function ppp_fb_account_list_actions( $string ) {
 
 	if ( ! ppp_facebook_enabled() ) {
@@ -63,6 +88,11 @@ function ppp_fb_account_list_actions( $string ) {
 }
 add_filter( 'ppp_account_list_actions-fb', 'ppp_fb_account_list_actions', 10, 1 );
 
+/**
+ * The Facebook Extras section for the list-class
+ * @param  string $string The default extras colun
+ * @return string         The HTML for the Pages dropdown and debug info
+ */
 function ppp_fb_account_list_extras( $string ) {
 
 	if ( ppp_facebook_enabled() ) {

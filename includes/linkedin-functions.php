@@ -13,6 +13,11 @@ function ppp_linkedin_enabled() {
 	return false;
 }
 
+/**
+ * Registers LinkedIn as a service
+ * @param  array $services The registered servcies
+ * @return array           With LinkedIn added
+ */
 function ppp_li_register_service( $services ) {
 	$services[] = 'li';
 
@@ -20,23 +25,31 @@ function ppp_li_register_service( $services ) {
 }
 add_filter( 'ppp_register_social_service', 'ppp_li_register_service', 10, 1 );
 
+/**
+ * The LinkedIn icon
+ * @param  string $string Default list view string for icon
+ * @return string         The LinkedIn Icon HTML
+ */
 function ppp_li_account_list_icon( $string ) {
 	return '<span class="dashicons icon-ppp-li"></span>';
 }
 add_filter( 'ppp_account_list_icon-li', 'ppp_li_account_list_icon', 10, 1 );
 
+/**
+ * The LinkedIn Avatar for the account list
+ * @param  string $string Default icon string
+ * @return string         The HTML for the LinkedIn Avatar
+ */
 function ppp_li_account_list_avatar( $string ) {
-
-	if ( ppp_linkedin_enabled() ) {
-		global $ppp_social_settings;
-		$avatar_url = $ppp_social_settings['twitter']['user']->profile_image_url_https;
-		$string = '<img class="ppp-social-icon" src="' . $avatar_url . '" />';
-	}
-
 	return $string;
 }
-//add_filter( 'ppp_account_list_avatar-li', 'ppp_li_account_list_avatar', 10, 1 );
+add_filter( 'ppp_account_list_avatar-li', 'ppp_li_account_list_avatar', 10, 1 );
 
+/**
+ * The name for the linked LinkedIn account
+ * @param  string $string The default list name
+ * @return string         The name for the attached LinkedIn account
+ */
 function ppp_li_account_list_name( $string ) {
 
 	if ( ppp_linkedin_enabled() ) {
@@ -49,6 +62,11 @@ function ppp_li_account_list_name( $string ) {
 }
 add_filter( 'ppp_account_list_name-li', 'ppp_li_account_list_name', 10, 1 );
 
+/**
+ * The actions column of the accounts list for LinkedIn
+ * @param  string $string The default actions string
+ * @return string         HTML for the LinkedIn Actions
+ */
 function ppp_li_account_list_actions( $string ) {
 
 	if ( ! ppp_linkedin_enabled() ) {
@@ -63,6 +81,28 @@ function ppp_li_account_list_actions( $string ) {
 	return $string;
 }
 add_filter( 'ppp_account_list_actions-li', 'ppp_li_account_list_actions', 10, 1 );
+
+/**
+ * The Extras column for the account list for LinkedIn
+ * @param  string $string Default extras column string
+ * @return string         The HTML for the LinkedIn Extras column
+ */
+function ppp_li_account_list_extras( $string ) {
+	if ( ppp_linkedin_enabled() ) {
+		global $ppp_social_settings, $ppp_options;
+		if ( $ppp_options['enable_debug'] ) {
+			$days_left  = round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+			$refresh_in = round( ( get_option( '_ppp_linkedin_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+
+			$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
+			$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
+		}
+	}
+
+	return $string;
+
+}
+add_filter( 'ppp_account_list_extras-li', 'ppp_li_account_list_extras', 10, 1 );
 
 /**
  * Capture the oauth return from linkedin
@@ -358,20 +398,3 @@ function ppp_li_share_on_publish( $old_status, $new_status, $post ) {
 	}
 }
 add_action( 'ppp_share_on_publish', 'ppp_li_share_on_publish', 10, 3 );
-
-function ppp_li_account_list_extras( $string ) {
-	if ( ppp_linkedin_enabled() ) {
-		global $ppp_social_settings, $ppp_options;
-		if ( $ppp_options['enable_debug'] ) {
-			$days_left  = round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
-			$refresh_in = round( ( get_option( '_ppp_linkedin_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
-
-			$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
-			$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
-		}
-	}
-
-	return $string;
-
-}
-add_filter( 'ppp_account_list_extras-li', 'ppp_li_account_list_extras', 10, 1 );
