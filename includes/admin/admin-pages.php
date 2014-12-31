@@ -1,4 +1,8 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Display the General settings tab
  * @return void
@@ -230,7 +234,7 @@ function ppp_display_social() {
 				<?php settings_fields( 'ppp-share-settings' ); ?>
 
 				<input type="hidden" name="action" value="update" />
-				<input type="hidden" name="page_options" value="ppp_share_settings" />
+				<input type="hidden" name="page_options" value="ppp_share_settings,ppp_social_settings" />
 
 
 			</table>

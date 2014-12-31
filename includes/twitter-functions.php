@@ -1,4 +1,8 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Return if twitter account is found
  * @return bool If the Twitter object exists
@@ -13,6 +17,11 @@ function ppp_twitter_enabled() {
 	return false;
 }
 
+/**
+ * Register Twitter as a servcie
+ * @param  array $services The registered services
+ * @return array           With Twitter added
+ */
 function ppp_tw_register_service( $services ) {
 	$services[] = 'tw';
 
@@ -20,11 +29,21 @@ function ppp_tw_register_service( $services ) {
 }
 add_filter( 'ppp_register_social_service', 'ppp_tw_register_service', 10, 1 );
 
+/**
+ * The Twitter Icon
+ * @param  string $string The default icon
+ * @return string         The HTML for the Twitter Icon
+ */
 function ppp_tw_account_list_icon( $string ) {
 	return '<span class="dashicons icon-ppp-tw"></span>';
 }
 add_filter( 'ppp_account_list_icon-tw', 'ppp_tw_account_list_icon', 10, 1 );
 
+/**
+ * The avatar for the connected Twitter Account
+ * @param  string $string Default avatar string
+ * @return string         The Twitter avatar
+ */
 function ppp_tw_account_list_avatar( $string ) {
 
 	if ( ppp_twitter_enabled() ) {
@@ -37,6 +56,11 @@ function ppp_tw_account_list_avatar( $string ) {
 }
 add_filter( 'ppp_account_list_avatar-tw', 'ppp_tw_account_list_avatar', 10, 1 );
 
+/**
+ * The name of the connected Twitter account for the list view
+ * @param  string $string The default name
+ * @return string         The name from Twitter
+ */
 function ppp_tw_account_list_name( $string ) {
 
 	if ( ppp_twitter_enabled() ) {
@@ -48,6 +72,11 @@ function ppp_tw_account_list_name( $string ) {
 }
 add_filter( 'ppp_account_list_name-tw', 'ppp_tw_account_list_name', 10, 1 );
 
+/**
+ * The actions for the Twitter account list
+ * @param  string $string The default actions
+ * @return string         The actions buttons HTML for Twitter
+ */
 function ppp_tw_account_list_actions( $string ) {
 
 	if ( ! ppp_twitter_enabled() ) {
@@ -374,10 +403,15 @@ function ppp_tw_save_post_meta_boxes( $post_id, $post ) {
 	update_post_meta( $post->ID, '_ppp_share_on_publish_text', $ppp_share_on_publish_text );
 	update_post_meta( $post->ID, '_ppp_share_on_publish_include_image', $ppp_share_on_publish_include_image );
 
-	update_post_meta( $post->ID, '_ppp_post_override', $ppp_post_override );
 
 	// Fixes a bug when all items are unchecked from being checked, removed if statement
-	update_post_meta( $post->ID, '_ppp_post_override_data', $ppp_post_override_data );
+	if ( $ppp_post_exclude === '1' ) {
+		delete_post_meta( $post->ID, '_ppp_post_override' );
+		delete_post_meta( $post->ID, '_ppp_post_override_data' );
+	} else {
+		update_post_meta( $post->ID, '_ppp_post_override', $ppp_post_override );
+		update_post_meta( $post->ID, '_ppp_post_override_data', $ppp_post_override_data );
+	}
 
 	return $post->ID;
 }
