@@ -1,5 +1,8 @@
 <?php
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Set the default array of tokens for replacement
  * @param  array $tokens The array of existing tokens

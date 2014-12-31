@@ -1,5 +1,8 @@
 <?php
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Checks to see if a session is set and it's appropriate to start one, and starts it if necessary
  * @return void
