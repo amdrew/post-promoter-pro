@@ -294,7 +294,7 @@ function ppp_fb_add_metabox_content( $post ) {
 	<p>
 	<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
 	<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish" value="1" <?php checked( '1', $ppp_fb_share_on_publish, true ); ?> />&nbsp;
-		<label for="ppp_fb_share_on_publish"><?php _e( 'Share this post on LinkedIn at the time of publishing?', 'ppp-txt' ); ?></label>
+		<label for="ppp_fb_share_on_publish"><?php _e( 'Share this post on Facebook at the time of publishing?', 'ppp-txt' ); ?></label>
 		<p class="ppp_share_on_publish_text" style="display: <?php echo ( $ppp_fb_share_on_publish ) ? '' : 'none'; ?>">
 			<?php _e( 'Link Message', 'ppp-txt' ); ?>:<br />
 				<input
