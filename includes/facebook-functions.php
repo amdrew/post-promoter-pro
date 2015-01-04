@@ -323,19 +323,16 @@ add_action( 'ppp_generate_metabox_content-fb', 'ppp_fb_add_metabox_content', 10,
  * @return int          The Post ID
  */
 function ppp_fb_save_post_meta_boxes( $post_id, $post ) {
-	global $ppp_options;
 
-	if ( !isset( $ppp_options['post_types'] ) || !is_array( $ppp_options['post_types'] ) || !array_key_exists( $post->post_type, $ppp_options['post_types'] ) ) {
+	if ( ! ppp_should_save( $post_id, $post ) ) {
 		return;
 	}
 
 	$ppp_fb_share_on_publish = ( isset( $_REQUEST['_ppp_fb_share_on_publish'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish'] : '0';
 	$ppp_share_on_publish_title = ( isset( $_REQUEST['_ppp_fb_share_on_publish_title'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish_title'] : '';
 
-	update_post_meta( $post->ID, '_ppp_fb_share_on_publish', $ppp_fb_share_on_publish );
-	update_post_meta( $post->ID, '_ppp_fb_share_on_publish_title', $ppp_share_on_publish_title );
-
-	return $post->ID;
+	update_post_meta( $post_id, '_ppp_fb_share_on_publish', $ppp_fb_share_on_publish );
+	update_post_meta( $post_id, '_ppp_fb_share_on_publish_title', $ppp_share_on_publish_title );
 }
 add_action( 'save_post', 'ppp_fb_save_post_meta_boxes', 10, 2 ); // save the custom fields
 
