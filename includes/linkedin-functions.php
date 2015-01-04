@@ -338,9 +338,8 @@ add_action( 'ppp_generate_metabox_content-li', 'ppp_li_add_metabox_content', 10,
  * @return int          The Post ID
  */
 function ppp_li_save_post_meta_boxes( $post_id, $post ) {
-	global $ppp_options;
 
-	if ( !isset( $ppp_options['post_types'] ) || !is_array( $ppp_options['post_types'] ) || !array_key_exists( $post->post_type, $ppp_options['post_types'] ) ) {
+	if ( ! ppp_should_save( $post_id, $post ) ) {
 		return;
 	}
 
@@ -348,11 +347,11 @@ function ppp_li_save_post_meta_boxes( $post_id, $post ) {
 	$ppp_share_on_publish_title = ( isset( $_REQUEST['_ppp_li_share_on_publish_title'] ) ) ? $_REQUEST['_ppp_li_share_on_publish_title'] : '';
 	$ppp_share_on_publish_desc = ( isset( $_REQUEST['_ppp_li_share_on_publish_desc'] ) ) ? $_REQUEST['_ppp_li_share_on_publish_desc'] : '';
 
-	update_post_meta( $post->ID, '_ppp_li_share_on_publish', $ppp_li_share_on_publish );
-	update_post_meta( $post->ID, '_ppp_li_share_on_publish_title', $ppp_share_on_publish_title );
-	update_post_meta( $post->ID, '_ppp_li_share_on_publish_desc', $ppp_share_on_publish_desc );
+	update_post_meta( $post_id, '_ppp_li_share_on_publish', $ppp_li_share_on_publish );
+	update_post_meta( $post_id, '_ppp_li_share_on_publish_title', $ppp_share_on_publish_title );
+	update_post_meta( $post_id, '_ppp_li_share_on_publish_desc', $ppp_share_on_publish_desc );
 
-	return $post->ID;
+	return $post_id;
 }
 add_action( 'save_post', 'ppp_li_save_post_meta_boxes', 10, 2 ); // save the custom fields
 

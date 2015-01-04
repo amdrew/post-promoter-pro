@@ -378,13 +378,8 @@ add_action( 'ppp_generate_metabox_content-tw', 'ppp_tw_add_metabox_content', 10,
  * @return int          The Post ID
  */
 function ppp_tw_save_post_meta_boxes( $post_id, $post ) {
-	global $ppp_options, $post;
 
-	if ( empty ( $post ) ) { // if $post is empty, like on a brand spanking new post, just return, we're not saving
-		return;
-	}
-
-	if ( !isset( $ppp_options['post_types'] ) || !is_array( $ppp_options['post_types'] ) || !array_key_exists( $post->post_type, $ppp_options['post_types'] ) ) {
+	if ( ! ppp_should_save( $post_id, $post ) ) {
 		return;
 	}
 
@@ -397,23 +392,21 @@ function ppp_tw_save_post_meta_boxes( $post_id, $post ) {
 	$ppp_post_override = ( isset( $_REQUEST['_ppp_post_override'] ) ) ? $_REQUEST['_ppp_post_override'] : '0';
 	$ppp_post_override_data = isset( $_REQUEST['_ppp_post_override_data'] ) ? $_REQUEST['_ppp_post_override_data'] : array();
 
-	update_post_meta( $post->ID, '_ppp_post_exclude', $ppp_post_exclude );
+	update_post_meta( $post_id, '_ppp_post_exclude', $ppp_post_exclude );
 
-	update_post_meta( $post->ID, '_ppp_share_on_publish', $ppp_share_on_publish );
-	update_post_meta( $post->ID, '_ppp_share_on_publish_text', $ppp_share_on_publish_text );
-	update_post_meta( $post->ID, '_ppp_share_on_publish_include_image', $ppp_share_on_publish_include_image );
+	update_post_meta( $post_id, '_ppp_share_on_publish', $ppp_share_on_publish );
+	update_post_meta( $post_id, '_ppp_share_on_publish_text', $ppp_share_on_publish_text );
+	update_post_meta( $post_id, '_ppp_share_on_publish_include_image', $ppp_share_on_publish_include_image );
 
 
 	// Fixes a bug when all items are unchecked from being checked, removed if statement
 	if ( $ppp_post_exclude === '1' ) {
-		delete_post_meta( $post->ID, '_ppp_post_override' );
-		delete_post_meta( $post->ID, '_ppp_post_override_data' );
+		delete_post_meta( $post_id, '_ppp_post_override' );
+		delete_post_meta( $post_id, '_ppp_post_override_data' );
 	} else {
-		update_post_meta( $post->ID, '_ppp_post_override', $ppp_post_override );
-		update_post_meta( $post->ID, '_ppp_post_override_data', $ppp_post_override_data );
+		update_post_meta( $post_id, '_ppp_post_override', $ppp_post_override );
+		update_post_meta( $post_id, '_ppp_post_override_data', $ppp_post_override_data );
 	}
-
-	return $post->ID;
 }
 add_action( 'save_post', 'ppp_tw_save_post_meta_boxes', 10, 2 ); // save the custom fields
 
