@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Post Promoter Pro\n"
-"POT-Creation-Date: 2014-12-31 16:00-0700\n"
-"PO-Revision-Date: 2014-12-31 16:00-0700\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2015-01-03 20:00-0700\n"
+"PO-Revision-Date: 2015-01-03 20:01-0700\n"
+"Last-Translator: Chris Klosowski <chris@filament-studios.com>\n"
 "Language-Team: Post Promoter Pro <info@postpromoterpro.com>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
@@ -454,8 +454,8 @@ msgstr ""
 msgid "Social Text"
 msgstr ""
 
-#: includes/facebook-functions.php:297 includes/linkedin-functions.php:309
-msgid "Share this post on LinkedIn at the time of publishing?"
+#: includes/facebook-functions.php:297
+msgid "Share this post on Facebook at the time of publishing?"
 msgstr ""
 
 #: includes/facebook-functions.php:299
@@ -497,6 +497,10 @@ msgstr ""
 
 #: includes/linkedin-functions.php:231 includes/linkedin-functions.php:260
 msgid "LinkedIn"
+msgstr ""
+
+#: includes/linkedin-functions.php:309
+msgid "Share this post on LinkedIn at the time of publishing?"
 msgstr ""
 
 #: includes/linkedin-functions.php:314
