@@ -231,7 +231,7 @@ function ppp_facebook_refresh_notice() {
 function ppp_fb_share( $link, $message, $picture ) {
 	global $ppp_facebook_oauth;
 
-	return $ppp_facebook_oauth->ppp_fb_share_link( $link, $message, $picture );
+	return $ppp_facebook_oauth->ppp_fb_share_link( $link, ppp_entities_and_slashes( $message ), $picture );
 }
 
 /**

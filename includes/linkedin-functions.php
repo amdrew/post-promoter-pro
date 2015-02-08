@@ -213,8 +213,8 @@ add_action( 'ppp_set_social_token_constants', 'ppp_set_li_token_constants', 10, 
 function ppp_li_share( $title, $description, $link, $media ) {
 	global $ppp_linkedin_oauth;
 	$args = array (
-		'title' => $title,
-		'description' => $description,
+		'title' => ppp_entities_and_slashes( $title ),
+		'description' => ppp_entities_and_slashes( $description ),
 		'submitted-url' => $link,
 		'submitted-image-url' => $media
 		);
