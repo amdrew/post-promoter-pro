@@ -372,7 +372,7 @@ add_action( 'save_post', 'ppp_li_save_post_meta_boxes', 10, 2 ); // save the cus
  * @param  object $post       The Post object
  * @return void
  */
-function ppp_li_share_on_publish( $old_status, $new_status, $post ) {
+function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 	global $ppp_options;
 	$from_meta = get_post_meta( $post->ID, '_ppp_li_share_on_publish', true );
 	$from_post = isset( $_POST['_ppp_li_share_on_publish'] );
