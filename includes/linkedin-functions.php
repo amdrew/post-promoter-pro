@@ -155,7 +155,8 @@ add_filter( 'query_vars', 'ppp_li_query_vars' );
  * @return void
  */
 function ppp_li_execute_refresh() {
-	if ( !ppp_linkedin_enabled() ) {
+
+	if ( ! ppp_linkedin_enabled() ) {
 		return;
 	}
 
@@ -172,6 +173,11 @@ add_action( 'admin_init', 'ppp_li_execute_refresh' );
  * @return void
  */
 function ppp_linkedin_refresh_notice() {
+
+	if ( ! ppp_linkedin_enabled() ) {
+		return;
+	}
+
 	global $ppp_linkedin_oauth, $ppp_social_settings;
 
 	// Look for the tokens coming back

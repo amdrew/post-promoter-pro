@@ -188,7 +188,8 @@ add_filter( 'query_vars', 'ppp_fb_query_vars' );
  * @return void
  */
 function ppp_fb_execute_refresh() {
-	if ( !ppp_facebook_enabled() ) {
+
+	if ( ! ppp_facebook_enabled() ) {
 		return;
 	}
 
@@ -205,6 +206,11 @@ add_action( 'admin_init', 'ppp_fb_execute_refresh', 99 );
  * @return void
  */
 function ppp_facebook_refresh_notice() {
+
+	if ( ! ppp_facebook_enabled() ) {
+		return;
+	}
+
 	global $ppp_facebook_oauth, $ppp_social_settings;
 
 	// Look for the tokens coming back
