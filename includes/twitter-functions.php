@@ -417,7 +417,7 @@ add_action( 'save_post', 'ppp_tw_save_post_meta_boxes', 10, 2 ); // save the cus
  * @param  object $post       The Post Object
  * @return void               Shares the post
  */
-function ppp_tw_share_on_publish( $old_status, $new_status, $post ) {
+function ppp_tw_share_on_publish( $new_status, $old_status, $post ) {
 	global $ppp_options;
 
 	$from_meta = get_post_meta( $post->ID, '_ppp_share_on_publish', true );
@@ -448,3 +448,22 @@ function ppp_tw_share_on_publish( $old_status, $new_status, $post ) {
 	}
 }
 add_action( 'ppp_share_on_publish', 'ppp_tw_share_on_publish', 10, 3 );
+
+/**
+ * Unschedule any tweets when the post is unscheduled
+ *
+ * @since  2.1.2
+ * @param  string $old_status The old status of the post
+ * @param  string $new_status The new status of the post
+ * @param  object $post       The Post Object
+ * @return void
+ */
+function ppp_tw_unschedule_shares( $new_status, $old_status, $post ) {
+
+	if ( ( $old_status == 'publish' || $old_status == 'future' ) && ( $new_status != 'publish' && $new_status != 'future' ) ) {
+		ppp_remove_scheduled_shares( $post->ID );
+	}
+
+}
+add_action( 'transition_post_status', 'ppp_tw_unschedule_shares', 10, 3 );
+
