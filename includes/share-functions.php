@@ -187,24 +187,81 @@ function ppp_set_social_tokens() {
 		return;
 	}
 
-	$social_tokens = get_transient( 'ppp_social_tokens' );
+	$social_tokens = ppp_has_local_tokens();
 
-	if ( !$social_tokens ) {
-		$license = trim( get_option( '_ppp_license_key' ) );
-		$url = PPP_STORE_URL . '/?ppp-get-tokens&ppp-license-key=' . $license . '&ver=' . md5( time() . $license );
-		$response = wp_remote_get( $url, array( 'timeout' => 15, 'sslverify' => false ) );
+	if ( false === $social_tokens ) {
+		define( 'PPP_LOCAL_TOKENS', false );
+		$social_tokens = get_transient( 'ppp_social_tokens' );
 
-		if ( is_wp_error( $response ) ) {
-			return false;
+		if ( ! $social_tokens ) {
+			$license = trim( get_option( '_ppp_license_key' ) );
+			$url = PPP_STORE_URL . '/?ppp-get-tokens&ppp-license-key=' . $license . '&ver=' . md5( time() . $license );
+			var_dump($url);
+			$response = wp_remote_get( $url, array( 'timeout' => 15, 'sslverify' => false ) );
+
+			if ( is_wp_error( $response ) ) {
+				return false;
+			}
+
+			$social_tokens = json_decode( wp_remote_retrieve_body( $response ) );
+
 		}
 
-		$social_tokens = json_decode( wp_remote_retrieve_body( $response ) );
-		if ( !isset( $social_tokens->error ) && isset( $social_tokens->twitter ) ) {
-			set_transient( 'ppp_social_tokens', $social_tokens, WEEK_IN_SECONDS );
+	} else {
+
+		define( 'PPP_LOCAL_TOKENS', true );
+		if ( isset( $social_tokens->options ) ) {
+			foreach ( $social_tokens->options as $constant => $value ) {
+
+				$constant = strtoupper( $constant );
+
+				if ( defined( $constant ) ) {
+					continue;
+				}
+
+				switch( $constant ) {
+
+					case 'NO_AUTO_UPDATE':
+						// Avoid the call to the API to check for software updates
+						$value = is_bool( $value ) ? $value : false;
+						define( $constant, $value );
+						break;
+
+				}
+			}
 		}
 	}
 
+	if ( false === PPP_LOCAL_TOKENS && ! isset( $social_tokens->error ) && ( isset( $social_tokens->twitter ) || isset( $social_tokens->facebook ) || isset( $social_tokens->linkedin ) ) ) {
+		set_transient( 'ppp_social_tokens', $social_tokens, WEEK_IN_SECONDS );
+	}
+
 	do_action( 'ppp_set_social_token_constants', $social_tokens );
+}
+
+function ppp_has_local_tokens() {
+
+	$token_file   = apply_filters( 'ppp_local_social_token_path', ABSPATH . 'wp-content/ppp-social-tokens.json' );
+	$local_tokens = false;
+
+	if ( ! file_exists( $token_file ) ) {
+		return $local_tokens;
+	}
+
+	$local_tokens = json_decode( file_get_contents( $token_file ) );
+
+	// Failed to parse as JSON
+	if ( false === $local_tokens ) {
+		return $local_tokens;
+	}
+
+	// No social tokens found in the format we accept or it was empty
+	if ( empty( $local_tokens ) || ( ! isset( $local_tokens->twitter ) || ! isset( $local_tokens->facebook ) || ! isset( $local_tokens->linkedin ) ) ) {
+		return false;
+	}
+
+	return apply_filters( 'ppp_local_tokens', $local_tokens, $token_file );
+
 }
 
 /**

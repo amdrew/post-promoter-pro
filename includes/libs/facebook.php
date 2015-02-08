@@ -175,10 +175,24 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 		 *
 		 */
 		public function ppp_get_facebook_auth_url ( $return_url ) {
-			$base_url = 'https://postpromoterpro.com/?ppp-social-auth';
-			$url  = $base_url . '&ppp-service=fb&ppp-license-key=' . trim( get_option( '_ppp_license_key' ) );
-			$url .= '&nocache';
-			$url .= '&return_url=' . esc_url( $return_url );
+
+			//load facebook class
+			$facebook = $this->ppp_load_facebook();
+
+			//check facebook class is exis or not
+			if( !$facebook ) return false;
+
+			if ( ! PPP_LOCAL_TOKENS ) {
+				$base_url = 'https://postpromoterpro.com/?ppp-social-auth';
+				$url  = $base_url . '&ppp-service=fb&ppp-license-key=' . trim( get_option( '_ppp_license_key' ) );
+				$url .= '&nocache';
+				$url .= '&return_url=' . esc_url( $return_url );
+			} else {
+				$url  = 'https://graph.facebook.com/oauth/authorize?';
+				$url .= 'client_id=' . PPP_FB_APP_ID;
+				$url .= '&scope=public_profile,publish_actions,manage_pages';
+				$url .= '&redirect_uri=' . esc_url( $return_url ) . '&nocache';
+			}
 
 			return $url;
 		}
