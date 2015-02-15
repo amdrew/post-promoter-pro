@@ -39,6 +39,10 @@ class PostPromoterPro {
 		include PPP_PATH . '/includes/libs/social-loader.php';
 		include PPP_PATH . '/includes/filters.php';
 
+		// We need to set these now, so we can use them later
+		// Options can be defined in the local tokens that are needed here
+		ppp_set_social_tokens();
+
 		if ( is_admin() ) {
 			include PPP_PATH . '/includes/admin/upgrades.php';
 			include PPP_PATH . '/includes/admin/actions.php';
@@ -223,6 +227,11 @@ class PostPromoterPro {
 	 * @return void
 	 */
 	public function plugin_updater() {
+
+		if ( defined( 'NO_AUTO_UPDATE' ) && true === NO_AUTO_UPDATE ) {
+			return;
+		}
+
 		$license_key = trim( get_option( '_ppp_license_key' ) );
 
 		if ( empty( $license_key ) ) {

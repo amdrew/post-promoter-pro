@@ -180,9 +180,10 @@ function ppp_share_post( $post_id, $name ) {
  * @return void
  */
 function ppp_set_social_tokens() {
-	if ( defined( 'PPP_TW_CONSUMER_KEY' ) && defined( 'PPP_TW_CONSUMER_SECRET' ) ||
-	     defined( 'LINKEDIN_KEY' ) && defined( 'LINKEDIN_SECRET' ) ||
-	     defined( 'bitly_clientid' ) && defined( 'bitly_secret' )
+	if ( ( defined( 'PPP_TW_CONSUMER_KEY' ) && defined( 'PPP_TW_CONSUMER_SECRET' ) ) ||
+	     ( defined( 'LINKEDIN_KEY' ) && defined( 'LINKEDIN_SECRET' ) ) ||
+	     ( defined( 'bitly_clientid' ) && defined( 'bitly_secret' ) ) ||
+	     ( defined( 'PPP_FB_APP_ID' ) && defined( 'PPP_FB_APP_SECRET' ) )
 	   ) {
 		return;
 	}
@@ -196,7 +197,6 @@ function ppp_set_social_tokens() {
 		if ( ! $social_tokens ) {
 			$license = trim( get_option( '_ppp_license_key' ) );
 			$url = PPP_STORE_URL . '/?ppp-get-tokens&ppp-license-key=' . $license . '&ver=' . md5( time() . $license );
-			var_dump($url);
 			$response = wp_remote_get( $url, array( 'timeout' => 15, 'sslverify' => false ) );
 
 			if ( is_wp_error( $response ) ) {
@@ -208,8 +208,9 @@ function ppp_set_social_tokens() {
 		}
 
 	} else {
-
 		define( 'PPP_LOCAL_TOKENS', true );
+		delete_transient( 'ppp_social_tokens' );
+
 		if ( isset( $social_tokens->options ) ) {
 			foreach ( $social_tokens->options as $constant => $value ) {
 
@@ -224,7 +225,7 @@ function ppp_set_social_tokens() {
 					case 'NO_AUTO_UPDATE':
 						// Avoid the call to the API to check for software updates
 						$value = is_bool( $value ) ? $value : false;
-						define( $constant, $value );
+						define( 'NO_AUTO_UPDATE', $value );
 						break;
 
 				}
@@ -239,9 +240,13 @@ function ppp_set_social_tokens() {
 	do_action( 'ppp_set_social_token_constants', $social_tokens );
 }
 
+/**
+ * Checks if the user has uploaded a social media tokens JSON file
+ * @return boolean If a file exists, true, else false.
+ */
 function ppp_has_local_tokens() {
 
-	$token_file   = apply_filters( 'ppp_local_social_token_path', ABSPATH . 'wp-content/ppp-social-tokens.json' );
+	$token_file   = apply_filters( 'ppp_local_social_token_path', ppp_get_upload_path() . '/ppp-social-tokens.json' );
 	$local_tokens = false;
 
 	if ( ! file_exists( $token_file ) ) {

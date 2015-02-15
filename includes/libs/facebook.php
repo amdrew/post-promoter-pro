@@ -49,19 +49,43 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 		 *
 		 */
 		function ppp_initialize_facebook() {
-			//when user is going to logged in in linkedin and verified successfully session will create
+			//load facebook class
+			$facebook = $this->ppp_load_facebook();
+
+			//when user is going to logged in and verified successfully session will create
 			if ( isset( $_REQUEST['fb_access_token'] ) && isset( $_REQUEST['expires_in'] ) ) {
+
+				$access_token = $_REQUEST['fb_access_token'];
+				$expires_in   = $_REQUEST['expires_in'];
+
+			} elseif ( isset( $_GET['state'] ) && strpos( $_GET['state'], 'ppp-local-keys-fb' ) !== false ) {
+				$access_code = isset( $_GET['code'] ) ? $_GET['code'] : false;
+
+				if ( empty( $access_code ) ) {
+					return;
+				}
+
+				$params  = '?client_id=' . PPP_FB_APP_ID;
+				$params .= '&client_secret=' . PPP_FB_APP_SECRET;
+				$params .= '&code=' . $access_code;
+				$params .= '&redirect_uri=' . admin_url( 'admin.php?page=ppp-social-settings' );
+				$url = 'https://graph.facebook.com/oauth/access_token' . $params;
+				$response = parse_str( wp_remote_retrieve_body( wp_remote_post( $url ) ) );
+
+				$access_token = isset( $access_token ) ? $access_token : false;
+				$expires_in   = isset( $expires ) ? $expires : false;
+
+			}
+
+			if ( ! empty( $access_token ) && ! empty( $expires_in ) ) {
 				global $ppp_social_settings;
 				$ppp_social_settings = get_option( 'ppp_social_settings' );
 
-				//load linkedin class
-				$facebook = $this->ppp_load_facebook();
-
-				//check linkedin class is loaded or not
+				//check facebook class is loaded or not
 				if( !$facebook ) return false;
 
 				$data = new stdClass();
-				$data->access_token = $_REQUEST['fb_access_token'];
+				$data->access_token = $access_token;
 
 				$expires_in = 60 * 24 * 60 * 60; // days * hours * minutes * seconds
 				$data->expires_on = current_time( 'timestamp' ) + $expires_in;
@@ -191,6 +215,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 				$url  = 'https://graph.facebook.com/oauth/authorize?';
 				$url .= 'client_id=' . PPP_FB_APP_ID;
 				$url .= '&scope=public_profile,publish_actions,manage_pages';
+				$url .= '&state=ppp-local-keys-fb';
 				$url .= '&redirect_uri=' . esc_url( $return_url ) . '&nocache';
 			}
 
