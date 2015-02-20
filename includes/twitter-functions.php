@@ -437,6 +437,7 @@ function ppp_tw_share_on_publish( $new_status, $old_status, $post ) {
 	}
 
 	$share_content = ( !empty( $ppp_share_on_publish_text ) ) ? $ppp_share_on_publish_text : ppp_tw_generate_share_content( $post->ID, null, false );
+	$share_content = apply_filters( 'ppp_share_content', $share_content, array( 'post_id' => $post->ID ) );
 	$name = 'sharedate_0_' . $post->ID;
 	$media = ppp_post_has_media( $post->ID, 'tw', $use_media );
 	$share_link = ppp_generate_link( $post->ID, $name, true );
