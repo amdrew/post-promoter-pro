@@ -3,7 +3,7 @@ Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly
 Requires at least: 3.9.2
 Tested up to: 4.1
-Stable tag: 2.1.2
+Stable tag: 2.1.3
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,9 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+= 2.1.3 =
+* FIX: Twitter "Share at time of Publish" content not replacing {post_title} and other tokens
+
 = 2.1.2 =
 * FIX: Facebook and LinkedIn token reminders could show a negative date
 * FIX: Expiration notices caused PHP notices when disconnected
