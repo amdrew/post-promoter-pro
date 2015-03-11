@@ -184,7 +184,7 @@ function ppp_linkedin_refresh_notice() {
 	$days_left = round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
 	?>
 	<div class="update-nag">
-		<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your LinkedIn authentcation expires in within %d days. Please <a href="%s">refresh access.</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
+		<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your LinkedIn authentication expires in within %d days. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
 	</div>
 	<?php
 }
