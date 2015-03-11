@@ -236,10 +236,12 @@ function ppp_v22_postmeta_upgrade() {
 
 	$results       = $wpdb->get_results( $wpdb->prepare( "SELECT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = '_ppp_post_override_data' ORDER BY meta_id DESC LIMIT %d,%d;", $offset, $number ) );
 	$new_post_meta = array();
-	$share_key     = 1;
 
 	if ( $results ) {
 		foreach ( $results as $result ) {
+
+			$share_key     = 1;
+
 			$override_data = unserialize( $result->meta_value );
 
 			foreach ( $override_data as $day => $values ) {
