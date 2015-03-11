@@ -116,8 +116,8 @@ function ppp_fb_account_list_extras( $string ) {
 		}
 
 		if ( $ppp_options['enable_debug'] ) {
-			$days_left  = round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
-			$refresh_in = round( ( get_option( '_ppp_facebook_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+			$days_left  = absint( round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
+			$refresh_in = absint( round( ( get_option( '_ppp_facebook_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 
 			$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
 			$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
@@ -201,7 +201,8 @@ add_filter( 'query_vars', 'ppp_fb_query_vars' );
  * @return void
  */
 function ppp_fb_execute_refresh() {
-	if ( !ppp_facebook_enabled() ) {
+
+	if ( ! ppp_facebook_enabled() ) {
 		return;
 	}
 
@@ -218,6 +219,11 @@ add_action( 'admin_init', 'ppp_fb_execute_refresh', 99 );
  * @return void
  */
 function ppp_facebook_refresh_notice() {
+
+	if ( ! ppp_facebook_enabled() ) {
+		return;
+	}
+
 	global $ppp_facebook_oauth, $ppp_social_settings;
 
 	// Look for the tokens coming back
@@ -227,10 +233,14 @@ function ppp_facebook_refresh_notice() {
 	$url = $ppp_facebook_oauth->ppp_get_facebook_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 	$url = str_replace( '?ppp-social-auth', '?ppp-social-auth&ppp-refresh=true&access_token=' . $token, $url );
 
-	$days_left = round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+	$days_left = absint( round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 	?>
 	<div class="update-nag">
-		<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your Facebook authentication expires in within %d days. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
+		<?php if ( $days_left > 0 ): ?>
+			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your Facebook authentication expires in within %d days. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
+		<?php elseif ( $days_left < 1 ): ?>
+			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your Facebook authentication has expired. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $url ); ?></p>
+		<?php endif; ?>
 	</div>
 	<?php
 }
@@ -244,7 +254,7 @@ function ppp_facebook_refresh_notice() {
 function ppp_fb_share( $link, $message, $picture ) {
 	global $ppp_facebook_oauth;
 
-	return $ppp_facebook_oauth->ppp_fb_share_link( $link, $message, $picture );
+	return $ppp_facebook_oauth->ppp_fb_share_link( $link, ppp_entities_and_slashes( $message ), $picture );
 }
 
 /**
@@ -356,7 +366,7 @@ add_action( 'save_post', 'ppp_fb_save_post_meta_boxes', 10, 2 ); // save the cus
  * @param  object $post       The Post object
  * @return void
  */
-function ppp_fb_share_on_publish( $old_status, $new_status, $post ) {
+function ppp_fb_share_on_publish( $new_status, $old_status, $post ) {
 	global $ppp_options;
 	$from_meta = get_post_meta( $post->ID, '_ppp_fb_share_on_publish', true );
 	$from_post = isset( $_POST['_ppp_fb_share_on_publish'] );

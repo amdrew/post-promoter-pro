@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: https://postpromoterpro.com
 Description: Schedule the promotion of posts for the next 6 days, with no further work.
-Version: 2.1.1
+Version: 2.1.3
 Author: Post Promoter Pro
 Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '2.1.1' );
+define( 'PPP_VERSION', '2.1.3' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -26,51 +26,53 @@ class PostPromoterPro {
 
 	private function __construct() {
 		add_action( 'init', array( $this, 'ppp_loaddomain' ), 1 );
-		register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
 
-		global $ppp_options, $ppp_social_settings, $ppp_share_settings;
-		$ppp_options         = get_option( 'ppp_options' );
-		$ppp_social_settings = get_option( 'ppp_social_settings' );
-		$ppp_share_settings  = get_option( 'ppp_share_settings' );
+		if ( ! is_callable( 'curl_init' ) ) {
+			add_action( 'admin_notices', array( $this, 'no_curl' ) );
+		} else {
+			register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
 
-		include PPP_PATH . '/includes/general-functions.php';
-		include PPP_PATH . '/includes/share-functions.php';
-		include PPP_PATH . '/includes/cron-functions.php';
-		include PPP_PATH . '/includes/libs/social-loader.php';
-		include PPP_PATH . '/includes/filters.php';
+			global $ppp_options, $ppp_social_settings, $ppp_share_settings;
+			$ppp_options         = get_option( 'ppp_options' );
+			$ppp_social_settings = get_option( 'ppp_social_settings' );
+			$ppp_share_settings  = get_option( 'ppp_share_settings' );
 
-		// We need to set these now, so we can use them later
-		// Options can be defined in the local tokens that are needed here
-		ppp_set_social_tokens();
+			include PPP_PATH . '/includes/general-functions.php';
+			include PPP_PATH . '/includes/share-functions.php';
+			include PPP_PATH . '/includes/cron-functions.php';
+			include PPP_PATH . '/includes/filters.php';
+			include PPP_PATH . '/includes/libs/social-loader.php';
 
-		if ( is_admin() ) {
-			include PPP_PATH . '/includes/admin/upgrades.php';
-			include PPP_PATH . '/includes/admin/do-upgrades.php';
-			include PPP_PATH . '/includes/admin/actions.php';
-			include PPP_PATH . '/includes/admin/admin-pages.php';
-			include PPP_PATH . '/includes/admin/admin-ajax.php';
-			include PPP_PATH . '/includes/admin/meta-boxes.php';
-			include PPP_PATH . '/includes/admin/welcome.php';
+			if ( is_admin() ) {
+				include PPP_PATH . '/includes/admin/upgrades.php';
+				include PPP_PATH . '/includes/admin/do-upgrades.php';
+				include PPP_PATH . '/includes/admin/actions.php';
+				include PPP_PATH . '/includes/admin/admin-pages.php';
+				include PPP_PATH . '/includes/admin/admin-ajax.php';
+				include PPP_PATH . '/includes/admin/meta-boxes.php';
+				include PPP_PATH . '/includes/admin/welcome.php';
 
-			add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
-			add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );
+				add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
+				add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );
 
-			// Handle licenses
-			add_action( 'admin_init', array( $this, 'plugin_updater' ) );
-			add_action( 'admin_init', array( $this, 'activate_license' ) );
-			add_action( 'admin_init', array( $this, 'deactivate_license' ) );
+				// Handle licenses
+				add_action( 'admin_init', array( $this, 'plugin_updater' ) );
+				add_action( 'admin_init', array( $this, 'activate_license' ) );
+				add_action( 'admin_init', array( $this, 'deactivate_license' ) );
 
-			add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
-			add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ) );
-			add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
+				add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
+				add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
+				add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
+				add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ) );
+				add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
+			}
+
+			add_action( 'init', array( $this, 'get_actions' ) );
+			add_action( 'save_post', 'ppp_schedule_share', 99, 2);
+			add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
+			add_action( 'init', 'ppp_add_image_sizes' );
 		}
 
-		add_action( 'init', array( $this, 'get_actions' ) );
-		add_action( 'save_post', 'ppp_schedule_share', 99, 2);
-		add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
-		add_action( 'init', 'ppp_add_image_sizes' );
 	}
 
 	/**
@@ -84,6 +86,18 @@ class PostPromoterPro {
 		}
 
 		return self::$ppp_instance;
+	}
+
+	/**
+	 * Nag if cURL is disabled
+	 * @return void
+	 */
+	public function no_curl() {
+		?>
+		<div class="no-curl">
+			<p><?php _e( 'Post Promoter Pro requires cURL to be enabled. Please enable it to continue using the plugin.', 'ppp-txt' ); ?></p>
+		</div>
+		<?php
 	}
 
 	/**
