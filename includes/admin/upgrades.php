@@ -253,9 +253,11 @@ function ppp_v22_postmeta_upgrade() {
 				$text = ! empty( $values['text'] ) ? $values['text'] : '';
 				$time = ! empty( $values['time'] ) ? $values['time'] : '8:00am';
 
-				$post       = get_post( $result->post_id );
-				$days_ahead = substr( $day, -1 );
-				$date       = date( 'm\/d\/Y', strtotime( $post->post_date . '+' . $days_ahead . ' days' ) );
+				$post          = get_post( $result->post_id );
+				$days_ahead    = substr( $day, -1 );
+				$date          = date( 'm\/d\/Y', strtotime( $post->post_date . '+' . $days_ahead . ' days' ) );
+				$image         = '';
+				$attachment_id = '';
 
 				if ( ! empty( $values['use_image'] ) ) {
 					$thumb_id  = get_post_thumbnail_id( $result->post_id );
