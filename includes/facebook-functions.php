@@ -81,9 +81,9 @@ function ppp_fb_account_list_actions( $string ) {
 
 	if ( ! ppp_facebook_enabled() ) {
 		global $ppp_facebook_oauth, $ppp_social_settings;
-		$li_authurl = $ppp_facebook_oauth->ppp_get_facebook_auth_url( get_bloginfo( 'url' ) . $_SERVER['REQUEST_URI'] );
+		$fb_authurl = $ppp_facebook_oauth->ppp_get_facebook_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 
-		$string = '<a class="button-primary" href="' . $li_authurl . '">' . __( 'Connect to Facebook', 'ppp-txt' ) . '</a>';
+		$string = '<a class="button-primary" href="' . $fb_authurl . '">' . __( 'Connect to Facebook', 'ppp-txt' ) . '</a>';
 	} else {
 		$string  = '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=facebook' ) . '" >' . __( 'Disconnect from Facebook', 'ppp-txt' ) . '</a>&nbsp;';
 	}
@@ -146,12 +146,25 @@ add_action( 'ppp_set_social_token_constants', 'ppp_set_fb_token_constants', 10, 
  * @return void
  */
 function ppp_capture_facebook_oauth() {
-	if ( isset( $_REQUEST['fb_access_token'] ) && ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] == 'ppp-social-settings' ) ) {
+	$should_capture = false;
+
+	if ( isset( $_GET['state'] ) && strpos( $_GET['state'], 'ppp-local-keys-fb' ) !== false ) {
+		// Local config
+		$should_capture = true;
+	}
+
+	if ( isset( $_REQUEST['fb_access_token'] ) ) {
+		// Returning from remote config
+		$should_capture = true;
+	}
+
+	if ( $should_capture && ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] == 'ppp-social-settings' ) ) {
 		global $ppp_facebook_oauth;
 		$ppp_facebook_oauth->ppp_initialize_facebook();
 		wp_redirect( admin_url( 'admin.php?page=ppp-social-settings' ) );
 		die();
 	}
+
 }
 add_action( 'admin_init', 'ppp_capture_facebook_oauth', 10 );
 

@@ -75,7 +75,7 @@ function ppp_li_account_list_actions( $string ) {
 
 	if ( ! ppp_linkedin_enabled() ) {
 		global $ppp_linkedin_oauth, $ppp_social_settings;
-		$li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( get_bloginfo( 'url' ) . $_SERVER['REQUEST_URI'] );
+		$li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 
 		$string = '<a class="button-primary" href="' . $li_authurl . '">' . __( 'Connect to Linkedin', 'ppp-txt' ) . '</a>';
 	} else {
@@ -113,7 +113,19 @@ add_filter( 'ppp_account_list_extras-li', 'ppp_li_account_list_extras', 10, 1 );
  * @return void
  */
 function ppp_capture_linkedin_oauth() {
-	if ( isset( $_REQUEST['li_access_token'] ) && ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] == 'ppp-social-settings' ) ) {
+	$should_capture = false;
+
+	if ( isset( $_GET['state'] ) && strpos( $_GET['state'], 'ppp-local-keys-li' ) !== false ) {
+		// Local config
+		$should_capture = true;
+	}
+
+	if ( isset( $_REQUEST['li_access_token'] ) ) {
+		// Returning from remote config
+		$should_capture = true;
+	}
+
+	if ( $should_capture && ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] == 'ppp-social-settings' ) ) {
 		global $ppp_linkedin_oauth;
 		$ppp_linkedin_oauth->ppp_initialize_linkedin();
 		wp_redirect( admin_url( 'admin.php?page=ppp-social-settings' ) );
