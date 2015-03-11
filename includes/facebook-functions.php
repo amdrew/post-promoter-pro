@@ -230,7 +230,7 @@ function ppp_facebook_refresh_notice() {
 	$days_left = round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
 	?>
 	<div class="update-nag">
-		<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your Facebook authentcation expires in within %d days. Please <a href="%s">refresh access.</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
+		<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your Facebook authentication expires in within %d days. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
 	</div>
 	<?php
 }

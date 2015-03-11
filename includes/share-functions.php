@@ -37,43 +37,18 @@ function ppp_share_on_publish( $new_status, $old_status, $post ) {
  * @param  int $post_id
  * @return array
  */
-function ppp_get_timestamps( $month, $day, $year, $post_id ) {
+function ppp_get_timestamps( $post_id ) {
 	global $ppp_options, $ppp_social_settings;
 	$days_ahead = 1;
-	$times = array();
+	$times  = array();
 	$offset = (int) -( get_option( 'gmt_offset' ) ); // Make the timestamp in the users' timezone, b/c that makes more sense
 
-	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
-	if ( $ppp_post_override ) {
-		$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
-		foreach ( $ppp_post_override_data as $key => $values ) {
-			if ( !isset( $ppp_post_override_data[$key]['enabled'] ) ) {
-				$ppp_post_override_data[$key]['enabled'] = false;
-			}
-		}
-
-		$override_enabled = wp_list_pluck( $ppp_post_override_data, 'enabled' );
-		$override_times = wp_list_pluck( $ppp_post_override_data, 'time' );
-
-		foreach ( $override_times as $key => $time ) {
-			if ( !isset( $override_enabled[$key] ) ) {
-				unset( $override_times[$key] );
-			}
-		}
-	}
-
-	$tweet_times = ( empty( $ppp_post_override ) ) ? ppp_get_default_times() : $override_times;
+	$ppp_tweets = get_post_meta( $post_id, '_ppp_tweets', true );
 
 	$times = array();
+	foreach ( $ppp_tweets as $key => $data ) {
 
-	foreach ( $tweet_times as $key => $data ) {
-
-		if ( $ppp_post_override && ( empty( $override_enabled[$key] ) || $override_enabled[$key] !== '1' ) ) {
-			continue;
-		}
-
-		$days_ahead = substr( $key, -1 );
-		$share_time = explode( ':', $data );
+		$share_time = explode( ':', $data['time'] );
 		$hours = (int) $share_time[0];
 		$minutes = (int) substr( $share_time[1], 0, 2 );
 		$ampm = strtolower( substr( $share_time[1], -2 ) );
@@ -86,61 +61,17 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 			$hours = 00;
 		}
 
-		$hours   = $hours + $offset;
+		$hours     = $hours + $offset;
+		$date      = explode( '/', $data['date'] );
+		$timestamp = mktime( $hours, $minutes, 0, $date[0], $date[1], $date[2] );
 
-		$timestamp = mktime( $hours, $minutes, 0, $month, $day + $days_ahead, $year );
-
-		if ( $timestamp > time() ) { // Make sure the timestamp we're getting is in the future
-			$times[strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) )] = 'sharedate_' . $days_ahead . '_' . $post_id;
+		if ( $timestamp > current_time( 'timestamp', 1 ) ) { // Make sure the timestamp we're getting is in the future
+			$times[strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) )] = 'sharedate_' . $key . '_' . $post_id;
 		}
+
 	}
 
 	return apply_filters( 'ppp_get_timestamps', $times );
-}
-
-/**
- * Returns if a day is enabled by default
- * @return  bool Day is enabled or not
- */
-function ppp_is_day_enabled( $day ) {
-	global $ppp_options;
-
-	$day_status = ( ( isset( $ppp_options['days']['day' . $day] ) && $ppp_options['days']['day' . $day] === 'on' ) ) ? true : false;
-
-	return apply_filters( 'ppp_is_day_enabled', $day_status, $day );
-}
-
-/**
- * Get the times set as defaults
- * @return array The times set as default in the settings
- */
-function ppp_get_default_times() {
-	$number_of_days = ppp_share_days_count();
-	$day = 1;
-	$times = array();
-	while ( $day <= $number_of_days ) {
-		if ( ppp_is_day_enabled( $day ) ) {
-			$times['day' . $day] = ppp_get_day_default_time( $day );
-		}
-		$day++;
-	}
-
-	return $times;
-}
-
-/**
- * Get the default time for a specific day provided
- * @param  int $day The day of the share
- * @return string   Time in H:MMam/pm format
- */
-function ppp_get_day_default_time( $day ) {
-	global $ppp_options;
-
-	if ( isset( $ppp_options['times']['day' . $day] ) ) {
-		return $ppp_options['times']['day' . $day];
-	}
-
-	return '8:00am';
 }
 
 /**
@@ -164,8 +95,18 @@ function ppp_share_post( $post_id, $name ) {
 
 	$share_message = ppp_tw_build_share_message( $post_id, $name );
 
-	$name_parts = explode( '_', $name );
-	$media = ppp_post_has_media( $post_id, 'tw', ppp_tw_use_media( $post_id, $name_parts[1] ) );
+	$name_parts    = explode( '_', $name );
+	$post_meta     = get_post_meta( $post_id, '_ppp_tweets', true );
+	$this_share    = $post_meta[$name_parts[1]];
+	$attachment_id = isset( $this_share['attachment_id'] ) ? $this_share['attachment_id'] : false;
+
+	if ( empty( $attachment_id ) && ! empty( $this_share['image'] ) ) {
+		$media = $this_share['image'];
+	} else {
+		$media = ppp_post_has_media( $post_id, 'tw', ppp_tw_use_media( $post_id, $name_parts[1] ), $attachment_id );
+	}
+
+
 
 	$status['twitter'] = ppp_send_tweet( $share_message, $post_id, $media );
 
@@ -321,12 +262,12 @@ function ppp_generate_link_tracking( $share_link, $post_id, $name ) {
  * @param  bool $use_media   If this share should use media or not
  * @return mixed             If a thumbnail is found returns the URL, otherwise returns false
  */
-function ppp_post_has_media( $post_id, $network, $use_media ) {
+function ppp_post_has_media( $post_id, $network, $use_media, $attachment_id = false ) {
 	if ( !$use_media || empty( $post_id ) || empty( $network ) ) {
 		return false;
 	}
 
-	$thumb_id = get_post_thumbnail_id( $post_id );
+	$thumb_id = empty( $attachment_id ) ? get_post_thumbnail_id( $post_id ) : $attachment_id;
 	$thumb_url = wp_get_attachment_image_src( $thumb_id, 'ppp-' . $network . '-share-image', true );
 
 	if ( isset( $thumb_url[0] ) && ! empty( $thumb_url[0] ) && !strpos( $thumb_url[0], 'wp-includes/images/media/default.png' ) ) {

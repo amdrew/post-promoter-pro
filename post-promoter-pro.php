@@ -45,6 +45,7 @@ class PostPromoterPro {
 
 		if ( is_admin() ) {
 			include PPP_PATH . '/includes/admin/upgrades.php';
+			include PPP_PATH . '/includes/admin/do-upgrades.php';
 			include PPP_PATH . '/includes/admin/actions.php';
 			include PPP_PATH . '/includes/admin/admin-pages.php';
 			include PPP_PATH . '/includes/admin/admin-ajax.php';
@@ -66,6 +67,7 @@ class PostPromoterPro {
 			add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 		}
 
+		add_action( 'init', array( $this, 'get_actions' ) );
 		add_action( 'save_post', 'ppp_schedule_share', 99, 2);
 		add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
 		add_action( 'init', 'ppp_add_image_sizes' );
@@ -95,20 +97,6 @@ class PostPromoterPro {
 		}
 
 		$default_settings['post_types']['post'] = '1';
-		$default_settings['times']['day1']      = '8:00am';
-		$default_settings['days']['day1']       = 'on';
-		$default_settings['times']['day2']      = '10:00am';
-		$default_settings['days']['day2']       = 'on';
-		$default_settings['times']['day3']      = '12:00pm';
-		$default_settings['days']['day3']       = 'on';
-		$default_settings['times']['day4']      = '4:00pm';
-		$default_settings['days']['day4']       = 'on';
-		$default_settings['times']['day5']      = '10:30am';
-		$default_settings['days']['day5']       = 'on';
-		$default_settings['times']['day6']      = '8:00pm';
-		$default_settings['days']['day6']       = 'on';
-
-
 
 		update_option( 'ppp_options', $default_settings );
 		set_transient( '_ppp_activation_redirect', 'true', 30 );
@@ -129,7 +117,6 @@ class PostPromoterPro {
 
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
-		wp_enqueue_script( 'jquery-ui-slider' );
 
 		$jquery_ui_timepicker_path = PPP_URL . 'includes/scripts/libs/jquery-ui-timepicker-addon.js';
 		wp_enqueue_script( 'ppp_timepicker_js', $jquery_ui_timepicker_path , array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
@@ -139,6 +126,7 @@ class PostPromoterPro {
 	public function load_styles() {
 		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
 		wp_enqueue_style( 'ppp_admin_css' );
+		wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/flick/jquery-ui.css' );
 	}
 
 	/**
@@ -195,6 +183,14 @@ class PostPromoterPro {
 			              'manage_options',
 			              'ppp-system-info',
 			              'ppp_display_sysinfo'
+			            );
+
+		add_submenu_page( null,
+			              __( 'PPP Upgrades', 'ppp-txt' ),
+			              __( 'PPP Upgrades', 'ppp-txt' ),
+			              'manage_options',
+			              'ppp-upgrades',
+			              'ppp_upgrades_screen'
 			            );
 
 	}
@@ -358,6 +354,12 @@ class PostPromoterPro {
 			delete_option( '_ppp_license_key_status' ); // new license has been entered, so must reactivate
 		}
 		return $new;
+	}
+
+	public function get_actions() {
+		if ( isset( $_GET['ppp_action'] ) ) {
+			do_action( 'ppp_' . $_GET['ppp_action'], $_GET );
+		}
 	}
 }
 
