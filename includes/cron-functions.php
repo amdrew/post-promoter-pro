@@ -18,10 +18,10 @@ function ppp_schedule_share( $post_id, $post ) {
 		return;
 	}
 
-	//ppp_remove_scheduled_shares( $post_id );
+	ppp_remove_scheduled_shares( $post_id );
 
 	if ( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) ||
-	     ( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) ) {
+		 ( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) ) {
 		// Be sure to clear any currently scheduled tweets so we aren't creating multiple instances
 		// This will stop something from moving between draft and post and continuing to schedule tweets
 		ppp_remove_scheduled_shares( $post_id );
@@ -51,13 +51,11 @@ function ppp_remove_scheduled_shares( $post_id ) {
 	do_action( 'ppp_pre_remove_scheduled_shares', $post_id );
 
 	$current_shares = get_post_meta( $post_id, '_ppp_tweets', true );
-	$share_count    = count( $current_shares );
 
-	while ( $share_count <= ppp_share_days_count() ) {
-		$name = 'sharedate_' . $share_count . '_' . $post_id;
-		wp_clear_scheduled_hook( 'ppp_share_post_event', array( $post_id, $name ) );
+	foreach ( $current_shares as $key => $share ) {
+			$name = 'sharedate_' . $key . '_' . $post_id;
+			wp_clear_scheduled_hook( 'ppp_share_post_event', array( $post_id, $name ) );
 
-		$share_count++;
 	}
 
 	do_action( 'ppp_post_remove_scheduled_shares', $post_id );
