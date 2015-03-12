@@ -63,8 +63,7 @@ class PostPromoterPro {
 				add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
 				add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
 				add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
-				add_action( 'admin_print_styles-post-new.php', array( $this, 'load_styles' ), PHP_INT_MAX );
-				add_action( 'admin_print_styles-post.php', array( $this, 'load_styles' ), PHP_INT_MAX );
+				add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), PHP_INT_MAX );
 				add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 			}
 
