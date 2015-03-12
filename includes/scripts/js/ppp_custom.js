@@ -3,7 +3,10 @@ var tweetLengthRed    = 117;
 
 (function ($) {
 	$('.share-time-selector').timepicker({ 'step': 15 });
-	$('.share-date-selector').datepicker({ dateFormat : 'mm/dd/yy', minDate: 0});
+	$('.share-date-selector').datepicker({
+		dateFormat: 'mm/dd/yy',
+		minDate: 0
+	});
 
 	$('input[id*="_share_on_publish"]').click( function() {
 		$(this).parent().siblings('.ppp_share_on_publish_text').toggle();

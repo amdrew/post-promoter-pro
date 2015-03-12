@@ -63,7 +63,8 @@ class PostPromoterPro {
 				add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
 				add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
 				add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
-				add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ) );
+				add_action( 'admin_print_styles-post-new.php', array( $this, 'load_styles' ), PHP_INT_MAX );
+				add_action( 'admin_print_styles-post.php', array( $this, 'load_styles' ), PHP_INT_MAX );
 				add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 			}
 
@@ -140,7 +141,12 @@ class PostPromoterPro {
 	public function load_styles() {
 		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
 		wp_enqueue_style( 'ppp_admin_css' );
-		wp_enqueue_style( 'jquery-style', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/flick/jquery-ui.css' );
+
+		// List of people who make it impossible to override their jQuery UI as it's in their core CSS...so only
+		// load ours if they don't exist
+		if ( ! wp_style_is( 'ot-admin-css' ) && ! wp_style_is( 'jquery-ui-css' ) ) {
+			wp_enqueue_style( 'jquery-ui-css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/flick/jquery-ui.css' );
+		}
 	}
 
 	/**
