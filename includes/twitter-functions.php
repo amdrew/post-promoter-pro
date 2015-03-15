@@ -490,3 +490,115 @@ function ppp_tw_unschedule_shares( $new_status, $old_status, $post ) {
 }
 add_action( 'transition_post_status', 'ppp_tw_unschedule_shares', 10, 3 );
 
+/**
+ * Returns if the Twitter Cards are enabled
+ *
+ * @since  2.2
+ * @return bool If the user has checked to enable Twitter cards
+ */
+function ppp_tw_cards_enabled() {
+	global $ppp_share_settings;
+
+	$ret = false;
+
+	if ( ! empty( $ppp_share_settings['twitter']['cards_enabled'] ) ) {
+		$ret = true;
+	}
+
+	return apply_filters( 'ppp_tw_cards_enabled', $ret );
+}
+
+/**
+ * Output the Twitter Card Meta
+ *
+ * @since  2.2
+ * @return void
+ */
+function ppp_tw_card_meta() {
+
+	if ( ! is_single() || ! ppp_tw_cards_enabled() ) {
+		return;
+	}
+
+	echo ppp_tw_get_cards_meta();
+}
+add_action( 'wp_head', 'ppp_tw_card_meta', 10 );
+
+/**
+ * Generates the Twitter Card Content
+ *
+ * @since  2.2
+ * @return string The Twitter card Meta tags
+ */
+function ppp_tw_get_cards_meta() {
+
+	$return = '';
+
+	if ( ! is_single() || ! ppp_tw_cards_enabled() ) {
+		return $return;
+	}
+
+	global $post, $ppp_social_settings;
+
+	if ( empty( $post ) ) {
+		return;
+	}
+
+	$elements = ppp_tw_default_meta_elements();
+	foreach ( $elements as $name => $content ) {
+		$return .= '<meta name="' . $name . '" content="' . $content . '" />' . "\n";
+	}
+
+	return apply_filters( 'ppp_tw_card_meta', $return );
+
+}
+
+/**
+ * Sets an array of names and content for Twitter Card Meta
+ * for easy filtering by devs
+ *
+ * @since  2.2
+ * @return array The array of keys and values for the Twitter Meta
+ */
+function ppp_tw_default_meta_elements() {
+	global $post, $ppp_social_settings;
+
+	$elements = array(
+		'twitter:card'  => 'summary_large_image',
+		'twitter:site'  => $ppp_social_settings['twitter']['user']->screen_name,
+		'twitter:title' => get_the_title( $post ),
+		'twitter:description' => ppp_tw_get_card_description()
+	);
+
+	$image_url = ppp_post_has_media( $post->ID, 'tw', true );
+	if ( $image_url ) {
+		$elements['twitter:image:src'] = $image_url;
+	}
+
+	return apply_filters( 'ppp_tw_card_elements', $elements );
+}
+
+/**
+ * Given a post, will give the post excerpt or the truncated post content to fit in a Twitter Card
+ *
+ * @since  2.2
+ * @return string The post excerpt/description
+ */
+function ppp_tw_get_card_description() {
+	global $post;
+
+	if ( ! is_single() || empty( $post ) ) {
+		return false;
+	}
+
+	$excerpt = $post->post_excerpt;
+	$max_len = apply_filters( 'ppp_tw_cart_desc_length', 200 );
+
+	if ( empty( $excerpt ) ) {
+		$excerpt_pre = substr( $post->post_content, 0, $max_len );
+		$last_space  = strrpos( $excerpt_pre, ' ' );
+		$excerpt     = substr( $excerpt_pre, 0, $last_space ) . '...';
+	}
+
+	return apply_filters( 'ppp_tw_card_desc', $excerpt );
+}
