@@ -564,9 +564,9 @@ function ppp_tw_default_meta_elements() {
 	global $post, $ppp_social_settings;
 
 	$elements = array(
-		'twitter:card'  => 'summary_large_image',
-		'twitter:site'  => $ppp_social_settings['twitter']['user']->screen_name,
-		'twitter:title' => get_the_title( $post ),
+		'twitter:card'        => 'summary_large_image',
+		'twitter:site'        => $ppp_social_settings['twitter']['user']->screen_name,
+		'twitter:title'       => strip_tags( get_the_title( $post ) ),
 		'twitter:description' => ppp_tw_get_card_description()
 	);
 
