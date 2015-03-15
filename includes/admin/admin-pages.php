@@ -181,6 +181,23 @@ function ppp_display_social() {
 					</td>
 				</tr>
 
+				<?php $twitter_cards_enabled = ppp_tw_cards_enabled(); ?>
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<?php _e( 'Twitter Settings', 'ppp-txt' ); ?></span>
+					</th>
+					<td id="ppp-twitter-cards-wrapper">
+						<p>
+							<input id="ppp-twitter-cards"
+							       name="ppp_share_settings[twitter][cards_enabled]"
+							       type="checkbox"
+							       value="1"
+							       <?php checked( true, $twitter_cards_enabled, true ); ?>
+							/>&nbsp<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
+						</p>
+					</td>
+				</tr>
+
 				<?php
 				$shortener = isset( $ppp_share_settings['shortener'] ) ? $ppp_share_settings['shortener'] : false;
 				?>
