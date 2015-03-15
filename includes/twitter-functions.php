@@ -534,7 +534,7 @@ function ppp_tw_get_cards_meta() {
 
 	$return = '';
 
-	if ( ! is_single() && ! ppp_tw_cards_enabled() ) {
+	if ( ! is_single() || ! ppp_tw_cards_enabled() ) {
 		return $return;
 	}
 
