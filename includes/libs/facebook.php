@@ -104,6 +104,22 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 					}
 					$data->userid = $user_info->id;
 					$data->avatar = $this->ppp_fb_get_profile_picture( array( 'type' => 'square' ), $data->userid );
+
+					if ( ! empty( $ppp_social_settings['facebook']->page ) ) {
+						$current_page = $ppp_social_settings['facebook']->page;
+						$page_parts   = explode( '|', $current_page );
+
+						$pages = $this->ppp_get_fb_user_pages( $data->access_token );
+
+						foreach ( $pages as $page ) {
+							if ( $page->id == $page_parts[2] ) {
+								$data->page = $page->name . '|' . $page->access_token . '|' . $page->id;
+								continue;
+							}
+						}
+
+					}
+
 					$ppp_social_settings['facebook'] = $data;
 
 					update_option( 'ppp_social_settings', $ppp_social_settings );
@@ -148,9 +164,9 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			global $ppp_social_settings;
 			$facebook_settings = $ppp_social_settings['facebook'];
 
-			if ( !isset( $facebook_settings->available_pages ) ||
-				 !isset( $facebook_settings->pages_last_updated ) ||
-				 $facebook_settings->pages_last_updated > ( current_time( 'timestamp' ) + WEEK_IN_SECONDS ) ) {
+			if ( ! isset( $facebook_settings->available_pages ) ||
+				 ! isset( $facebook_settings->pages_last_updated ) ||
+				 $facebook_settings->pages_last_updated < current_time( 'timestamp' ) ) {
 
 				$all_pages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://graph.facebook.com/me/accounts?access_token=' . $access_token ) ) );
 				$pages = array();
@@ -167,7 +183,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 				$pages = (object) $pages;
 				$ppp_social_settings['facebook']->available_pages = $pages;
-				$ppp_social_settings['facebook']->pages_last_updated = current_time( 'timestamp' ) + WEEK_IN_SECONDS;
+				$ppp_social_settings['facebook']->pages_last_updated = current_time( 'timestamp' ) + ( HOUR_IN_SECONDS / 4 );
 				update_option( 'ppp_social_settings', $ppp_social_settings );
 			} else {
 				$pages = $facebook_settings->available_pages;
