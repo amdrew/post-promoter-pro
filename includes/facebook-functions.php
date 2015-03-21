@@ -249,7 +249,7 @@ function ppp_fb_share( $link, $message, $picture ) {
  * @return void
  */
 function ppp_fb_register_thumbnail_size() {
-	add_image_size( 'ppp-fb-share-image', 484, 252, true );
+	add_image_size( 'ppp-fb-share-image', 1200, 627, true );
 }
 add_action( 'ppp_add_image_sizes', 'ppp_fb_register_thumbnail_size' );
 
