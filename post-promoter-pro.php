@@ -148,7 +148,13 @@ class PostPromoterPro {
 		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
 	}
 
-	public function load_styles() {
+	public function load_styles( $hook ) {
+		if ( 'toplevel_page_ppp-options' != $hook
+			  && 'post-promoter_page_ppp-social-settings' != $hook
+			  && 'post-new.php' != $hook
+			  && 'post.php' != $hook )
+			return;
+
 		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
 		wp_enqueue_style( 'ppp_admin_css' );
 	}
