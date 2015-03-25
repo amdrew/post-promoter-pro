@@ -10,7 +10,7 @@ Post Promoter Pro is a commercial plugin, available at [PostPromoterPro.com](htt
 Since Post Promoter Pro is a commercial plugin, a license key is necessary for support and automatic upgrades. It also requires a key to retrieve the Social Network Application Keys and Secrets. These are applications specific to our product and we provide them to lcense holders in order to make the Twitter, Facebook, LinkedIn, and Bitly signin process as streamlined as possible. To purchase one you can visit the [Post Promoter Pro Website](https://postpromoterpro.com/pricing/?discount=GITHUBREPO)
 
 #### Using with your own Social Media Keys/Secrets
-If, however, you with to contribute to the codebase without a license, you can do so by using local social media keys, for applications you create yourself. In order to do this you must visit each Social Media's "Developer" area and configure an application.
+If, however, you wish to contribute to the codebase without a license, you can do so by using local social media keys, for applications you create yourself. In order to do this you must visit each Social Media's "Developer" area and configure an application.
 
 To Setup local keys, do the following:
 1. Setup applications with social media services
