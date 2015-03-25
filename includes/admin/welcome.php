@@ -167,9 +167,9 @@ class PPP_Welcome {
 
 					<img src="<?php echo PPP_URL . '/includes/images/screenshots/twitter-cards.jpg'; ?>" class="ppp-welcome-screenshots"/>
 
-					<h4><?php _e( 'Incresed visibility on Twitter','ppp-txt' );?></h4>
+					<h4><?php _e( 'Increased visibility on Twitter','ppp-txt' );?></h4>
 					<p><?php _e( 'Enable this feature if you want your Tweets to look the best they can.', 'ppp-txt' );?></p>
-					<p><?php _e( 'This is an opt-in setting, so if you have a plugin that already does this, no conflicts will arrise upon upgrade.', 'ppp-txt' );?></p>
+					<p><?php _e( 'This is an opt-in setting, so if you have a plugin that already does this, no conflicts will arise upon upgrade.', 'ppp-txt' );?></p>
 
 				</div>
 			</div>
@@ -194,7 +194,7 @@ class PPP_Welcome {
 						<p><?php _e( 'Changed the optimal thumbnail image sizes to meet the 2015 network standards.', 'ppp-txt' );?></p>
 
 						<h4><?php _e( 'CSS Updates', 'ppp-txt' );?></h4>
-						<p><?php _e( 'Fixed a conflict in the media library css.', 'ppp-txt' );?></p>
+						<p><?php _e( 'Fixed a conflict in the media library CSS.', 'ppp-txt' );?></p>
 					</div>
 
 					<div class="last-feature">
