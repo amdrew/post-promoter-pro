@@ -1,7 +1,7 @@
 # Post Promoter Pro
 ### The Most effective way to promote your WordPress content
 
-This is the public repoistory of _Post Promoter Pro_, the most effective way to share your WordPress content accross your Twitter, Facebook, and LinkedIn accounts.
+This is the public repository of _Post Promoter Pro_, the most effective way to share your WordPress content accross your Twitter, Facebook, and LinkedIn accounts.
 
 #### About
 Post Promoter Pro is a commercial plugin, available at [PostPromoterPro.com](https://postpromoterpro.com/pricing/?discount=GITHUBREPO). This public repository is here to allow collaboration, bug reporting, and transparency into it's development and direction.
