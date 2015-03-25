@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 function ppp_upgrade_notices() {
 
-	if ( isset( $_GET['page'] ) && $_GET['page'] == 'ppp-upgrades' ) {
+	if ( isset( $_GET['page'] ) && ( $_GET['page'] == 'ppp-about' || $_GET['page'] == 'ppp-upgrades' ) ) {
 		return; // Don't show notices on the upgrades page
 	}
 
@@ -26,9 +26,9 @@ function ppp_upgrade_notices() {
 		// Include all 'Stepped' upgrade process notices in this else statement,
 		// to avoid having a pending, and new upgrade suggested at the same time
 
-		if ( version_compare( $ppp_version, '2.2', '<' ) && ! ppp_has_upgrade_completed( 'upgrade_post_meta' ) ) {
+		if ( version_compare( $ppp_version, '2.2', '<' ) || ! ppp_has_upgrade_completed( 'upgrade_post_meta' ) ) {
 			printf(
-				'<div class="updated"><p>' . __( 'Post Promoter Pro needs to upgrade share override data, click <a href="%s">here</a> to start the upgrade.', 'ppp-txt' ) . '</p></div>',
+				'<div class="notice notice-info"><p>' . __( 'Post Promoter Pro needs to upgrade share override data, click <a href="%s">here</a> to start the upgrade.', 'ppp-txt' ) . '</p></div>',
 				esc_url( admin_url( 'index.php?page=ppp-upgrades&ppp-upgrade=upgrade_post_meta' ) )
 			);
 		}
