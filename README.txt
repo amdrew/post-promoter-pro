@@ -2,8 +2,8 @@
 Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly
 Requires at least: 3.9.2
-Tested up to: 4.1
-Stable tag: 2.1.3
+Tested up to: 4.2
+Stable tag: 2.2
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,17 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+= 2.2 =
+* NEW: Free Form Tweet Scheduling
+* NEW: Twitter Card Support
+* NEW: Ability to change attached Twitter Images
+* NEW: Allow local social media tokens
+* TWEAK: Updated Schedule List View with attached image and better column widths
+* TWEAK: Updated thumbnail sizes for Twitter and Facebook to new dimensions
+* FIX: CSS Conflict in the Media List View
+* FIX: 'Post As' getting reset to 'Me' after re-newing Facebook tokens
+* FIX: Updated the plugin updater class to the most recent version
+
 = 2.1.3 =
 * FIX: Twitter "Share at time of Publish" content not replacing {post_title} and other tokens
 
