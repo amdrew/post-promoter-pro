@@ -1,5 +1,5 @@
 # Post Promoter Pro
-### The Most effective way to promoter your WordPress content
+### The Most effective way to promote your WordPress content
 
 This is the public repoistory of _Post Promoter Pro_, the most effective way to share your WordPress content accross your Twitter, Facebook, and LinkedIn accounts.
 
