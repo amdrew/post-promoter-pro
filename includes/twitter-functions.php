@@ -520,6 +520,12 @@ function ppp_tw_card_meta() {
 		return;
 	}
 
+	global $post, $ppp_options;
+
+	if ( ! array_key_exists( $post->post_type, $ppp_options['post_types'] ) ) {
+		return;
+	}
+
 	echo ppp_tw_get_cards_meta();
 }
 add_action( 'wp_head', 'ppp_tw_card_meta', 10 );
@@ -539,6 +545,7 @@ function ppp_tw_get_cards_meta() {
 	}
 
 	global $post, $ppp_social_settings;
+
 
 	if ( empty( $post ) ) {
 		return;
@@ -566,8 +573,8 @@ function ppp_tw_default_meta_elements() {
 	$elements = array(
 		'twitter:card'        => 'summary_large_image',
 		'twitter:site'        => $ppp_social_settings['twitter']['user']->screen_name,
-		'twitter:title'       => strip_tags( get_the_title( $post ) ),
-		'twitter:description' => ppp_tw_get_card_description()
+		'twitter:title'       => esc_attr( strip_tags( $post->post_title ) ),
+		'twitter:description' => esc_attr( strip_tags( ppp_tw_get_card_description() ) )
 	);
 
 	$image_url = ppp_post_has_media( $post->ID, 'tw', true );
