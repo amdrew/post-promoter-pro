@@ -6,6 +6,11 @@ This is the public repoistory of _Post Promoter Pro_, the most effective way to 
 #### About
 Post Promoter Pro is a commercial plugin, available at [PostPromoterPro.com](https://postpromoterpro.com/pricing/?discount=GITHUBREPO). This public repository is here to allow collaboration, bug reporting, and transparency into it's development and direction.
 
+#### Bug Reports
+If you are a user looking for Techincal Support, please use the ['Support'](https://postpromoterpro.com/support/) section of the website. This repository is for development related issues and tracking only. If you request support in this arena, you will be asked to visit the following page, and provide your license key.
+
+https://postpromoterpro.com/support/
+
 #### Using with a license key
 Since Post Promoter Pro is a commercial plugin, a license key is necessary for support and automatic upgrades. It also requires a key to retrieve the Social Network Application Keys and Secrets. These are applications specific to our product and we provide them to lcense holders in order to make the Twitter, Facebook, LinkedIn, and Bitly signin process as streamlined as possible. To purchase one you can visit the [Post Promoter Pro Website](https://postpromoterpro.com/pricing/?discount=GITHUBREPO)
 
