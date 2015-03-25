@@ -13,9 +13,15 @@ Since Post Promoter Pro is a commercial plugin, a license key is necessary for s
 If, however, you wish to contribute to the codebase without a license, you can do so by using local social media keys, for applications you create yourself. In order to do this you must visit each Social Media's "Developer" area and configure an application.
 
 To Setup local keys, do the following:
+
 1. Setup applications with social media services
+
 2. Copy the `ppp-social-tokens-sample.json` file (in the root of the repo) to `wp-content/uploads/ppp/` and rename it `ppp-social-tokens.json`
+
 3. Place your tokens in the appropriate places within the `.json` file above
+
 4. Authenticate your Social Media accounts
+
 5. Code amazing things
+
 6. Submit Pull Requests
