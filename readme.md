@@ -1,6 +1,8 @@
 # Post Promoter Pro
 ### The Most effective way to promote your WordPress content
 
+[![Build Status](https://travis-ci.org/cklosowski/post-promoter-pro.svg?branch=issue%2F71)](https://travis-ci.org/cklosowski/post-promoter-pro)
+
 This is the public repository of _Post Promoter Pro_, the most effective way to share your WordPress content accross your Twitter, Facebook, and LinkedIn accounts.
 
 #### About
