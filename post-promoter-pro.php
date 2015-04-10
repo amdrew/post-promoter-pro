@@ -2,15 +2,15 @@
 /*
 Plugin Name: Post Promoter Pro
 Plugin URI: https://postpromoterpro.com
-Description: Schedule the promotion of posts for the next 6 days, with no further work.
-Version: 2.2.1
+Description: Maximize your social media presence on Twitter, Facebook, and LinkedIn.
+Version: 2.2.2
 Author: Post Promoter Pro
 Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '2.2.1' );
+define( 'PPP_VERSION', '2.2.2' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
