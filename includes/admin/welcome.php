@@ -244,16 +244,23 @@ class PPP_Welcome {
 	 */
 	public function welcome() {
 
-		// Bail if no activation redirect
-		if ( ! get_transient( '_ppp_activation_redirect' ) )
+		$version_level = explode( '.', PPP_VERSION );
+		if ( count( $version_level > 2 ) ) {
 			return;
+		}
+
+		// Bail if no activation redirect
+		if ( ! get_transient( '_ppp_activation_redirect' ) ) {
+			return;
+		}
 
 		// Delete the redirect transient
 		delete_transient( '_ppp_activation_redirect' );
 
 		// Bail if activating from network, or bulk
-		if ( is_network_admin() || isset( $_GET['activate-multi'] ) )
+		if ( is_network_admin() || isset( $_GET['activate-multi'] ) ) {
 			return;
+		}
 
 		wp_safe_redirect( admin_url( 'index.php?page=ppp-about' ) ); exit;
 	}
