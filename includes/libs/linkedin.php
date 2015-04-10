@@ -99,7 +99,6 @@ if( !class_exists( 'PPP_Linkedin' ) ) {
 
 				$ppp_social_settings['linkedin'] = $data;
 				update_option( 'ppp_social_settings', $ppp_social_settings );
-
 				// Now that we have a valid auth, get some user info
 				$user_info = json_decode( $this->ppp_linkedin_profile() );
 
