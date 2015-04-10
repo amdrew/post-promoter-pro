@@ -77,7 +77,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 			}
 
-			if ( ! empty( $access_token ) && ! empty( $expires_in ) ) {
+			if ( ! empty( $access_token ) ) {
 				global $ppp_social_settings;
 				$ppp_social_settings = get_option( 'ppp_social_settings' );
 
@@ -87,7 +87,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 				$data = new stdClass();
 				$data->access_token = $access_token;
 
-				$expires_in = 60 * 24 * 60 * 60; // days * hours * minutes * seconds
+				$expires_in = empty( $expires_in ) ? 60 * 24 * 60 * 60 : $expires_in; // days * hours * minutes * seconds
 				$data->expires_on = current_time( 'timestamp' ) + $expires_in;
 
 				update_option( '_ppp_facebook_refresh', current_time( 'timestamp' ) + round( $expires_in/1.25 ) );
