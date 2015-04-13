@@ -46,5 +46,33 @@ class Tests_General extends WP_UnitTestCase {
 
 	}
 
+	public function test_token_replacement() {
+		$args = array( 'post_id' => $this->_post_id );
+		$this->assertEquals( 'Test Post', ppp_replace_text_tokens( '{post_title}', $args ) );
+		$this->assertEquals( 'Test Blog', ppp_replace_text_tokens( '{site_title}', $args ) );
+
+		// Test replacing 2 in 1 string
+		$this->assertEquals( 'Test Post on Test Blog', ppp_replace_text_tokens( '{post_title} on {site_title}', $args ) );
+
+		// Test without the post ID to make sure it still returns something
+		$this->assertEquals( '{post_title} on Test Blog', ppp_replace_text_tokens( '{post_title} on {site_title}', array() ) );
+	}
+
+	public function test_unique_link() {
+		$link = get_post_permalink( $this->_post_id );
+		$name = 'sharedate_0_' . $this->_post_id . '_tw';
+
+		$unique_link = ppp_generate_unique_link( $link, $this->_post_id, $name );
+		$this->assertEquals( 'http://example.org/?post_type=post&p=9&ppp=9-0', $unique_link );
+	}
+
+	public function test_google_utm_link() {
+		$link = get_post_permalink( $this->_post_id );
+		$name = 'sharedate_0_' . $this->_post_id . '_tw';
+
+		$unique_link = ppp_generate_google_utm_link( $link, $this->_post_id, $name );
+		$this->assertEquals( 'http://example.org/?post_type=post&p=10&utm_source=Twitter&utm_medium=social&utm_term=test-post&utm_content=0&utm_campaign=PostPromoterPro', $unique_link );
+	}
+
 
 }
