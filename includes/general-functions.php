@@ -8,9 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @return void
  */
 function ppp_maybe_start_session() {
+	$ret = false;
 	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && !isset( $_SESSION ) && !defined( 'DOING_AJAX' ) ) {
-		session_start();
+		$ret = session_start();
 	}
+
+	return $ret;
 }
 
 /**
