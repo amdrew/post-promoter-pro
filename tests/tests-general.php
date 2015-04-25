@@ -74,5 +74,13 @@ class Tests_General extends WP_UnitTestCase {
 		$this->assertEquals( 'http://example.org/?post_type=post&p=10&utm_source=Twitter&utm_medium=social&utm_term=test-post&utm_content=0&utm_campaign=PostPromoterPro', $unique_link );
 	}
 
+	public function test_get_post_types() {
+		$allowed_post_types = ppp_allowed_post_types();
+
+		$this->assertInternalType( 'array', $allowed_post_types );
+		$this->assertTrue( in_array( 'post', $allowed_post_types ) );
+
+	}
+
 
 }

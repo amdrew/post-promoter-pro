@@ -22,10 +22,13 @@ activate_plugin( 'post-promoter-pro/post-promoter-pro.php' );
 
 echo "Installing Post Promoter Pro...\n";
 
-global $current_user;
+global $current_user, $ppp_loaded;
+
+$ppp_loaded->activation_setup();
 
 $ppp_social_settings = get_option( 'ppp_social_settings' );
 $ppp_share_settings  = get_option( 'ppp_share_settings' );
 
 $current_user = new WP_User(1);
 $current_user->set_role('administrator');
+
