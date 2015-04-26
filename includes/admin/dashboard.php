@@ -82,9 +82,9 @@ class PPP_Dashboard_Tweets {
 		} else {
 			$args = array(
 				'numberposts' => 1,
-				'orderby' => 'post_date',
-				'order' => 'ASC',
-				'post_type' => ppp_allowed_post_types(),
+				'orderby'     => 'post_date',
+				'order'       => 'DESC',
+				'post_type'   => ppp_allowed_post_types(),
 				'post_status' => array( 'draft', 'publish', 'future' ),
 			);
 
