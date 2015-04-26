@@ -93,6 +93,7 @@ class PPP_Dashboard_Tweets {
 			$post_type      = get_post_type_object( $recent_post['post_type'] );
 			$post_type_name = $post_type->labels->singular_name;
 			$edit_url       = admin_url( 'post.php?post=' . $recent_post['ID'] . '&action=edit' );
+
 			switch( $recent_post['post_status'] ) {
 				case 'draft':
 					$relative_time = __( '<a href="%s">Configure them</a> for your draft ' . $post_type_name, 'ppp-txt' );
