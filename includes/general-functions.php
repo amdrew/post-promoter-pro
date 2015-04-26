@@ -85,6 +85,18 @@ function ppp_add_image_sizes() {
 }
 
 /**
+ * Returns an array of the allowed post types
+ *
+ * @since  2.2.3
+ * @return array Array of post types PPP should work for
+ */
+function ppp_allowed_post_types() {
+	$ppp_options = get_option( 'ppp_options' );
+
+	return array_keys( $ppp_options['post_types'] );
+}
+
+/**
  * Given a Post ID and Post object, should we try and save the metabox content
  * @param  int $post_id The Post ID being saved
  * @param  object $post WP_Post object of the post being saved
