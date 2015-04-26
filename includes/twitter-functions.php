@@ -293,13 +293,12 @@ function ppp_tw_add_metabox_content( $post ) {
 				<p class="ppp_share_on_publish_text" style="display: <?php echo ( $ppp_share_on_publish ) ? '' : 'none'; ?>">
 						<input
 						<?php if ( $disabled ): ?>readonly<?php endif; ?>
-						onkeyup="PPPCountChar(this)"
 						class="ppp-share-text"
 						type="text"
 						placeholder="<?php echo $default_text; ?>"
 						name="_ppp_share_on_publish_text"
 						<?php if ( isset( $ppp_share_on_publish_text ) ) {?>value="<?php echo htmlspecialchars( $ppp_share_on_publish_text ); ?>"<?php ;}?>
-					/><span class="ppp-text-length"></span>
+					/>&nbsp;<span class="ppp-text-length">0</span>
 					<br />
 					<span>
 						<input class="ppp-tw-featured-image-input" <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
@@ -319,7 +318,7 @@ function ppp_tw_add_metabox_content( $post ) {
 									<th style="width: 75px;"><?php _e( 'Time', 'ppp-txt' ); ?></th>
 									<th><?php _e( 'Text', 'ppp-txt' ); ?></th>
 									<th style"width: 200px;"><?php _e( 'Image', 'ppp-txt' ); ?></th>
-									<th style="width: 20px;"></th>
+									<th style="width: 10px;"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -379,6 +378,7 @@ function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 
 		<td>
 			<input <?php echo $readonly; ?>class="ppp-tweet-text-repeatable" type="text" name="_ppp_tweets[<?php echo $key; ?>][text]" value="<?php echo $args['text']; ?>" />
+			&nbsp;<span class="ppp-text-length">0</span>
 		</td>
 
 		<td class="ppp-repeatable-upload-wrapper" style="width: 200px">

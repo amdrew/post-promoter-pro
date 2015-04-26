@@ -47,6 +47,9 @@ function ppp_get_timestamps( $post_id ) {
 
 	$times = array();
 	foreach ( $ppp_tweets as $key => $data ) {
+		if ( ! array_filter( $data ) ) {
+			continue;
+		}
 
 		$share_time = explode( ':', $data['time'] );
 		$hours = (int) $share_time[0];

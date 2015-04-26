@@ -95,6 +95,7 @@ var tweetLengthRed    = 117;
 			this.add();
 			this.remove();
 			this.featured_image();
+			this.count_length();
 		},
 		clone_repeatable: function(row) {
 
@@ -129,6 +130,7 @@ var tweetLengthRed    = 117;
 				$( this ).prop('readonly', false);
 			});
 
+			clone.find( '.ppp-text-length' ).text('0').css('background-color', '#339933');
 			clone.find( '.ppp-remove-repeatable' ).css('display', 'inline-block');
 			clone.find( '.ppp-upload-file' ).show();
 
@@ -262,29 +264,43 @@ var tweetLengthRed    = 117;
 			var file_frame;
 			window.formfield = '';
 
+		},
+		count_length: function() {
+			$( 'body' ).on( 'keyup', '.ppp-tweet-text-repeatable, .ppp-share-text', function(e) {
+				if ( e.shiftKey || e.ctrlKey || e.altKey ) {
+					return;
+				}
+
+				var input   = $(this);
+				var length  = input.val().length;
+				var lengthField = input.next('.ppp-text-length');
+
+				if (length < tweetLengthYellow ) {
+					lengthField.css('background-color', '#339933');
+				} else if ( length >= tweetLengthYellow && length < tweetLengthRed ) {
+					lengthField.css('background-color', '#CC9933');
+				} else if ( length > tweetLengthRed ) {
+					lengthField.css('background-color', '#FF3333');
+				}
+
+				lengthField.text(length);
+			});
 		}
 
 	}
 
 	PPP_Twitter_Configuration.init();
 
+	$( 'body' ).on( 'focusin', '.ppp-tweet-text-repeatable', function() {
+		$('.ppp-repeatable-upload-wrapper').animate({
+			width: '100px'
+		}, 200, function() {});
+	});
+
+	$( 'body' ).on( 'focusout', '.ppp-tweet-text-repeatable', function() {
+		$('.ppp-repeatable-upload-wrapper').animate({
+			width: '200px'
+		}, 200, function() {});
+	});
+
 })(jQuery);
-
-function PPPCountChar(val) {
-	var len = val.value.length;
-	var lengthField = jQuery(val).next('.ppp-text-length');
-
-	lengthField.text(len);
-
-	PPPColorLengthChange(len, lengthField);
-}
-
-function PPPColorLengthChange(length, object) {
-	if (length < tweetLengthYellow ) {
-		object.css('color', '#339933');
-	} else if ( length >= tweetLengthYellow && length < tweetLengthRed ) {
-		object.css('color', '#CC9933');
-	} else if ( length > tweetLengthRed ) {
-		object.css('color', '#FF3333');
-	}
-}
