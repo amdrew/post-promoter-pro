@@ -51,6 +51,7 @@ class PostPromoterPro {
 				include PPP_PATH . '/includes/admin/admin-ajax.php';
 				include PPP_PATH . '/includes/admin/meta-boxes.php';
 				include PPP_PATH . '/includes/admin/welcome.php';
+				include PPP_PATH . '/includes/admin/dashboard.php';
 
 				add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
 				add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );

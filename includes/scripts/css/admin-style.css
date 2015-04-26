@@ -1,3 +1,10 @@
+#future-tweets ul span {
+	color: #777;
+	float: left;
+	margin-right: 8px;
+	min-width: 150px;
+}
+
 #ppp-li-image .left {
 	float: left;
 }
