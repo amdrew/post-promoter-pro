@@ -336,6 +336,8 @@ function ppp_tw_add_metabox_content( $post ) {
 										?>
 
 										<?php ppp_render_tweet_row( $key, $args, $post->ID ); ?>
+
+
 									<?php endforeach; ?>
 
 								<?php else: ?>
@@ -355,6 +357,7 @@ function ppp_tw_add_metabox_content( $post ) {
 				</div><!--end #edd_variable_price_fields-->
 
 				<p><?php _e( 'Do not include links in your text, this will be added automatically.', 'ppp-txt' ); ?></p>
+				<p style="display: none;" id="ppp-show-conflict-warning"><?php printf( __( 'Items highlighted in red have a time assigned that is within %d minutes of an already scheduled Tweet', 'ppp-txt' ), floor( ppp_get_default_conflict_window() / 60 ) ); ?></p>
 			</div>
 		</p>
 	<?php
@@ -362,11 +365,11 @@ function ppp_tw_add_metabox_content( $post ) {
 add_action( 'ppp_generate_metabox_content-tw', 'ppp_tw_add_metabox_content', 10, 1 );
 
 function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
-	$share_time = strtotime( $args['date'] . ' ' . $args['time'] );
-	$readonly   = current_time( 'timestamp' ) > $share_time ? 'readonly="readonly" ' : false;
-	$no_date    = ! empty( $readonly ) ? ' hasDatepicker' : '';
-	$hide       = ! empty( $readonly ) ? 'display: none;' : '';
-?>
+	$share_time     = strtotime( $args['date'] . ' ' . $args['time'] );
+	$readonly       = current_time( 'timestamp' ) > $share_time ? 'readonly="readonly" ' : false;
+	$no_date        = ! empty( $readonly ) ? ' hasDatepicker' : '';
+	$hide           = ! empty( $readonly ) ? 'display: none;' : '';
+	?>
 	<tr class="ppp-tweet-wrapper ppp-repeatable-row" data-key="<?php echo esc_attr( $key ); ?>">
 		<td>
 			<input <?php echo $readonly; ?>type="text" class="share-date-selector<?php echo $no_date; ?>" name="_ppp_tweets[<?php echo $key; ?>][date]" placeholder="mm/dd/yyyy" value="<?php echo $args['date']; ?>" />

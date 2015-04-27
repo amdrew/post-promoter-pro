@@ -152,6 +152,7 @@
 }
 
 .ppp-add-repeatable { display: inline-block; }
+.ppp-row-warning { background-color: lightpink; }
 .ppp-repeatable-row td { vertical-align: middle }
 .ppp-meta-table-wrap table input,
 .ppp-meta-table-wrap table select,

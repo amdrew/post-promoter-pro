@@ -63,7 +63,7 @@ class Tests_General extends WP_UnitTestCase {
 		$name = 'sharedate_0_' . $this->_post_id . '_tw';
 
 		$unique_link = ppp_generate_unique_link( $link, $this->_post_id, $name );
-		$this->assertEquals( 'http://example.org/?post_type=post&p=9&ppp=9-0', $unique_link );
+		$this->assertEquals( 'http://example.org/?post_type=post&p=' . $this->_post_id . '&ppp=' . $this->_post_id . '-0', $unique_link );
 	}
 
 	public function test_google_utm_link() {
@@ -71,7 +71,7 @@ class Tests_General extends WP_UnitTestCase {
 		$name = 'sharedate_0_' . $this->_post_id . '_tw';
 
 		$unique_link = ppp_generate_google_utm_link( $link, $this->_post_id, $name );
-		$this->assertEquals( 'http://example.org/?post_type=post&p=10&utm_source=Twitter&utm_medium=social&utm_term=test-post&utm_content=0&utm_campaign=PostPromoterPro', $unique_link );
+		$this->assertEquals( 'http://example.org/?post_type=post&p=' . $this->_post_id . '&utm_source=Twitter&utm_medium=social&utm_term=test-post&utm_content=0&utm_campaign=PostPromoterPro', $unique_link );
 	}
 
 	public function test_get_post_types() {
