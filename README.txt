@@ -3,7 +3,7 @@ Contributors: cklosows
 Tags: post promoter pro, twitter, linkedin, facebook, bitly
 Requires at least: 3.9.2
 Tested up to: 4.2
-Stable tag: 2.2.2
+Stable tag: 2.2.3
 Donate link: https://postpromoterpro.com
 License: GPLv2
 
@@ -16,6 +16,12 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+= 2.2.3 =
+* NEW: Dashboard widget to show our next X scheduled Tweets
+* NEW: Added Unit tests
+* NEW: Added warning when scheduling a Tweet that is within 30 minutes of an existing Tweet
+* TWEAK: Re-Added and Improved the Tweet Character Counter
+
 = 2.2.2 =
 * FIX: If the expires_in comes back empty, force one
 * TWEAK: Don't redirect to the about page on dot releases
