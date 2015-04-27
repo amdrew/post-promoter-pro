@@ -320,9 +320,9 @@ var tweetLengthRed    = 117;
 		},
 		show_hide_conflict_warning: function() {
 			if ( $('.ppp-repeatable-table > tbody > tr.ppp-row-warning').length > 0 ) {
-				$('#ppp-show-conflict-warning').show();
+				$('#ppp-show-conflict-warning').slideDown();
 			} else {
-				$('#ppp-show-conflict-warning').hide();
+				$('#ppp-show-conflict-warning').slideUp();
 			}
 		}
 
