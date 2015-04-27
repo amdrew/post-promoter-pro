@@ -91,5 +91,67 @@ function ppp_get_shceduled_crons() {
 
 	}
 
-	return $ppp_crons;
+	return apply_filters( 'ppp_get_scheduled_crons', $ppp_crons );
+}
+
+/**
+ * Given a time, see if there are any tweets scheduled within the range of the within
+ *
+ * @since  2.2.3
+ * @param  int $time   The timestamp to check for
+ * @param  int $within The number of seconds to check, before and after a given time
+ * @return bool        If there are any tweets scheduled within this timeframe
+ *
+ */
+function ppp_has_cron_within( $time = 0, $within = 0 ) {
+	if ( empty( $time ) ) {
+		$time = current_time( 'timestamp' );
+	}
+
+	if ( empty( $within ) ) {
+		$within = ppp_get_default_conflict_window();
+	}
+
+	$crons = ppp_get_shceduled_crons();
+
+	if ( empty( $crons ) ) {
+		return false;
+	}
+
+	$scheduled_times = wp_list_pluck( $crons, 'timestamp' );
+
+	$found_time = false;
+	foreach ( $scheduled_times as $key => $scheduled_time ) {
+		$found_time = ppp_is_time_within( $scheduled_time, $time, $within );
+		if ( $found_time ) {
+			break;
+		}
+	}
+
+	return $found_time;
+}
+
+/**
+ * Check if $time is within the +/- of $target_time
+ *
+ * @since  2.2.3
+ * @param  integer $time        The Time to check
+ * @param  integer $target_time The Target time
+ * @param  integer $within      The +/- in seconds
+ * @return bool                 If the time is within the range of the target_time
+ *
+ */
+function ppp_is_time_within( $time = 0, $target_time = 0, $within = 0 ) {
+	$min = $target_time - $within;
+	$max = $target_time + $within;
+
+	return ( ( $time >= $min ) && ( $time <= $max ) );
+}
+
+/**
+ * The default +/- on when we should warn about conflicting tweets
+ * @return int The +/- to warn on
+ */
+function ppp_get_default_conflict_window() {
+	return apply_filters( 'ppp_default_conflict_window', HOUR_IN_SECONDS / 2 );
 }
