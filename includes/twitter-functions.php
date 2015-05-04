@@ -298,7 +298,8 @@ function ppp_tw_add_metabox_content( $post ) {
 						placeholder="<?php echo $default_text; ?>"
 						name="_ppp_share_on_publish_text"
 						<?php if ( isset( $ppp_share_on_publish_text ) ) {?>value="<?php echo htmlspecialchars( $ppp_share_on_publish_text ); ?>"<?php ;}?>
-					/>&nbsp;<span class="ppp-text-length">0</span>
+						<?php $length = ! empty($ppp_share_on_publish_text ) ? strlen( $ppp_share_on_publish_text ) : 0; ?>
+					/>&nbsp;<span class="ppp-text-length"><?php echo $length; ?></span>
 					<br />
 					<span>
 						<input class="ppp-tw-featured-image-input" <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
@@ -381,7 +382,8 @@ function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 
 		<td>
 			<input <?php echo $readonly; ?>class="ppp-tweet-text-repeatable" type="text" name="_ppp_tweets[<?php echo $key; ?>][text]" value="<?php echo $args['text']; ?>" />
-			&nbsp;<span class="ppp-text-length">0</span>
+			<?php $length = ! empty( $args['text'] ) ? strlen( $args['text'] ) : 0; ?>
+			&nbsp;<span class="ppp-text-length"><?php echo $length; ?></span>
 		</td>
 
 		<td class="ppp-repeatable-upload-wrapper" style="width: 200px">
