@@ -1,6 +1,9 @@
 var tweetLengthYellow = 100;
 var tweetLengthRed    = 117;
 
+var tweetLengthImageYellow = 87;
+var tweetLengthImageRed    = 94;
+
 (function ($) {
 	$('.share-time-selector').timepicker({ 'step': 15 });
 	$('.share-date-selector').datepicker({
@@ -243,19 +246,9 @@ var tweetLengthRed    = 117;
 					var selection = file_frame.state().get('selection');
 					selection.each( function( attachment, index ) {
 						attachment = attachment.toJSON();
-						if ( 0 === index ) {
-							// place first attachment in field
-							window.formfield.find( '.ppp-repeatable-attachment-id-field' ).val( attachment.id );
-							window.formfield.find( '.ppp-repeatable-upload-field' ).val( attachment.url );
-						} else {
-							// Create a new row for all additional attachments
-							var row = window.formfield,
-								clone = EDD_Download_Configuration.clone_repeatable( row );
-
-							clone.find( '.ppp-repeatable-attachment-id-field' ).val( attachment.id );
-							clone.find( '.ppp-repeatable-upload-field' ).val( attachment.url );
-							clone.insertAfter( row );
-						}
+						// place first attachment in field
+						window.formfield.find( '.ppp-repeatable-attachment-id-field' ).val( attachment.id );
+						window.formfield.find( '.ppp-repeatable-upload-field' ).val( attachment.url ).change();
 					});
 				});
 
@@ -268,22 +261,47 @@ var tweetLengthRed    = 117;
 			var file_frame;
 			window.formfield = '';
 
+			$('body').on( 'change', '.ppp-upload-field', function(e) {
+				if ( $(this).val() == '' ) {
+					var attachment_field = $(this).prev( '.ppp-repeatable-attachment-id-field' );
+					attachment_field.val( '' );
+				}
+			});
+
 		},
 		count_length: function() {
-			$( 'body' ).on( 'keyup', '.ppp-tweet-text-repeatable, .ppp-share-text', function(e) {
+			$( 'body' ).on( 'keyup change focusout', '.ppp-tweet-text-repeatable, .ppp-share-text, .ppp-upload-field', function(e) {
 				if ( e.shiftKey || e.ctrlKey || e.altKey ) {
 					return;
 				}
 
-				var input   = $(this);
-				var length  = input.val().length;
-				var lengthField = input.next('.ppp-text-length');
+				var input = $(this);
 
-				if (length < tweetLengthYellow ) {
+				if ( input.hasClass('ppp-upload-field') ) {
+					var imagetarget = input;
+					var textWrapper = input.parent().parent().prev();
+					var lengthField = textWrapper.find('.ppp-text-length');
+					var length      = textWrapper.find('.ppp-tweet-text-repeatable').val().length;
+
+				} else {
+					var imagetarget = input.parent().next().find('.ppp-upload-field');
+					var lengthField = input.next('.ppp-text-length');
+					var length      = input.val().length;
+				}
+
+				if ( imagetarget.val() != '' ) {
+					var lengthWarn  = tweetLengthImageYellow;
+					var lengthError = tweetLengthImageRed;
+				} else {
+					var lengthWarn  = tweetLengthYellow;
+					var lengthError = tweetLengthRed;
+				}
+
+				if (length < lengthWarn ) {
 					lengthField.css('background-color', '#339933');
-				} else if ( length >= tweetLengthYellow && length < tweetLengthRed ) {
+				} else if ( length >= lengthWarn && length < lengthError ) {
 					lengthField.css('background-color', '#CC9933');
-				} else if ( length > tweetLengthRed ) {
+				} else if ( length > lengthError ) {
 					lengthField.css('background-color', '#FF3333');
 				}
 
