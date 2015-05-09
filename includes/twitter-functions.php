@@ -575,6 +575,8 @@ function ppp_tw_get_cards_meta() {
 function ppp_tw_default_meta_elements() {
 	global $post, $ppp_social_settings;
 
+	$elements = array();
+
 	$image_url = ppp_post_has_media( $post->ID, 'tw', true );
 	if ( $image_url ) {
 		$elements['twitter:card']      = 'summary_large_image';
