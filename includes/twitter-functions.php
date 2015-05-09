@@ -521,7 +521,7 @@ function ppp_tw_cards_enabled() {
  */
 function ppp_tw_card_meta() {
 
-	if ( ! is_single() || ! ppp_tw_cards_enabled() ) {
+	if ( ! is_single() || ! ppp_twitter_enabled() || ! ppp_tw_cards_enabled() ) {
 		return;
 	}
 
@@ -575,16 +575,27 @@ function ppp_tw_get_cards_meta() {
 function ppp_tw_default_meta_elements() {
 	global $post, $ppp_social_settings;
 
-	$elements = array(
-		'twitter:card'        => 'summary_large_image',
-		'twitter:site'        => $ppp_social_settings['twitter']['user']->screen_name,
-		'twitter:title'       => esc_attr( strip_tags( $post->post_title ) ),
-		'twitter:description' => esc_attr( strip_tags( ppp_tw_get_card_description() ) )
-	);
-
 	$image_url = ppp_post_has_media( $post->ID, 'tw', true );
 	if ( $image_url ) {
+		$elements['twitter:card']      = 'summary_large_image';
 		$elements['twitter:image:src'] = $image_url;
+	} else {
+		$elements['twitter:card'] = 'summary';
+	}
+
+	$elements['twitter:site']        = '@' . $ppp_social_settings['twitter']['user']->screen_name;
+	$elements['twitter:title']       = esc_attr( strip_tags( $post->post_title ) );
+	$elements['twitter:description'] = esc_attr( strip_tags( ppp_tw_get_card_description() ) );
+
+	$author_twitter_handle = get_user_meta( $post->post_author, 'twitter', true );
+	if ( ! empty( $author_twitter_handle ) ) {
+
+		if ( strpos( $author_twitter_handle, '@' ) === false ) {
+			$author_twitter_handle = '@' . $author_twitter_handle;
+		}
+
+		$elements['twitter:creator'] = esc_attr( strip_tags( $author_twitter_handle ) );
+
 	}
 
 	return apply_filters( 'ppp_tw_card_elements', $elements );
@@ -614,3 +625,20 @@ function ppp_tw_get_card_description() {
 
 	return apply_filters( 'ppp_tw_card_desc', $excerpt );
 }
+
+/**
+ * Add a Twitter method to the profile editor
+ *
+ * @since  2.2.4
+ * @param  array $user_contactmethods List of user contact methods for the profile editor
+ * @return array                      List of contact methods with twitter added
+ */
+function ppp_tw_add_contact_method( $user_contactmethods ) {
+
+	if ( ! isset( $user_contactmethods['twitter'] ) ) {
+		$user_contactmethods['twitter'] = __( 'Twitter', 'ppp-txt' );
+	}
+	// Returns the contact methods
+	return $user_contactmethods;
+}
+add_filter( 'user_contactmethods', 'ppp_tw_add_contact_method' );
