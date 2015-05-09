@@ -2,7 +2,7 @@ var tweetLengthYellow = 100;
 var tweetLengthRed    = 117;
 
 var tweetLengthImageYellow = 87;
-var tweetLengthImageRed     = 94;
+var tweetLengthImageRed    = 94;
 
 (function ($) {
 	$('.share-time-selector').timepicker({ 'step': 15 });
