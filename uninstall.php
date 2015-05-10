@@ -1,6 +1,8 @@
 <?php
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Runs whenever the 'uninstall' link is clicked in the Plugins List

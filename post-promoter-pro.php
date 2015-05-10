@@ -127,8 +127,9 @@ class PostPromoterPro {
 		if ( 'toplevel_page_ppp-options' != $hook
 			  && 'post-promoter_page_ppp-social-settings' != $hook
 			  && 'post-new.php' != $hook
-			  && 'post.php' != $hook )
-			return;
+			  && 'post.php' != $hook ) {
+					return;
+		}
 
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
@@ -292,8 +293,10 @@ class PostPromoterPro {
 		if( isset( $_POST['ppp_license_deactivate'] ) ) {
 
 			// run a quick security check
-			if( ! check_admin_referer( 'ppp_deactivate_nonce', 'ppp_deactivate_nonce' ) )
-				return; // get out if we didn't click the Activate button
+			if( ! check_admin_referer( 'ppp_deactivate_nonce', 'ppp_deactivate_nonce' ) ) {
+							return;
+			}
+			// get out if we didn't click the Activate button
 
 			// retrieve the license from the database
 			$license = trim( get_option( '_ppp_license_key' ) );
@@ -310,15 +313,17 @@ class PostPromoterPro {
 			$response = wp_remote_get( add_query_arg( $api_params, PPP_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
 
 			// make sure the response came back okay
-			if ( is_wp_error( $response ) )
-				return false;
+			if ( is_wp_error( $response ) ) {
+							return false;
+			}
 
 			// decode the license data
 			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
 			// $license_data->license will be either "deactivated" or "failed"
-			if( $license_data->license == 'deactivated' )
-				delete_option( '_ppp_license_key_status' );
+			if( $license_data->license == 'deactivated' ) {
+							delete_option( '_ppp_license_key_status' );
+			}
 
 		}
 	}
@@ -332,8 +337,10 @@ class PostPromoterPro {
 		if( isset( $_POST['ppp_license_activate'] ) ) {
 
 			// run a quick security check
-		 	if( ! check_admin_referer( 'ppp_activate_nonce', 'ppp_activate_nonce' ) )
-				return; // get out if we didn't click the Activate button
+		 	if( ! check_admin_referer( 'ppp_activate_nonce', 'ppp_activate_nonce' ) ) {
+		 					return;
+		 	}
+		 	// get out if we didn't click the Activate button
 
 			// retrieve the license from the database
 			$license = trim( get_option( '_ppp_license_key' ) );
@@ -350,8 +357,9 @@ class PostPromoterPro {
 			$response = wp_remote_get( add_query_arg( $api_params, PPP_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
 
 			// make sure the response came back okay
-			if ( is_wp_error( $response ) )
-				return false;
+			if ( is_wp_error( $response ) ) {
+							return false;
+			}
 
 			// decode the license data
 			$license_data = json_decode( wp_remote_retrieve_body( $response ) );

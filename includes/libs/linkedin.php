@@ -1,7 +1,9 @@
 <?php
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Linkedin Class
@@ -87,7 +89,9 @@ if( !class_exists( 'PPP_Linkedin' ) ) {
 				$ppp_social_settings = get_option( 'ppp_social_settings' );
 
 				//check linkedin class is loaded or not
-				if( !$linkedin ) return false;
+				if( !$linkedin ) {
+					return false;
+				}
 
 				$data = new stdClass();
 				$data->access_token = $access_token;

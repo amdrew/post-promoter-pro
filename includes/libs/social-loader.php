@@ -1,7 +1,9 @@
 <?php
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 include_once( PPP_PATH . '/includes/wpme-functions.php' );
 

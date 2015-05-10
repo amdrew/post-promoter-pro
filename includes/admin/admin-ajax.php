@@ -1,7 +1,9 @@
 <?php
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 function ppp_check_for_schedule_conflict() {
 

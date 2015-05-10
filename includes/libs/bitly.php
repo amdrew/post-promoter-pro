@@ -1,7 +1,9 @@
 <?php
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Bitly Class
@@ -66,7 +68,9 @@ if( !class_exists( 'PPP_Bitly' ) ) {
 			$bitly = $this->ppp_load_bitly();
 
 			//check bitly class is loaded or not
-			if( !$bitly ) return false;
+			if( !$bitly ) {
+				return false;
+			}
 
 			$url = $this->bitly->getAuthUrl(  );
 			return $url;
