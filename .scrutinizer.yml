@@ -26,10 +26,10 @@ tools:
     php_pdepend: true
     php_loc:
         enabled: true
-        excluded_dirs: [vendor, tests, .tx, languages, includes/libraries, bin, assets, templates]
+        excluded_dirs: [vendor, tests, .tx, languages, includes/libs/bitly, includes/libs/facebook, includes/libs/linkedin, includes/libs/twitter, bin, assets, templates]
     php_cpd:
         enabled: true
-        excluded_dirs: [vendor, tests, .tx, languages, includes/libraries, bin, assets, templates]
+        excluded_dirs: [vendor, tests, .tx, languages, includes/libs/bitly, includes/libs/facebook, includes/libs/linkedin, includes/libs/twitter, bin, assets, templates]
 checks:
     php:
         psr2_switch_declaration: false

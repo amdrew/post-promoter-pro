@@ -184,7 +184,7 @@ function ppp_v13_upgrades() {
 function ppp_v21_upgrades() {
 	// Auto load was set to true, let's make that false, we don't always need the version
 	delete_option( 'ppp_version' );
-	add_option( 'ppp_version', $ppp_version, '', 'no' );
+	add_option( 'ppp_version', PPP_VERSION, '', 'no' );
 }
 
 /**

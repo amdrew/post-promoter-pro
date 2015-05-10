@@ -127,7 +127,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 
 			$name_parts = explode( '_', $ppp_data['args'][1] );
 			$index      = $name_parts[1];
-			$service    = isset( $name_parts[3] ) ? $name_pargs[3] : 'tw';
+			$service    = isset( $name_parts[3] ) ? $name_parts[3] : 'tw';
 			$builder    = 'ppp_' . $service . '_build_share_message';
 			$post_meta  = get_post_meta( $ppp_data['args'][0], '_ppp_tweets', true );
 			$image_url  = '';

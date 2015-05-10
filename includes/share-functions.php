@@ -5,8 +5,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
  * Determine if we should share this post when it's being published
- * @param  int    $post_id The Post ID being published
- * @param  object $post    The Post Object
+ *
+ * @param string $new_status The new status of the post
+ * @param string $old_status The old status of the poast
+ * @param  object $post      The Post Object
+ *
  * @return void
  */
 function ppp_share_on_publish( $new_status, $old_status, $post ) {
@@ -31,9 +34,6 @@ function ppp_share_on_publish( $new_status, $old_status, $post ) {
 
 /**
  * Create timestamps and unique identifiers for each cron.
- * @param  int $month
- * @param  int $day
- * @param  int $year
  * @param  int $post_id
  * @return array
  */

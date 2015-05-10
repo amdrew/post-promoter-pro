@@ -176,8 +176,8 @@ function ppp_tw_generate_share_content( $post_id, $name, $is_scheduled = true ) 
 /**
  * Return if media is supported for this scheduled tweet
  * @param  int $post_id The Post ID
- * @param  int $day     The day of this tween
- * @return bool         Weather or not this tweet should contain a media post
+ * @param  int $index   The index of this tweet in the _ppp_tweets data
+ * @return bool         Whether or not this tweet should contain a media post
  */
 function ppp_tw_use_media( $post_id, $index ) {
 	if ( empty( $post_id ) || empty( $index ) ) {
