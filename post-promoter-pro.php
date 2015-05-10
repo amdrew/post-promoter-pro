@@ -294,7 +294,7 @@ class PostPromoterPro {
 
 			// run a quick security check
 			if( ! check_admin_referer( 'ppp_deactivate_nonce', 'ppp_deactivate_nonce' ) ) {
-							return;
+				return;
 			}
 			// get out if we didn't click the Activate button
 
@@ -314,7 +314,7 @@ class PostPromoterPro {
 
 			// make sure the response came back okay
 			if ( is_wp_error( $response ) ) {
-							return false;
+				return false;
 			}
 
 			// decode the license data
@@ -322,7 +322,7 @@ class PostPromoterPro {
 
 			// $license_data->license will be either "deactivated" or "failed"
 			if( $license_data->license == 'deactivated' ) {
-							delete_option( '_ppp_license_key_status' );
+				delete_option( '_ppp_license_key_status' );
 			}
 
 		}
@@ -338,7 +338,7 @@ class PostPromoterPro {
 
 			// run a quick security check
 		 	if( ! check_admin_referer( 'ppp_activate_nonce', 'ppp_activate_nonce' ) ) {
-		 					return;
+		 		return;
 		 	}
 		 	// get out if we didn't click the Activate button
 
@@ -358,7 +358,7 @@ class PostPromoterPro {
 
 			// make sure the response came back okay
 			if ( is_wp_error( $response ) ) {
-							return false;
+				return false;
 			}
 
 			// decode the license data

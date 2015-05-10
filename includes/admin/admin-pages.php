@@ -288,11 +288,11 @@ function ppp_display_sysinfo() {
 	<?php
 	foreach ( $ppp_options as $name => $value ) {
 	if ( $value == false ) {
-			$value = 'false';
+		$value = 'false';
 	}
 
 	if ( $value == '1' ) {
-			$value = 'true';
+		$value = 'true';
 	}
 
 	echo $name . ': ' . maybe_serialize( $value ) . "\n";
@@ -307,7 +307,7 @@ function ppp_display_sysinfo() {
 	foreach ( $plugins as $plugin_path => $plugin ) {
 		// If the plugin isn't active, don't show it.
 		if ( ! in_array( $plugin_path, $active_plugins ) ) {
-					continue;
+			continue;
 		}
 
 	echo $plugin['Name']; ?>: <?php echo $plugin['Version'] ."\n";
