@@ -1,7 +1,9 @@
 <?php
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Facebook Class
@@ -82,7 +84,9 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 				$ppp_social_settings = get_option( 'ppp_social_settings' );
 
 				//check facebook class is loaded or not
-				if( !$facebook ) return false;
+				if( !$facebook ) {
+					return false;
+				}
 
 				$data = new stdClass();
 				$data->access_token = $access_token;
@@ -144,7 +148,9 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			$facebook = $this->ppp_load_facebook();
 
 			//check facebook class is exis or not
-			if( !$facebook ) return false;
+			if( !$facebook ) {
+				return false;
+			}
 
 			global $ppp_social_settings;
 			$user = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://graph.facebook.com/me?access_token=' . $access_token ) ) );
@@ -159,7 +165,9 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			$facebook = $this->ppp_load_facebook();
 
 			// check facebook cleast is exists or not
-			if( !$facebook ) return false;
+			if( !$facebook ) {
+				return false;
+			}
 
 			global $ppp_social_settings;
 			$facebook_settings = $ppp_social_settings['facebook'];
@@ -205,7 +213,9 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			$facebook = $this->ppp_load_facebook();
 
 			//check facebook class is exis or not
-			if( !$facebook ) return false;
+			if( !$facebook ) {
+				return false;
+			}
 
 			return $this->facebook->getAccessToken();
 		}
@@ -220,7 +230,9 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			$facebook = $this->ppp_load_facebook();
 
 			//check facebook class is exis or not
-			if( !$facebook ) return false;
+			if( !$facebook ) {
+				return false;
+			}
 
 			if ( ! PPP_LOCAL_TOKENS ) {
 				$base_url = 'https://postpromoterpro.com/?ppp-social-auth';

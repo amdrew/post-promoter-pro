@@ -1,7 +1,9 @@
 <?php
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Twitter Class
@@ -62,7 +64,9 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 				$twitter = $this->ppp_load_twitter();
 
 				//check twitter class is loaded or not
-				if( !$twitter ) return false;
+				if( !$twitter ) {
+					return false;
+				}
 
 				$this->twitter = new TwitterOAuth( PPP_TW_CONSUMER_KEY, PPP_TW_CONSUMER_SECRET, $_SESSION['ppp_twt_oauth_token'], $_SESSION['ppp_twt_oauth_token_secret'] );
 
@@ -122,7 +126,9 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 			$twitter = $this->ppp_load_twitter();
 
 			//check twitter class is loaded or not
-			if( !$twitter ) return false;
+			if( !$twitter ) {
+				return false;
+			}
 
 			$request_token = $this->twitter->getRequestToken( admin_url( 'admin.php?page=ppp-social-settings' ) ); // get_permalink( $post->ID )
 
