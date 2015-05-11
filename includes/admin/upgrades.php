@@ -62,10 +62,6 @@ function ppp_upgrade_plugin() {
 		$upgrades_executed = true;
 	}
 
-	if ( version_compare( $ppp_version, 2.2, '<' ) ) {
-		//ppp_v22_upgrades();
-	}
-
 	if ( $upgrades_executed || version_compare( $ppp_version, PPP_VERSION, '<' ) ) {
 		set_transient( '_ppp_activation_redirect', '1', 60 );
 		update_option( 'ppp_version', PPP_VERSION );
