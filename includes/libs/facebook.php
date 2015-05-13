@@ -242,7 +242,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			} else {
 				$url  = 'https://graph.facebook.com/oauth/authorize?';
 				$url .= 'client_id=' . PPP_FB_APP_ID;
-				$url .= '&scope=public_profile,publish_actions,manage_pages';
+				$url .= '&scope=public_profile,publish_actions,manage_pages,publish_pages';
 				$url .= '&state=ppp-local-keys-fb';
 				$url .= '&redirect_uri=' . esc_url( $return_url ) . '&nocache';
 			}
