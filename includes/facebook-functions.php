@@ -326,9 +326,9 @@ function ppp_fb_add_metabox_content( $post ) {
 				<?php if ( $disabled ): ?>readonly<?php endif; ?>
 				class="ppp-share-text"
 				type="text"
-				placeholder="<?php echo $default_text; ?>"
+				placeholder="<?php echo esc_attr( $default_text ); ?>"
 				name="_ppp_fb_share_on_publish_title"
-				<?php if ( isset( $ppp_share_on_publish_title ) ) {?>value="<?php echo htmlspecialchars( $ppp_share_on_publish_title ); ?>"<?php ;}?>
+				<?php if ( isset( $ppp_share_on_publish_title ) ) {?>value="<?php echo esc_attr( $ppp_share_on_publish_title ); ?>"<?php ;}?>
 			/>
 				<span id="ppp-fb-image">
 					<br /><br />
