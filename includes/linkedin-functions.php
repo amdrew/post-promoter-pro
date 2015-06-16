@@ -341,13 +341,13 @@ function ppp_li_add_metabox_content( $post ) {
 				onkeyup="PPPCountChar(this)"
 				class="ppp-share-text"
 				type="text"
-				placeholder="<?php echo $default_text; ?>"
+				placeholder="<?php echo esc_attr( $default_text ); ?>"
 				name="_ppp_li_share_on_publish_title"
-				<?php if ( isset( $ppp_share_on_publish_title ) ) {?>value="<?php echo htmlspecialchars( $ppp_share_on_publish_title ); ?>"<?php ;}?>
+				<?php if ( isset( $ppp_share_on_publish_title ) ) {?>value="<?php echo esc_attr( $ppp_share_on_publish_title ); ?>"<?php ;}?>
 			/>
 			<br />
 			<?php _e( 'Link Description', 'ppp-txt' ); ?>:<br />
-			<textarea <?php if ( $disabled ): ?>readonly<?php endif; ?> name="_ppp_li_share_on_publish_desc"><?php echo $ppp_share_on_publish_desc; ?></textarea>
+			<textarea <?php if ( $disabled ): ?>readonly<?php endif; ?> name="_ppp_li_share_on_publish_desc"><?php echo esc_attr( $ppp_share_on_publish_desc ); ?></textarea>
 			<br /><?php _e( 'Note: If set, the Featured image will be attached to this share', 'ppp-txt' ); ?>
 		</p>
 	</p>

@@ -297,9 +297,9 @@ function ppp_tw_add_metabox_content( $post ) {
 						<?php if ( $disabled ): ?>readonly<?php endif; ?>
 						class="ppp-share-text"
 						type="text"
-						placeholder="<?php echo $default_text; ?>"
+						placeholder="<?php echo esc_attr( $default_text ); ?>"
 						name="_ppp_share_on_publish_text"
-						<?php if ( isset( $ppp_share_on_publish_text ) ) {?>value="<?php echo htmlspecialchars( $ppp_share_on_publish_text ); ?>"<?php ;}?>
+						<?php if ( isset( $ppp_share_on_publish_text ) ) {?>value="<?php echo esc_attr( $ppp_share_on_publish_text ); ?>"<?php ;}?>
 						<?php $length = ! empty($ppp_share_on_publish_text ) ? strlen( $ppp_share_on_publish_text ) : 0; ?>
 					/>&nbsp;<span class="ppp-text-length"><?php echo $length; ?></span>
 					<br />
@@ -383,7 +383,7 @@ function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 		</td>
 
 		<td>
-			<input <?php echo $readonly; ?>class="ppp-tweet-text-repeatable" type="text" name="_ppp_tweets[<?php echo $key; ?>][text]" value="<?php echo $args['text']; ?>" />
+			<input <?php echo $readonly; ?>class="ppp-tweet-text-repeatable" type="text" name="_ppp_tweets[<?php echo $key; ?>][text]" value="<?php echo esc_attr( $args['text'] ); ?>" />
 			<?php $length = ! empty( $args['text'] ) ? strlen( $args['text'] ) : 0; ?>
 			&nbsp;<span class="ppp-text-length"><?php echo $length; ?></span>
 		</td>
@@ -391,7 +391,7 @@ function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 		<td class="ppp-repeatable-upload-wrapper" style="width: 200px">
 			<div class="ppp-repeatable-upload-field-container">
 				<input type="hidden" name="_ppp_tweets[<?php echo $key; ?>][attachment_id]" class="ppp-repeatable-attachment-id-field" value="<?php echo esc_attr( absint( $args['attachment_id'] ) ); ?>"/>
-				<input <?php echo $readonly; ?>type="text" class="ppp-repeatable-upload-field ppp-upload-field" name="_ppp_tweets[<?php echo $key; ?>][image]" placeholder="<?php _e( 'Upload or Enter URL', 'ppp-txt' ); ?>" value="<?php echo $args['image']; ?>" />
+				<input <?php echo $readonly; ?>type="text" class="ppp-repeatable-upload-field ppp-upload-field" name="_ppp_tweets[<?php echo $key; ?>][image]" placeholder="<?php _e( 'Upload or Enter URL', 'ppp-txt' ); ?>" value="<?php echo esc_attr( $args['image'] ); ?>" />
 
 				<span class="ppp-upload-file" style="<?php echo $hide; ?>">
 					<a href="#" title="<?php _e( 'Insert File', 'ppp-txt' ) ?>" data-uploader-title="<?php _e( 'Insert File', 'ppp-txt' ); ?>" data-uploader-button-text="<?php _e( 'Insert', 'ppp-txt' ); ?>" class="ppp-upload-file-button" onclick="return false;">
@@ -434,6 +434,9 @@ function ppp_tw_save_post_meta_boxes( $post_id, $post ) {
 	update_post_meta( $post_id, '_ppp_share_on_publish_include_image', $ppp_share_on_publish_include_image );
 
 	$tweet_data = isset( $_REQUEST['_ppp_tweets'] ) ? $_REQUEST['_ppp_tweets'] : array();
+	foreach ( $tweet_data as $index => $tweet ) {
+		$tweet_data[ $index ]['text'] = sanitize_text_field( $tweet['text'] );
+	}
 	update_post_meta( $post_id, '_ppp_tweets', $tweet_data );
 
 }
