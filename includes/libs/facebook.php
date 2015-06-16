@@ -171,7 +171,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 			global $ppp_social_settings;
 			$facebook_settings = $ppp_social_settings['facebook'];
-			var_dump( current_time( 'timestamp') - $facebook_settings->pages_last_updated );
+
 			if ( ! isset( $facebook_settings->available_pages ) ||
 				 ! isset( $facebook_settings->pages_last_updated ) ||
 				 $facebook_settings->pages_last_updated < current_time( 'timestamp' ) ) {
