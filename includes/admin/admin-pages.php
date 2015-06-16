@@ -11,8 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function ppp_admin_page() {
 	global $ppp_options;
-	$license 	= get_option( '_ppp_license_key' );
-	$status 	= get_option( '_ppp_license_key_status' );
+	$license    = get_option( '_ppp_license_key' );
+	$status     = get_option( '_ppp_license_key_status' );
+
 	$share_days_count = ppp_share_days_count();
 	?>
 	<div class="wrap">
@@ -180,6 +181,40 @@ function ppp_display_social() {
 								<em><?php _e( 'No posts available to generate link from.', 'ppp-txt' ); ?></em>
 							<?php endif; ?>
 						</p>
+					</td>
+				</tr>
+
+				<?php
+				$tw_sop = ! empty( $ppp_share_settings['twitter']['share_on_publish'] ) ? true : false;
+				$fb_sop = ! empty( $ppp_share_settings['facebook']['share_on_publish'] ) ? true : false;
+				$li_sop = ! empty( $ppp_share_settings['linkedin']['share_on_publish'] ) ? true : false;
+				?>
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<?php _e( 'Share on Publish Defaults', 'ppp-txt' ); ?></span><br />
+						<small><em><?php _e( 'Enabled sharing on pubish by default', 'ppp-txt' ); ?></em></small>
+					</th>
+					<td id="ppp-share-on-publish-wrapper">
+						<?php if ( ppp_twitter_enabled() ) : ?>
+						<p>
+							<input type="checkbox" id="twitter-share-on-publish" value="1" <?php checked( true, $tw_sop, true ); ?> name="ppp_share_settings[twitter][share_on_publish]" />
+							<label for="twitter-share-on-publish"><?php _e( 'Twitter', 'ppp-txt' ); ?></label>
+						</p>
+						<?php endif; ?>
+
+						<?php if ( ppp_facebook_enabled() ) : ?>
+						<p>
+							<input type="checkbox" id="facebook-share-on-publish" value="1" <?php checked( true, $fb_sop, true ); ?> name="ppp_share_settings[facebook][share_on_publish]" />
+							<label for="facebook-share-on-publish"><?php _e( 'Facebook', 'ppp-txt' ); ?></label>
+						</p>
+						<?php endif; ?>
+
+						<?php if ( ppp_linkedin_enabled() ) : ?>
+						<p>
+							<input type="checkbox" id="linkedin-share-on-publish" value="1" <?php checked( true, $li_sop, true ); ?> name="ppp_share_settings[linkedin][share_on_publish]" />
+							<label for="linkedin-share-on-publish"><?php _e( 'LinkedIn', 'ppp-txt' ); ?></label>
+						</p>
+						<?php endif; ?>
 					</td>
 				</tr>
 
