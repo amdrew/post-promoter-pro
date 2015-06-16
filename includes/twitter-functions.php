@@ -24,7 +24,7 @@ function ppp_twitter_enabled() {
  * @param  array $services The registered services
  * @return array           With Twitter added
  */
-function ppp_tw_register_service( $services ) {
+function ppp_tw_register_service( $services = array() ) {
 	$services[] = 'tw';
 
 	return $services;
@@ -36,7 +36,7 @@ add_filter( 'ppp_register_social_service', 'ppp_tw_register_service', 10, 1 );
  * @param  string $string The default icon
  * @return string         The HTML for the Twitter Icon
  */
-function ppp_tw_account_list_icon( $string ) {
+function ppp_tw_account_list_icon( $string = '' ) {
 	return '<span class="dashicons icon-ppp-tw"></span>';
 }
 add_filter( 'ppp_account_list_icon-tw', 'ppp_tw_account_list_icon', 10, 1 );
