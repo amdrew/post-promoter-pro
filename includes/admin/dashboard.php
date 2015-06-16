@@ -17,7 +17,10 @@ class PPP_Dashboard_Tweets {
 	 * @since  2.2.3
 	 */
 	public static function init() {
-		//Register the widget...
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		wp_add_dashboard_widget(
 			self::wid,
 			__( 'Upcoming Tweets', 'ppp-tweets' ),
