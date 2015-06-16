@@ -27,11 +27,13 @@ function ppp_share_on_publish( $new_status, $old_status, $post ) {
 		$allowed_post_types = apply_filters( 'ppp_schedule_share_post_types', $allowed_post_types );
 
 		if ( !isset( $post->post_status ) || !array_key_exists( $post->post_type, $allowed_post_types ) ) {
-			return;
+			return false;
 		}
 
 		do_action( 'ppp_share_on_publish', $new_status, $old_status, $post );
 	}
+
+	return true;
 }
 
 /**
@@ -40,12 +42,15 @@ function ppp_share_on_publish( $new_status, $old_status, $post ) {
  * @return array
  */
 function ppp_get_timestamps( $post_id ) {
-	global $ppp_options, $ppp_social_settings;
 	$days_ahead = 1;
 	$times  = array();
 	$offset = (int) -( get_option( 'gmt_offset' ) ); // Make the timestamp in the users' timezone, b/c that makes more sense
 
 	$ppp_tweets = get_post_meta( $post_id, '_ppp_tweets', true );
+
+	if ( empty( $ppp_tweets ) ) {
+		$ppp_tweets = array();
+	}
 
 	$times = array();
 	foreach ( $ppp_tweets as $key => $data ) {
