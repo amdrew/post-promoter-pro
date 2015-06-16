@@ -171,17 +171,22 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 			global $ppp_social_settings;
 			$facebook_settings = $ppp_social_settings['facebook'];
-
+			var_dump( current_time( 'timestamp') - $facebook_settings->pages_last_updated );
 			if ( ! isset( $facebook_settings->available_pages ) ||
 				 ! isset( $facebook_settings->pages_last_updated ) ||
 				 $facebook_settings->pages_last_updated < current_time( 'timestamp' ) ) {
 
 				$all_pages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://graph.facebook.com/me/accounts?access_token=' . $access_token ) ) );
 				$pages = array();
+
 				if ( !empty( $all_pages ) ) {
 					foreach ( $all_pages->data as $page ) {
 						if ( in_array( 'CREATE_CONTENT', $page->perms ) ) {
 							$pages[] = $page;
+
+							if ( strpos( $ppp_social_settings['facebook']->page, $page->id ) ) {
+								$ppp_social_settings['facebook']->page = $page->name . '|' . $page->access_token . '|' . $page->id;
+							}
 						}
 					}
 				} else {
