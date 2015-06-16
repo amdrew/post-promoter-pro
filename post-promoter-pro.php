@@ -112,8 +112,13 @@ class PostPromoterPro {
 		}
 
 		$default_settings['post_types']['post'] = '1';
-
 		update_option( 'ppp_options', $default_settings );
+
+		$default_share_settings['twitter']['share_on_publish']  = '1';
+		$default_share_settings['facebook']['share_on_publish'] = '1';
+		$default_share_settings['linkedin']['share_on_publish'] = '1';
+		update_option( 'ppp_share_settings', $default_share_settings );
+
 		set_transient( '_ppp_activation_redirect', 'true', 30 );
 	}
 

@@ -319,19 +319,26 @@ add_action( 'ppp_add_image_sizes', 'ppp_li_register_thumbnail_size' );
  * @return [type]       [description]
  */
 function ppp_li_add_metabox_content( $post ) {
-	global $ppp_options;
+	global $ppp_options, $ppp_share_settings;
 	$default_text = !empty( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : __( 'Social Text', 'ppp-txt' );
 
 	$ppp_li_share_on_publish = get_post_meta( $post->ID, '_ppp_li_share_on_publish', true );
 	$ppp_share_on_publish_title = get_post_meta( $post->ID, '_ppp_li_share_on_publish_title', true );
 	$ppp_share_on_publish_desc = get_post_meta( $post->ID, '_ppp_li_share_on_publish_desc', true );
 
+	$show_share_on_publish = false;
+
+	$share_by_default      = empty( $ppp_share_settings['linkedin']['share_on_publish'] ) ? false : true;
+
+	if ( ! empty( $ppp_li_share_on_publish ) || $share_by_default ) {
+		$show_share_on_publish = true;
+	}
 	?>
 	<p>
 	<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
-	<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_li_share_on_publish" id="ppp_li_share_on_publish" value="1" <?php checked( '1', $ppp_li_share_on_publish, true ); ?> />&nbsp;
+	<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_li_share_on_publish" id="ppp_li_share_on_publish" value="1" <?php checked( true, $show_share_on_publish, true ); ?> />&nbsp;
 		<label for="ppp_li_share_on_publish"><?php _e( 'Share this post on LinkedIn at the time of publishing?', 'ppp-txt' ); ?></label>
-		<p class="ppp_share_on_publish_text" style="display: <?php echo ( $ppp_li_share_on_publish ) ? '' : 'none'; ?>">
+		<p class="ppp_share_on_publish_text"<?php if ( false === $show_share_on_publish ) : ?> style="display: none;"<?php endif; ?>
 				<span class="left" id="ppp-li-image">
 					<?php echo get_the_post_thumbnail( $post->ID, 'ppp-li-share-image', array( 'class' => 'left' ) ); ?>
 				</span>

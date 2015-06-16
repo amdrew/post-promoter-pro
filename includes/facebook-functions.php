@@ -308,19 +308,27 @@ add_filter( 'ppp_metabox_content', 'ppp_fb_register_metabox_content', 10, 1 );
  * @return [type]       [description]
  */
 function ppp_fb_add_metabox_content( $post ) {
-	global $ppp_options;
+	global $ppp_options, $ppp_share_settings;
 	$default_text = !empty( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : __( 'Social Text', 'ppp-txt' );
 
 	$ppp_fb_share_on_publish = get_post_meta( $post->ID, '_ppp_fb_share_on_publish', true );
 	$ppp_share_on_publish_title = get_post_meta( $post->ID, '_ppp_fb_share_on_publish_title', true );
 	$ppp_share_on_publish_desc = get_post_meta( $post->ID, '_ppp_fb_share_on_publish_desc', true );
 
+	$show_share_on_publish = false;
+
+	$share_by_default      = empty( $ppp_share_settings['facebook']['share_on_publish'] ) ? false : true;
+
+	if ( ! empty( $ppp_fb_share_on_publish ) || $share_by_default ) {
+		$show_share_on_publish = true;
+	}
+
 	?>
 	<p>
 	<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
-	<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish" value="1" <?php checked( '1', $ppp_fb_share_on_publish, true ); ?> />&nbsp;
+	<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish" value="1" <?php checked( true, $share_by_default, true ); ?> />&nbsp;
 		<label for="ppp_fb_share_on_publish"><?php _e( 'Share this post on Facebook at the time of publishing?', 'ppp-txt' ); ?></label>
-		<p class="ppp_share_on_publish_text" style="display: <?php echo ( $ppp_fb_share_on_publish ) ? '' : 'none'; ?>">
+		<p class="ppp_share_on_publish_text"<?php if ( false === $show_share_on_publish ) : ?> style="display: none;"<?php endif; ?>>
 			<?php _e( 'Link Message', 'ppp-txt' ); ?>:<br />
 				<input
 				<?php if ( $disabled ): ?>readonly<?php endif; ?>
