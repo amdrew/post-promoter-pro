@@ -74,7 +74,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 				$url = 'https://graph.facebook.com/oauth/access_token' . $params;
 
 				$access_token = '';
-				$expires_in   = '';
+				$expires      = '';
 				$response     = parse_str( wp_remote_retrieve_body( wp_remote_post( $url ) ) );
 
 				$access_token = ! empty( $access_token ) ? $access_token : false;

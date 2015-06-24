@@ -17,7 +17,7 @@ class PPP_Accounts_Table extends WP_List_Table {
 	/**
 	 * Generate the Class from it's parent
 	 */
-	function __construct() {
+	public function __construct() {
 		global $status, $page;
 
 		parent::__construct( array(
@@ -65,7 +65,7 @@ class PPP_Accounts_Table extends WP_List_Table {
 	 * Prepare the data for the WP List Table
 	 * @return void
 	 */
-	function prepare_items() {
+	public function prepare_items() {
 		$columns  = $this->get_columns();
 		$hidden   = array();
 		$data     = array();
@@ -75,12 +75,13 @@ class PPP_Accounts_Table extends WP_List_Table {
 		$accounts = apply_filters( 'ppp_register_social_service', array() );
 
 		foreach ( $accounts as $account ) {
-			$data[$account] = array( 'icon'    => apply_filters( 'ppp_account_list_icon-' . $account, '&mdash;' ),
-			                         'avatar'  => apply_filters( 'ppp_account_list_avatar-' . $account, '&mdash;' ),
-			                         'name'    => apply_filters( 'ppp_account_list_name-' . $account, '&mdash;' ),
-			                         'actions' => apply_filters( 'ppp_account_list_actions-' . $account, '&mdash;' ),
-			                         'extras'  => apply_filters( 'ppp_account_list_extras-' . $account, '&mdash;' )
-			                       );
+			$data[$account] = array(
+				'icon'    => apply_filters( 'ppp_account_list_icon-' . $account, '&mdash;' ),
+				'avatar'  => apply_filters( 'ppp_account_list_avatar-' . $account, '&mdash;' ),
+				'name'    => apply_filters( 'ppp_account_list_name-' . $account, '&mdash;' ),
+				'actions' => apply_filters( 'ppp_account_list_actions-' . $account, '&mdash;' ),
+				'extras'  => apply_filters( 'ppp_account_list_extras-' . $account, '&mdash;' ),
+			);
 		}
 
 		$this->items = $data;

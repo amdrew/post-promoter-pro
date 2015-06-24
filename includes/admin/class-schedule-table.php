@@ -17,7 +17,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 	/**
 	 * Generate the Class from it's parent
 	 */
-	function __construct() {
+	public function __construct() {
 		global $status, $page;
 
 		parent::__construct( array(
@@ -82,11 +82,12 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 * @return string       The HTML to display for this column.
 	 */
 	public function column_post_title( $item ) {
-		$actions = array( 'edit'          => sprintf( __( '<a href="%s">Edit</a>', 'ppp-txt' ), admin_url( 'post.php?post=' . $item['post_id'] . '&action=edit#ppp_schedule_metabox' ) ),
-		                  'delete'        => sprintf( __( '<a href="%s">Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=delete_item&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&index=' . $item['index'] ) ),
-		                  'share'         => sprintf( __( '<a href="%s">Share Now</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item['name'] ) ),
-		                  'share_delete'  => sprintf( __( '<a href="%s">Share Now & Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&index=' . $item['index'] . '&delete_too=true' ) )
-		                );
+		$actions = array(
+			'edit'          => sprintf( __( '<a href="%s">Edit</a>', 'ppp-txt' ), admin_url( 'post.php?post=' . $item['post_id'] . '&action=edit#ppp_schedule_metabox' ) ),
+			'delete'        => sprintf( __( '<a href="%s">Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=delete_item&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&index=' . $item['index'] ) ),
+			'share'         => sprintf( __( '<a href="%s">Share Now</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item['name'] ) ),
+			'share_delete'  => sprintf( __( '<a href="%s">Share Now & Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&index=' . $item['index'] . '&delete_too=true' ) ),
+		);
 
 		return sprintf( '<span class="dashicons icon-ppp-' . $item['service'] . '"></span>&nbsp;%1$s %2$s', $item['post_title'], $this->row_actions( $actions ) );
 	}
@@ -109,7 +110,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 * Prepare the data for the WP List Table
 	 * @return void
 	 */
-	function prepare_items() {
+	public function prepare_items() {
 		$columns  = $this->get_columns();
 		$hidden   = array();
 		$data     = array();
@@ -141,14 +142,15 @@ class PPP_Schedule_Table extends WP_List_Table {
 
 			$conflict   = $cron_tally[$timestamp] > 1 ? true : false;
 
-			$data[$key] = array( 'post_id'      => $ppp_data['args'][0],
-			                     'post_title'   => get_the_title( $ppp_data['args'][0] ),
-			                     'service'      => $service,
-			                     'index'        => $index,
-			                     'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
-			                     'content'      => $builder( $ppp_data['args'][0], $ppp_data['args'][1], false ),
-			                     'name'         => 'sharedate_' . $index . '_' . $ppp_data['args'][0],
-			                     'conflict'     => $conflict
+			$data[$key] = array(
+				'post_id'      => $ppp_data['args'][0],
+				'post_title'   => get_the_title( $ppp_data['args'][0] ),
+				'service'      => $service,
+				'index'        => $index,
+				'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
+				'content'      => $builder( $ppp_data['args'][0], $ppp_data['args'][1], false ),
+				'name'         => 'sharedate_' . $index . '_' . $ppp_data['args'][0],
+				'conflict'     => $conflict,
 			);
 
 			if ( ! empty( $image_url ) ) {
