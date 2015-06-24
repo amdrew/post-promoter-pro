@@ -58,7 +58,6 @@ coding_style:
                 use_tabs: true
         spaces:
             before_parentheses:
-                function_declaration: true
                 closure_definition: true
             around_operators:
                 negation: true
