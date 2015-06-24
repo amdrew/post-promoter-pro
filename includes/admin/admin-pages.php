@@ -14,7 +14,6 @@ function ppp_admin_page() {
 	$license    = get_option( '_ppp_license_key' );
 	$status     = get_option( '_ppp_license_key_status' );
 
-	$share_days_count = ppp_share_days_count();
 	?>
 	<div class="wrap">
 		<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>

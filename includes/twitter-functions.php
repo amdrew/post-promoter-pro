@@ -37,7 +37,9 @@ add_filter( 'ppp_register_social_service', 'ppp_tw_register_service', 10, 1 );
  * @return string         The HTML for the Twitter Icon
  */
 function ppp_tw_account_list_icon( $string = '' ) {
-	return '<span class="dashicons icon-ppp-tw"></span>';
+	$string .= '<span class="dashicons icon-ppp-tw"></span>';
+
+	return $string;
 }
 add_filter( 'ppp_account_list_icon-tw', 'ppp_tw_account_list_icon', 10, 1 );
 
@@ -46,12 +48,12 @@ add_filter( 'ppp_account_list_icon-tw', 'ppp_tw_account_list_icon', 10, 1 );
  * @param  string $string Default avatar string
  * @return string         The Twitter avatar
  */
-function ppp_tw_account_list_avatar( $string ) {
+function ppp_tw_account_list_avatar( $string = '' ) {
 
 	if ( ppp_twitter_enabled() ) {
 		global $ppp_social_settings;
 		$avatar_url = $ppp_social_settings['twitter']['user']->profile_image_url_https;
-		$string = '<img class="ppp-social-icon" src="' . $avatar_url . '" />';
+		$string .= '<img class="ppp-social-icon" src="' . $avatar_url . '" />';
 	}
 
 	return $string;
@@ -63,11 +65,11 @@ add_filter( 'ppp_account_list_avatar-tw', 'ppp_tw_account_list_avatar', 10, 1 );
  * @param  string $string The default name
  * @return string         The name from Twitter
  */
-function ppp_tw_account_list_name( $string ) {
+function ppp_tw_account_list_name( $string = '' ) {
 
 	if ( ppp_twitter_enabled() ) {
 		global $ppp_social_settings;
-		$string = $ppp_social_settings['twitter']['user']->name;
+		$string .= $ppp_social_settings['twitter']['user']->name;
 	}
 
 	return $string;
@@ -79,16 +81,16 @@ add_filter( 'ppp_account_list_name-tw', 'ppp_tw_account_list_name', 10, 1 );
  * @param  string $string The default actions
  * @return string         The actions buttons HTML for Twitter
  */
-function ppp_tw_account_list_actions( $string ) {
+function ppp_tw_account_list_actions( $string = '' ) {
 
 	if ( ! ppp_twitter_enabled() ) {
 		global $ppp_twitter_oauth, $ppp_social_settings;
 		$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 		$tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url();
 
-		$string = '<a href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
+		$string .= '<a href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
 	} else {
-		$string  = '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=twitter' ) . '" >' . __( 'Disconnect from Twitter', 'ppp-txt' ) . '</a>&nbsp;';
+		$string .= '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=twitter' ) . '" >' . __( 'Disconnect from Twitter', 'ppp-txt' ) . '</a>&nbsp;';
 		$string .= '<a class="button-secondary" href="https://twitter.com/settings/applications" target="blank">' . __( 'Revoke Access via Twitter', 'ppp-txt' ) . '</a>';
 	}
 
