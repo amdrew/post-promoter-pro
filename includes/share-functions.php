@@ -42,9 +42,8 @@ function ppp_share_on_publish( $new_status, $old_status, $post ) {
  * @return array
  */
 function ppp_get_timestamps( $post_id ) {
-	$days_ahead = 1;
-	$times  = array();
-	$offset = (int) -( get_option( 'gmt_offset' ) ); // Make the timestamp in the users' timezone, b/c that makes more sense
+	// Make the timestamp in the users' timezone, b/c that makes more sense
+	$offset = (int) -( get_option( 'gmt_offset' ) );
 
 	$ppp_tweets = get_post_meta( $post_id, '_ppp_tweets', true );
 
@@ -101,7 +100,6 @@ function ppp_share_post( $post_id, $name ) {
 
 	// For 60 seconds, don't allow another share to go for this post
 	set_transient( 'ppp_sharing' . $name, 'true', 60 );
-	$post = get_post( $post_id, OBJECT );
 
 	$share_message = ppp_tw_build_share_message( $post_id, $name );
 

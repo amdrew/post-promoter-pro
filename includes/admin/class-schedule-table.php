@@ -118,7 +118,6 @@ class PPP_Schedule_Table extends WP_List_Table {
 		$this->_column_headers = array( $columns, $hidden, $sortable );
 
 		$per_page = 25;
-		$current_page = $this->get_pagenum();
 
 		$crons = ppp_get_shceduled_crons();
 		$cron_tally = array();

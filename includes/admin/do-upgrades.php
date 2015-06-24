@@ -35,7 +35,7 @@ function ppp_upgrades_screen() {
 		'steps'       => $steps
 	);
 
-	//update_option( 'ppp_doing_upgrade', $doing_upgrade_args );
+	update_option( 'ppp_doing_upgrade', $doing_upgrade_args );
 	if ( $step > $steps ) {
 		// Prevent a weird case where the estimate was off. Usually only a couple.
 		$steps = $step;

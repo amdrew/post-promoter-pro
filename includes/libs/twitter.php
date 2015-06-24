@@ -94,7 +94,7 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 		}
 
 		public function ppp_verify_twitter_credentials() {
-			$twitter = $this->ppp_load_twitter();
+			$this->ppp_load_twitter();
 
 			global $ppp_social_settings;
 			if ( isset( $ppp_social_settings['twitter'] ) ) {
@@ -155,6 +155,7 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 
 			$verify = $this->ppp_verify_twitter_credentials();
 			if ( $verify === true ) {
+				$args = array();
 				if ( ! empty( $media ) ) {
 					$endpoint = 'statuses/update_with_media';
 					$args['media[]'] = wp_remote_retrieve_body( wp_remote_get( $media ) );

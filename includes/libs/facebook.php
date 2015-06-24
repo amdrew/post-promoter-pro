@@ -75,7 +75,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 				$access_token = '';
 				$expires      = '';
-				$response     = parse_str( wp_remote_retrieve_body( wp_remote_post( $url ) ) );
+				parse_str( wp_remote_retrieve_body( wp_remote_post( $url ) ) );
 
 				$access_token = ! empty( $access_token ) ? $access_token : false;
 				$expires_in   = ! empty( $expires ) ? $expires : false;

@@ -54,15 +54,8 @@ class PPP_Dashboard_Tweets {
 					$service    = isset( $name_parts[3] ) ? $name_parts[3] : 'tw';
 					$builder    = 'ppp_' . $service . '_build_share_message';
 					$post_meta  = get_post_meta( $ppp_data['args'][0], '_ppp_tweets', true );
-					$image_url  = '';
-					if ( ! empty( $post_meta[$index]['attachment_id'] ) ) {
-						$image_url = ppp_post_has_media( $ppp_data['args'][0], 'tw', true, $post_meta[$index]['attachment_id'] );
-					} elseif ( ! empty( $post_meta[$index]['image'] ) ) {
-						$image_url = $post_meta[$index]['image'];
-					}
 
 					$post_id    = $ppp_data['args'][0];
-					$post_title = get_the_title( $post_id );
 					$date       = $timestamp + ( get_option( 'gmt_offset' ) * 3600 );
 					$content    = $builder( $ppp_data['args'][0], $ppp_data['args'][1], false );
 
