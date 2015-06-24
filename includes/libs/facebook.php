@@ -72,10 +72,13 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 				$params .= '&code=' . $access_code;
 				$params .= '&redirect_uri=' . admin_url( 'admin.php?page=ppp-social-settings' );
 				$url = 'https://graph.facebook.com/oauth/access_token' . $params;
-				$response = parse_str( wp_remote_retrieve_body( wp_remote_post( $url ) ) );
 
-				$access_token = isset( $access_token ) ? $access_token : false;
-				$expires_in   = isset( $expires ) ? $expires : false;
+				$access_token = '';
+				$expires_in   = '';
+				$response     = parse_str( wp_remote_retrieve_body( wp_remote_post( $url ) ) );
+
+				$access_token = ! empty( $access_token ) ? $access_token : false;
+				$expires_in   = ! empty( $expires ) ? $expires : false;
 
 			}
 
@@ -253,25 +256,6 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 			}
 
 			return $url;
-		}
-
-		/**
-		 * Check Application Permission
-		 *
-		 * Handles to check facebook application
-		 * permission is given by user or not
-		 *
-		 */
-		public function ppp_check_fb_app_permission( $perm="" ) {
-
-			$data = '1';
-			if( !empty( $perm ) ) {
-				$userID = $this->ppp_get_fb_user();
-				$accToken = $this->ppp_fb_getaccesstoken();
-				$url = "https://api.facebook.com/method/users.hasAppPermission?ext_perm=$perm&uid=$userID&access_token=$accToken&format=json";
-				$data = json_decode( $this->ppp_get_data_from_url( $url ) );
-			}
-			return $data;
 		}
 
 		/**
