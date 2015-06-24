@@ -11,6 +11,11 @@ class Tests_General extends WP_UnitTestCase {
 		$this->_post_id = $this->factory->post->create( array( 'post_title' => 'Test Post', 'post_type' => 'post', 'post_status' => 'publish' ) );
 	}
 
+	public function test_load_function() {
+		$ppp = post_promoter_pro();
+		$this->assertInternalType( 'object', $ppp );
+	}
+
 	public function test_session_start() {
 		$this->assertFalse( ppp_maybe_start_session() );
 	}
