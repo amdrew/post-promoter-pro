@@ -32,39 +32,37 @@ tools:
         excluded_dirs: [vendor, tests, .tx, languages, includes/libs/bitly, includes/libs/facebook, includes/libs/linkedin, includes/libs/twitter, bin, assets, templates]
 checks:
     php:
+        fix_php_opening_tag: false
+        remove_php_closing_tag: false
+        one_class_per_file: false
+        side_effects_or_types: false
+        no_mixed_inline_html: false
+        require_braces_around_control_structures: false
+        php5_style_constructor: false
+        no_global_keyword: false
+        avoid_usage_of_logical_operators: false
+        psr2_class_declaration: false
+        no_underscore_prefix_in_properties: false
+        no_underscore_prefix_in_methods: false
+        blank_line_after_namespace_declaration: false
+        single_namespace_per_use: false
         psr2_switch_declaration: false
         psr2_control_structure_declaration: false
-        psr2_class_declaration: false
-        one_class_per_file: false
         avoid_superglobals: false
-        require_php_tag_first: false
-        code_rating: true
-        duplication: true
-        variable_existence: true
-        useless_calls: true
-        use_statement_alias_conflict: true
-        unused_variables: false
-        unused_properties: true
-        unused_parameters: false
-        unreachable_code: true
-        sql_injection_vulnerabilities: true
-        security_vulnerabilities: true
-        precedence_mistakes: true
-        precedence_in_conditions: true
-        parameter_non_unique: true
-        no_property_on_interface: true
-        no_non_implemented_abstract_methods: true
-        deprecated_code_usage: true
-        closure_use_not_conflicting: true
-        closure_use_modifiable: true
-        avoid_useless_overridden_methods: true
-        avoid_conflicting_incrementers: true
-        assignment_of_null_return: true
-        unused_methods: true
-        too_many_arguments: true
-        no_debug_code: true
-        missing_arguments: true
-        argument_type_checks: false
-        no_error_suppression: false
-        return_doc_comments: false
-        property_assignments: false
+        security_vulnerabilities: false
+        no_exit: false
+coding_style:
+    php:
+        indentation:
+            general:
+                use_tabs: true
+        spaces:
+            before_parentheses:
+                function_declaration: true
+                closure_definition: true
+            around_operators:
+                negation: true
+            within:
+                array_initializer: true
+                function_call: true
+                function_declaration: true
