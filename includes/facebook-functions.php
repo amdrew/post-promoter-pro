@@ -37,7 +37,9 @@ add_filter( 'ppp_register_social_service', 'ppp_fb_register_service', 10, 1 );
  * @return string         The Facebook Icon
  */
 function ppp_fb_account_list_icon( $string = '' ) {
-	return '<span class="dashicons icon-ppp-fb"></span>';
+	$string .= '<span class="dashicons icon-ppp-fb"></span>';
+
+	return $string;
 }
 add_filter( 'ppp_account_list_icon-fb', 'ppp_fb_account_list_icon', 10, 1 );
 
@@ -85,9 +87,9 @@ function ppp_fb_account_list_actions( $string = '' ) {
 		global $ppp_facebook_oauth, $ppp_social_settings;
 		$fb_authurl = $ppp_facebook_oauth->ppp_get_facebook_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 
-		$string = '<a class="button-primary" href="' . $fb_authurl . '">' . __( 'Connect to Facebook', 'ppp-txt' ) . '</a>';
+		$string .= '<a class="button-primary" href="' . $fb_authurl . '">' . __( 'Connect to Facebook', 'ppp-txt' ) . '</a>';
 	} else {
-		$string  = '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=facebook' ) . '" >' . __( 'Disconnect from Facebook', 'ppp-txt' ) . '</a>&nbsp;';
+		$string  .= '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=facebook' ) . '" >' . __( 'Disconnect from Facebook', 'ppp-txt' ) . '</a>&nbsp;';
 	}
 
 	return $string;
@@ -304,8 +306,7 @@ add_filter( 'ppp_metabox_content', 'ppp_fb_register_metabox_content', 10, 1 );
 
 /**
  * Render the Metabox content for Facebook
- * @param  [type] $post [description]
- * @return [type]       [description]
+ * @param  object $post The Post object being edited
  */
 function ppp_fb_add_metabox_content( $post ) {
 	global $ppp_options, $ppp_share_settings;
@@ -313,7 +314,6 @@ function ppp_fb_add_metabox_content( $post ) {
 
 	$ppp_fb_share_on_publish = get_post_meta( $post->ID, '_ppp_fb_share_on_publish', true );
 	$ppp_share_on_publish_title = get_post_meta( $post->ID, '_ppp_fb_share_on_publish_title', true );
-	$ppp_share_on_publish_desc = get_post_meta( $post->ID, '_ppp_fb_share_on_publish_desc', true );
 
 	$show_share_on_publish = false;
 

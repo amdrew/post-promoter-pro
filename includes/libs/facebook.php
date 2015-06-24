@@ -50,7 +50,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 		 * Initializes Facebook API
 		 *
 		 */
-		function ppp_initialize_facebook() {
+		public function ppp_initialize_facebook() {
 			//load facebook class
 			$facebook = $this->ppp_load_facebook();
 
@@ -324,16 +324,6 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 
 		public function ppp_get_data_from_url( $url ) {
 
-			//Comment out the curl code
-			/*$ch = curl_init();
-			$timeout = 5;
-			curl_setopt( $ch, CURLOPT_URL, $url );
-			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-			curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $timeout );
-			$data = curl_exec( $ch );
-			curl_close( $ch );
-			return $data;*/
-
 			//Use wp_remote_post and wp_remote_get
 			$data	= wp_remote_retrieve_body( wp_remote_get( $url ) );
 
@@ -341,4 +331,3 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 		}
 	}
 }
-?>

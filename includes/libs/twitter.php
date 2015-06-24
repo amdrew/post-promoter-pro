@@ -54,7 +54,7 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 		 * Initializes Twitter API
 		 *
 		 */
-		function ppp_initialize_twitter() {
+		public function ppp_initialize_twitter() {
 
 			//when user is going to logged in in twitter and verified successfully session will create
 			if ( isset( $_REQUEST['oauth_verifier'] ) && isset( $_REQUEST['oauth_token'] ) ) {
@@ -75,7 +75,6 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 
 				//session for verifier
 				$verifier['oauth_verifier'] = $_REQUEST['oauth_verifier'];
-				//EDD()->session->set( 'ppp_twt_user_cache', $verifier );
 
 				$_SESSION[ 'ppp_twt_user_cache' ] = $verifier;
 
@@ -130,7 +129,7 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 				return false;
 			}
 
-			$request_token = $this->twitter->getRequestToken( admin_url( 'admin.php?page=ppp-social-settings' ) ); // get_permalink( $post->ID )
+			$request_token = $this->twitter->getRequestToken( admin_url( 'admin.php?page=ppp-social-settings' ) );
 
 			// If last connection failed don't display authorization link.
 			switch( $this->twitter->http_code ) { //

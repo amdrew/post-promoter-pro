@@ -24,7 +24,7 @@ function ppp_linkedin_enabled() {
  * @param  array $services The registered servcies
  * @return array           With LinkedIn added
  */
-function ppp_li_register_service( $services ) {
+function ppp_li_register_service( $services = array() ) {
 	$services[] = 'li';
 
 	return $services;
@@ -36,8 +36,10 @@ add_filter( 'ppp_register_social_service', 'ppp_li_register_service', 10, 1 );
  * @param  string $string Default list view string for icon
  * @return string         The LinkedIn Icon HTML
  */
-function ppp_li_account_list_icon( $string ) {
-	return '<span class="dashicons icon-ppp-li"></span>';
+function ppp_li_account_list_icon( $string = '' ) {
+	$string .= '<span class="dashicons icon-ppp-li"></span>';
+
+	return $string;
 }
 add_filter( 'ppp_account_list_icon-li', 'ppp_li_account_list_icon', 10, 1 );
 
@@ -46,7 +48,7 @@ add_filter( 'ppp_account_list_icon-li', 'ppp_li_account_list_icon', 10, 1 );
  * @param  string $string Default icon string
  * @return string         The HTML for the LinkedIn Avatar
  */
-function ppp_li_account_list_avatar( $string ) {
+function ppp_li_account_list_avatar( $string = '' ) {
 	return $string;
 }
 add_filter( 'ppp_account_list_avatar-li', 'ppp_li_account_list_avatar', 10, 1 );
@@ -56,11 +58,11 @@ add_filter( 'ppp_account_list_avatar-li', 'ppp_li_account_list_avatar', 10, 1 );
  * @param  string $string The default list name
  * @return string         The name for the attached LinkedIn account
  */
-function ppp_li_account_list_name( $string ) {
+function ppp_li_account_list_name( $string = '' ) {
 
 	if ( ppp_linkedin_enabled() ) {
 		global $ppp_social_settings;
-		$string  = $ppp_social_settings['linkedin']->firstName . ' ' . $ppp_social_settings['linkedin']->lastName;
+		$string .= $ppp_social_settings['linkedin']->firstName . ' ' . $ppp_social_settings['linkedin']->lastName;
 		$string .= '<br />' . $ppp_social_settings['linkedin']->headline;
 	}
 
@@ -73,15 +75,15 @@ add_filter( 'ppp_account_list_name-li', 'ppp_li_account_list_name', 10, 1 );
  * @param  string $string The default actions string
  * @return string         HTML for the LinkedIn Actions
  */
-function ppp_li_account_list_actions( $string ) {
+function ppp_li_account_list_actions( $string = '' ) {
 
 	if ( ! ppp_linkedin_enabled() ) {
 		global $ppp_linkedin_oauth, $ppp_social_settings;
 		$li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 
-		$string = '<a class="button-primary" href="' . $li_authurl . '">' . __( 'Connect to Linkedin', 'ppp-txt' ) . '</a>';
+		$string .= '<a class="button-primary" href="' . $li_authurl . '">' . __( 'Connect to Linkedin', 'ppp-txt' ) . '</a>';
 	} else {
-		$string  = '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=linkedin' ) . '" >' . __( 'Disconnect from Linkedin', 'ppp-txt' ) . '</a>&nbsp;';
+		$string  .= '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=linkedin' ) . '" >' . __( 'Disconnect from Linkedin', 'ppp-txt' ) . '</a>&nbsp;';
 	}
 
 	return $string;
@@ -315,8 +317,7 @@ add_action( 'ppp_add_image_sizes', 'ppp_li_register_thumbnail_size' );
 
 /**
  * Render the Metabox content for LinkedIn
- * @param  [type] $post [description]
- * @return [type]       [description]
+ * @param  object $post The post object
  */
 function ppp_li_add_metabox_content( $post ) {
 	global $ppp_options, $ppp_share_settings;

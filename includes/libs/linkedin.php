@@ -56,7 +56,7 @@ if( !class_exists( 'PPP_Linkedin' ) ) {
 		 * Initializes Linkedin API
 		 *
 		 */
-		function ppp_initialize_linkedin() {
+		public function ppp_initialize_linkedin() {
 			$linkedin = $this->ppp_load_linkedin();
 
 			//when user is going to logged in and verified successfully session will create
