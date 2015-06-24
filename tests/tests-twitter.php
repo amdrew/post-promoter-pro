@@ -2,7 +2,7 @@
 
 
 /**
- * @group ppp_twitter
+ * @group ppp_social
  */
 class Tests_Twitter extends WP_UnitTestCase {
 	public function setUp() {

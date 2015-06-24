@@ -24,7 +24,7 @@ function ppp_facebook_enabled() {
  * @param  array $services The Currently registered services
  * @return array           The services with Facebook added
  */
-function ppp_fb_register_service( $services ) {
+function ppp_fb_register_service( $services = array() ) {
 	$services[] = 'fb';
 
 	return $services;
@@ -36,7 +36,7 @@ add_filter( 'ppp_register_social_service', 'ppp_fb_register_service', 10, 1 );
  * @param  string $string The item passed into the list icons
  * @return string         The Facebook Icon
  */
-function ppp_fb_account_list_icon( $string ) {
+function ppp_fb_account_list_icon( $string = '' ) {
 	return '<span class="dashicons icon-ppp-fb"></span>';
 }
 add_filter( 'ppp_account_list_icon-fb', 'ppp_fb_account_list_icon', 10, 1 );
@@ -46,7 +46,7 @@ add_filter( 'ppp_account_list_icon-fb', 'ppp_fb_account_list_icon', 10, 1 );
  * @param  string $string The list default
  * @return string         The Facebook avatar
  */
-function ppp_fb_account_list_avatar( $string ) {
+function ppp_fb_account_list_avatar( $string = '' ) {
 
 	if ( ppp_facebook_enabled() ) {
 		global $ppp_social_settings;
@@ -79,7 +79,7 @@ add_filter( 'ppp_account_list_name-fb', 'ppp_fb_account_list_name', 10, 1 );
  * @param  string $string The default list view actions
  * @return string         The HTML for the actions
  */
-function ppp_fb_account_list_actions( $string ) {
+function ppp_fb_account_list_actions( $string = '' ) {
 
 	if ( ! ppp_facebook_enabled() ) {
 		global $ppp_facebook_oauth, $ppp_social_settings;
