@@ -173,7 +173,7 @@ if( !class_exists( 'PPP_Twitter_User' ) ) {
 
 			$verify = $this->verify_credentials();
 			if ( $verify === true ) {
-				$endpoint = 'statuses/retweet/' . $tweet_id . '.json';
+				$endpoint = 'statuses/retweet/' . $tweet_id;
 
 				return $this->twitter->post( $endpoint, array(), true );
 			} else {
