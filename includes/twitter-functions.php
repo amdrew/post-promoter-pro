@@ -698,9 +698,15 @@ add_filter( 'user_contactmethods', 'ppp_tw_add_contact_method' );
  * @return void         Displays HTML
  */
 function ppp_tw_profile_settings( $user ) {
+
+	if ( $user->ID == get_current_user_id() && ! current_user_can( 'edit_posts' ) ) {
+		return;
+	}
+
 	if ( $user->ID !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
+
 	$conected = false;
 	?>
 	<h3><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h3>
