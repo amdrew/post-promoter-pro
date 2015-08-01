@@ -118,6 +118,17 @@ function ppp_share_post( $post_id, $name ) {
 
 	$status['twitter'] = ppp_send_tweet( $share_message, $post_id, $media );
 
+	if ( ! empty( $status['twitter']->id_str ) ) {
+		$post      = get_post( $post_id );
+		$author_id = $post->post_author;
+		$author_rt = get_user_meta( $author_id, '_ppp_share_scheduled', true );
+
+		if ( $author_rt ) {
+			$twitter_user = new PPP_Twitter_User( $author_id );
+			$twitter_user->retweet( $status['twitter']->id_str );
+		}
+
+	}
 
 	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
 		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );

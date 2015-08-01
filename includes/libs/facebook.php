@@ -187,7 +187,7 @@ if( !class_exists( 'PPP_Facebook' ) ) {
 						if ( in_array( 'CREATE_CONTENT', $page->perms ) ) {
 							$pages[] = $page;
 
-							if ( strpos( $ppp_social_settings['facebook']->page, $page->id ) ) {
+							if ( ! empty( $ppp_social_settings['facebook']->page ) && strpos( $ppp_social_settings['facebook']->page, $page->id ) ) {
 								$ppp_social_settings['facebook']->page = $page->name . '|' . $page->access_token . '|' . $page->id;
 							}
 						}
