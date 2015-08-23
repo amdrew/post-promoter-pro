@@ -76,11 +76,11 @@ class PPP_Accounts_Table extends WP_List_Table {
 
 		foreach ( $accounts as $account ) {
 			$data[$account] = array(
-				'icon'    => apply_filters( 'ppp_account_list_icon-' . $account, '&mdash;' ),
-				'avatar'  => apply_filters( 'ppp_account_list_avatar-' . $account, '&mdash;' ),
-				'name'    => apply_filters( 'ppp_account_list_name-' . $account, '&mdash;' ),
-				'actions' => apply_filters( 'ppp_account_list_actions-' . $account, '&mdash;' ),
-				'extras'  => apply_filters( 'ppp_account_list_extras-' . $account, '&mdash;' ),
+				'icon'    => apply_filters( 'ppp_account_list_icon-' . $account, '' ),
+				'avatar'  => apply_filters( 'ppp_account_list_avatar-' . $account, '' ),
+				'name'    => apply_filters( 'ppp_account_list_name-' . $account, '' ),
+				'actions' => apply_filters( 'ppp_account_list_actions-' . $account, '' ),
+				'extras'  => apply_filters( 'ppp_account_list_extras-' . $account, '' ),
 			);
 		}
 
