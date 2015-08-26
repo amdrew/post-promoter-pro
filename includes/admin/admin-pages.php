@@ -295,9 +295,6 @@ function ppp_display_schedule() {
 		<small><?php _e( 'NOTICE: Schedule view does not show shortened links, they will be shortened at the time of sharing', 'ppp-txt' ); ?></small>
 	</p>
 	<?php endif; ?>
-	<p>
-		<small><?php _e( 'Items containing <span class="dashicons dashicons-format-image"></span> indicate that the featured image will be attached when sharing to the social media account.</small>', 'ppp-txt' ); ?>
-	</p>
 	<?php
 }
 

@@ -21,9 +21,9 @@ class PPP_Schedule_Table extends WP_List_Table {
 		global $status, $page;
 
 		parent::__construct( array(
-				'singular'  => __( 'Scheduled Share', 'ppp-txt' ),    //singular name of the listed records
-				'plural'    => __( 'Scheduled Shares', 'ppp-txt' ),   //plural name of the listed records
-				'ajax'      => false                                  //does this table support ajax?
+				'singular'  => __( 'Scheduled Share', 'ppp-txt' ),
+				'plural'    => __( 'Scheduled Shares', 'ppp-txt' ),
+				'ajax'      => false,
 			) );
 	}
 
@@ -111,10 +111,10 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
-		$columns  = $this->get_columns();
-		$hidden   = array();
-		$data     = array();
-		$sortable = false;
+		$columns               = $this->get_columns();
+		$hidden                = array();
+		$data                  = array();
+		$sortable              = false;
 		$this->_column_headers = array( $columns, $hidden, $sortable );
 
 		$per_page = 25;
@@ -167,9 +167,9 @@ class PPP_Schedule_Table extends WP_List_Table {
 
 
 		$this->set_pagination_args( array(
-				'total_items' => $total_items,                  //WE have to calculate the total number of items
-				'per_page'    => $per_page,                     //WE have to determine how many items to show on a page
-				'total_pages' => ceil( $total_items / $per_page )
+				'total_items' => $total_items,
+				'per_page'    => $per_page,
+				'total_pages' => ceil( $total_items / $per_page ),
 			) );
 
 		$this->items = $data;
@@ -177,6 +177,3 @@ class PPP_Schedule_Table extends WP_List_Table {
 }
 
 $ppp_schedule_table = new PPP_Schedule_Table();
-
-
-
