@@ -21,9 +21,9 @@ class PPP_Accounts_Table extends WP_List_Table {
 		global $status, $page;
 
 		parent::__construct( array(
-				'singular'  => __( 'Social Media Service', 'ppp-txt' ),    //singular name of the listed records
-				'plural'    => __( 'Social Media Services', 'ppp-txt' ),   //plural name of the listed records
-				'ajax'      => false                                  //does this table support ajax?
+				'singular'  => __( 'Social Media Service', 'ppp-txt' ),
+				'plural'    => __( 'Social Media Services', 'ppp-txt' ),
+				'ajax'      => false,
 			) );
 	}
 
@@ -66,10 +66,10 @@ class PPP_Accounts_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
-		$columns  = $this->get_columns();
-		$hidden   = array();
-		$data     = array();
-		$sortable = false;
+		$columns               = $this->get_columns();
+		$hidden                = array();
+		$data                  = array();
+		$sortable              = false;
 		$this->_column_headers = array( $columns, $hidden, $sortable );
 
 		$accounts = apply_filters( 'ppp_register_social_service', array() );
@@ -89,6 +89,3 @@ class PPP_Accounts_Table extends WP_List_Table {
 }
 
 $ppp_account_table = new PPP_Accounts_Table();
-
-
-
