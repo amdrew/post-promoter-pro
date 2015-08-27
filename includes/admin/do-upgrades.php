@@ -42,7 +42,7 @@ function ppp_upgrades_screen() {
 	}
 	?>
 	<div class="wrap">
-		<h2><?php _e( 'Post Promoter Pro - Upgrades', 'ppp-txt' ); ?></h2>
+		<h1><?php _e( 'Post Promoter Pro - Upgrades', 'ppp-txt' ); ?></h1>
 
 		<?php if( ! empty( $action ) ) : ?>
 
