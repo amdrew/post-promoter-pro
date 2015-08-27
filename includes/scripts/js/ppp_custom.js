@@ -81,18 +81,6 @@ var tweetLengthImageRed    = 94;
 		return false;
 	});
 
-	$('.ppp-tw-featured-image-input').click( function() {
-
-		if($(this).is(':checked')) {
-			tweetLengthYellow = tweetLengthYellow - 22;
-			tweetLengthRed    = tweetLengthRed - 22;
-		} else {
-			tweetLengthYellow = tweetLengthYellow + 22;
-			tweetLengthRed    = tweetLengthRed + 22;
-		}
-
-	});
-
 	var PPP_Twitter_Configuration = {
 		init: function() {
 			this.add();
@@ -270,34 +258,50 @@ var tweetLengthImageRed    = 94;
 
 		},
 		count_length: function() {
-			$( 'body' ).on( 'keyup change focusout', '.ppp-tweet-text-repeatable, .ppp-share-text, .ppp-upload-field', function(e) {
+			$( 'body' ).on( 'keyup change focusout', '.ppp-tweet-text-repeatable, .ppp-share-text, .ppp-upload-field, .ppp-tw-featured-image-input', function(e) {
 				if ( e.shiftKey || e.ctrlKey || e.altKey ) {
 					return;
 				}
 
-				var input = $(this);
+				var input    = $(this);
+				var hasImage = false;
 
-				if ( input.hasClass('ppp-upload-field') ) {
+				var lengthWarn  = tweetLengthYellow;
+				var lengthError = tweetLengthRed;
+
+				if ( input.attr('name') == '_ppp_share_on_publish_text' ) {
+					var imagetarget = input.parent().find('#ppp-share-on-publish-image');
+					var lengthField = input.next('.ppp-text-length');
+					var length      = input.val().length;
+
+					hasImage        = imagetarget.is(':checked');
+				} else if ( input.hasClass('ppp-tw-featured-image-input' ) ) {
+					var imagetarget = input;
+					var lengthField = input.parent().parent().find('.ppp-text-length');
+					var length      = input.parent().parent().find('.ppp-share-text').val().length;
+
+					hasImage        = imagetarget.is(':checked');
+				} else if ( input.hasClass('ppp-upload-field') ) {
 					var imagetarget = input;
 					var textWrapper = input.parent().parent().prev();
 					var lengthField = textWrapper.find('.ppp-text-length');
 					var length      = textWrapper.find('.ppp-tweet-text-repeatable').val().length;
 
+					hasImage = imagetarget.val().length > 0 ? true : false;
 				} else {
 					var imagetarget = input.parent().next().find('.ppp-upload-field');
 					var lengthField = input.next('.ppp-text-length');
 					var length      = input.val().length;
+
+					hasImage = imagetarget.val().length > 0 ? true : false;
 				}
 
-				if ( imagetarget.val() != '' ) {
-					var lengthWarn  = tweetLengthImageYellow;
-					var lengthError = tweetLengthImageRed;
-				} else {
-					var lengthWarn  = tweetLengthYellow;
-					var lengthError = tweetLengthRed;
+				if ( hasImage ) {
+					lengthWarn  = tweetLengthImageYellow;
+					lengthError = tweetLengthImageRed;
 				}
 
-				if (length < lengthWarn ) {
+				if ( length < lengthWarn ) {
 					lengthField.css('background-color', '#339933');
 				} else if ( length >= lengthWarn && length < lengthError ) {
 					lengthField.css('background-color', '#CC9933');
