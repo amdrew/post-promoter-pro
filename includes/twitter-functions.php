@@ -308,7 +308,7 @@ function ppp_tw_add_metabox_content( $post ) {
 
 	$share_by_default      = empty( $ppp_share_settings['twitter']['share_on_publish'] ) ? false : true;
 
-	if ( ! empty( $ppp_share_on_publish ) || $share_by_default ) {
+	if ( $ppp_share_on_publish == '1' || ( $ppp_share_on_publish == '' && $share_by_default ) ) {
 		$show_share_on_publish = true;
 	}
 	$ppp_share_on_publish_text = get_post_meta( $post->ID, '_ppp_share_on_publish_text', true );

@@ -319,14 +319,14 @@ function ppp_fb_add_metabox_content( $post ) {
 
 	$share_by_default      = empty( $ppp_share_settings['facebook']['share_on_publish'] ) ? false : true;
 
-	if ( ! empty( $ppp_fb_share_on_publish ) || $share_by_default ) {
+	if ( $ppp_fb_share_on_publish == '1' || ( $ppp_fb_share_on_publish == '' && $share_by_default ) ) {
 		$show_share_on_publish = true;
 	}
 
 	?>
 	<p>
 	<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
-	<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish" value="1" <?php checked( true, $share_by_default, true ); ?> />&nbsp;
+	<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish" value="1" <?php checked( true, $show_share_on_publish, true ); ?> />&nbsp;
 		<label for="ppp_fb_share_on_publish"><?php _e( 'Share this post on Facebook at the time of publishing?', 'ppp-txt' ); ?></label>
 		<p class="ppp_share_on_publish_text"<?php if ( false === $show_share_on_publish ) : ?> style="display: none;"<?php endif; ?>>
 			<?php _e( 'Link Message', 'ppp-txt' ); ?>:<br />
