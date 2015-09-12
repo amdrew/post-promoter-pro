@@ -331,7 +331,7 @@ function ppp_li_add_metabox_content( $post ) {
 
 	$share_by_default      = empty( $ppp_share_settings['linkedin']['share_on_publish'] ) ? false : true;
 
-	if ( ! empty( $ppp_li_share_on_publish ) || $share_by_default ) {
+	if ( $ppp_li_share_on_publish == '1' || ( $ppp_li_share_on_publish == '' && $share_by_default ) ) {
 		$show_share_on_publish = true;
 	}
 	?>
