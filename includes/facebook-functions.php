@@ -119,7 +119,7 @@ function ppp_fb_account_list_extras( $string ) {
 			$string .= '</select><span class="spinner"></span>';
 		}
 
-		if ( $ppp_options['enable_debug'] ) {
+		if ( ! empty( $ppp_options['enable_debug'] ) ) {
 			$days_left  = absint( round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 			$refresh_in = absint( round( ( get_option( '_ppp_facebook_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 

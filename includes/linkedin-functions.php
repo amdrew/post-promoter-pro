@@ -98,7 +98,7 @@ add_filter( 'ppp_account_list_actions-li', 'ppp_li_account_list_actions', 10, 1 
 function ppp_li_account_list_extras( $string ) {
 	if ( ppp_linkedin_enabled() ) {
 		global $ppp_social_settings, $ppp_options;
-		if ( $ppp_options['enable_debug'] ) {
+		if ( ! empty( $ppp_options['enable_debug'] ) ) {
 			$days_left  = absint( round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 			$refresh_in = absint( round( ( get_option( '_ppp_linkedin_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 
