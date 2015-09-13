@@ -258,7 +258,8 @@ var tweetLengthImageRed    = 94;
 
 		},
 		count_length: function() {
-			$( 'body' ).on( 'keyup change focusout', '.ppp-tweet-text-repeatable, .ppp-share-text, .ppp-upload-field, .ppp-tw-featured-image-input', function(e) {
+			$( 'body' ).on( 'keyup change focusout', '#tw .ppp-tweet-text-repeatable, #tw .ppp-share-text, #tw .ppp-upload-field, #tw .ppp-tw-featured-image-input', function(e) {
+
 				if ( e.shiftKey || e.ctrlKey || e.altKey ) {
 					return;
 				}

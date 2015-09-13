@@ -106,7 +106,7 @@ function ppp_fb_account_list_extras( $string ) {
 	if ( ppp_facebook_enabled() ) {
 		global $ppp_social_settings, $ppp_facebook_oauth, $ppp_options;
 		$pages = $ppp_facebook_oauth->ppp_get_fb_user_pages( $ppp_social_settings['facebook']->access_token );
-		$selected = isset( $ppp_social_settings['facebook']->page ) ? $ppp_social_settings['facebook']->page : 'me';
+		$selected = isset( $ppp_social_settings['facebook']->page ) ? stripslashes( $ppp_social_settings['facebook']->page ) : 'me';
 
 		if ( !empty( $pages ) ) {
 			$string = '<label>' . __( 'Publish as:', 'ppp-txt' ) . '</label><br />';
