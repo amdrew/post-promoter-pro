@@ -346,7 +346,6 @@ function ppp_li_add_metabox_content( $post ) {
 				<?php _e( 'Link Title', 'ppp-txt' ); ?>:<br />
 				<input
 				<?php if ( $disabled ): ?>readonly<?php endif; ?>
-				onkeyup="PPPCountChar(this)"
 				class="ppp-share-text"
 				type="text"
 				placeholder="<?php echo esc_attr( $default_text ); ?>"
