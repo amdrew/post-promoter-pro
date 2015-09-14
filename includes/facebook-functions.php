@@ -65,7 +65,7 @@ add_filter( 'ppp_account_list_avatar-fb', 'ppp_fb_account_list_avatar', 10, 1 );
  * @param  string $string The default name
  * @return string         The name of the auth'd Facebook Profile
  */
-function ppp_fb_account_list_name( $string ) {
+function ppp_fb_account_list_name( $string = '' ) {
 
 	if ( ppp_facebook_enabled() ) {
 		global $ppp_social_settings;
