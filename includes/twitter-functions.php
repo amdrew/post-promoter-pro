@@ -707,7 +707,7 @@ function ppp_tw_profile_settings( $user ) {
 		return;
 	}
 
-	$conected = false;
+	$connected = false;
 	?>
 	<h3><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h3>
 	<table class="form-table">
