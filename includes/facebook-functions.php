@@ -65,7 +65,7 @@ add_filter( 'ppp_account_list_avatar-fb', 'ppp_fb_account_list_avatar', 10, 1 );
  * @param  string $string The default name
  * @return string         The name of the auth'd Facebook Profile
  */
-function ppp_fb_account_list_name( $string ) {
+function ppp_fb_account_list_name( $string = '' ) {
 
 	if ( ppp_facebook_enabled() ) {
 		global $ppp_social_settings;
@@ -106,7 +106,7 @@ function ppp_fb_account_list_extras( $string ) {
 	if ( ppp_facebook_enabled() ) {
 		global $ppp_social_settings, $ppp_facebook_oauth, $ppp_options;
 		$pages = $ppp_facebook_oauth->ppp_get_fb_user_pages( $ppp_social_settings['facebook']->access_token );
-		$selected = isset( $ppp_social_settings['facebook']->page ) ? $ppp_social_settings['facebook']->page : 'me';
+		$selected = isset( $ppp_social_settings['facebook']->page ) ? stripslashes( $ppp_social_settings['facebook']->page ) : 'me';
 
 		if ( !empty( $pages ) ) {
 			$string = '<label>' . __( 'Publish as:', 'ppp-txt' ) . '</label><br />';
@@ -119,7 +119,7 @@ function ppp_fb_account_list_extras( $string ) {
 			$string .= '</select><span class="spinner"></span>';
 		}
 
-		if ( $ppp_options['enable_debug'] ) {
+		if ( ! empty( $ppp_options['enable_debug'] ) ) {
 			$days_left  = absint( round( ( $ppp_social_settings['facebook']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 			$refresh_in = absint( round( ( get_option( '_ppp_facebook_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 
@@ -319,14 +319,14 @@ function ppp_fb_add_metabox_content( $post ) {
 
 	$share_by_default      = empty( $ppp_share_settings['facebook']['share_on_publish'] ) ? false : true;
 
-	if ( ! empty( $ppp_fb_share_on_publish ) || $share_by_default ) {
+	if ( $ppp_fb_share_on_publish == '1' || ( $ppp_fb_share_on_publish == '' && $share_by_default ) ) {
 		$show_share_on_publish = true;
 	}
 
 	?>
 	<p>
 	<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
-	<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish" value="1" <?php checked( true, $share_by_default, true ); ?> />&nbsp;
+	<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish" value="1" <?php checked( true, $show_share_on_publish, true ); ?> />&nbsp;
 		<label for="ppp_fb_share_on_publish"><?php _e( 'Share this post on Facebook at the time of publishing?', 'ppp-txt' ); ?></label>
 		<p class="ppp_share_on_publish_text"<?php if ( false === $show_share_on_publish ) : ?> style="display: none;"<?php endif; ?>>
 			<?php _e( 'Link Message', 'ppp-txt' ); ?>:<br />

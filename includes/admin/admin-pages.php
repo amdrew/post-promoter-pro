@@ -16,7 +16,7 @@ function ppp_admin_page() {
 
 	?>
 	<div class="wrap">
-		<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
+		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h1>
 		<form method="post" action="options.php">
 			<?php wp_nonce_field( 'ppp-options' ); ?>
 			<table class="form-table">
@@ -122,7 +122,7 @@ function ppp_display_social() {
 	$ppp_share_settings = get_option( 'ppp_share_settings' );
 	?>
 	<div class="wrap">
-		<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Social Settings', 'ppp-txt' ); ?></h2>
+		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - Social Settings', 'ppp-txt' ); ?></h1>
 		<form method="post" action="options.php">
 			<?php wp_nonce_field( 'ppp-share-settings' ); ?>
 			<h3><?php _e( 'Social Media Accounts', 'ppp-txt' ); ?></h3>
@@ -287,7 +287,7 @@ function ppp_display_schedule() {
 	$schedule_table->prepare_items();
 	?>
 	<div class="wrap">
-		<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Scheduled Shares', 'ppp-txt' ); ?></h2>
+		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - Scheduled Shares', 'ppp-txt' ); ?></h1>
 		<?php $schedule_table->display() ?>
 	</div>
 	<?php if ( ppp_is_shortener_enabled() ): ?>
@@ -307,7 +307,7 @@ function ppp_display_sysinfo() {
 	global $ppp_options;
 	?>
 	<div class="wrap">
-		<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - System Info', 'ppp-txt' ); ?></h2>
+		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - System Info', 'ppp-txt' ); ?></h1>
 		<textarea style="font-family: Menlo, Monaco, monospace; white-space: pre" onclick="this.focus();this.select()" readonly cols="150" rows="35">
 	SITE_URL:                 <?php echo site_url() . "\n"; ?>
 	HOME_URL:                 <?php echo home_url() . "\n"; ?>

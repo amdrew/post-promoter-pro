@@ -12,6 +12,9 @@ include_once( PPP_PATH . '/includes/twitter-functions.php' );
 require_once( PPP_PATH . '/includes/libs/twitter.php');
 $ppp_twitter_oauth = new PPP_Twitter();
 
+// Also include the user specific Twitter Class ( separate for now )
+require_once( PPP_PATH . '/includes/libs/twitter-user.php' );
+
 global $ppp_facebook_oauth;
 include_once( PPP_PATH . '/includes/facebook-functions.php' );
 require_once( PPP_PATH . '/includes/libs/facebook.php');

@@ -104,24 +104,42 @@ add_filter( 'ppp_account_list_actions-tw', 'ppp_tw_account_list_actions', 10, 1 
  */
 function ppp_capture_twitter_oauth() {
 	if ( isset( $_REQUEST['oauth_verifier'] ) && isset( $_REQUEST['oauth_token'] ) ) {
-		global $ppp_twitter_oauth;
-		$ppp_twitter_oauth->ppp_initialize_twitter();
-		wp_redirect( admin_url( 'admin.php?page=ppp-social-settings' ) );
-		die();
+		$current_screen = get_current_screen();
+		if ( 'user-edit' === $current_screen->base ) {
+			$user_id = ! empty( $_GET['user_id'] ) && is_numeric( $_GET['user_id'] ) ? $_GET['user_id'] : false;
+			$twitter = new PPP_Twitter_User( $user_id );
+			$twitter->init();
+			$redirect = admin_url( 'user-edit.php?updated=1&user_id=' . $user_id );
+		} else {
+			global $ppp_twitter_oauth;
+			$ppp_twitter_oauth->ppp_initialize_twitter();
+			$redirect = admin_url( 'admin.php?page=ppp-social-settings' );
+		}
+		?>
+		<meta http-equiv="refresh" content="0;URL=<?php echo $redirect; ?>">
+		<?php
 	}
 }
-add_action( 'admin_init', 'ppp_capture_twitter_oauth', 10 );
+add_action( 'admin_head', 'ppp_capture_twitter_oauth', 10 );
 
 /**
  * Listen for the disconnect from Twitter
  * @return void
  */
 function ppp_disconnect_twitter() {
-	global $ppp_social_settings;
-	$ppp_social_settings = get_option( 'ppp_social_settings' );
-	if ( isset( $ppp_social_settings['twitter'] ) ) {
-		unset( $ppp_social_settings['twitter'] );
-		update_option( 'ppp_social_settings', $ppp_social_settings );
+	if ( ! empty( $_GET['user_id'] ) ) {
+		$user_id = (int) sanitize_text_field( $_GET['user_id'] );
+		if ( $user_id !== get_current_user_id() || ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'Unable to disconnect Twitter account', 'ppp-txt' ) );
+		}
+		delete_user_meta( $user_id, '_ppp_twitter_data' );
+	} else {
+		global $ppp_social_settings;
+		$ppp_social_settings = get_option( 'ppp_social_settings' );
+		if ( isset( $ppp_social_settings['twitter'] ) ) {
+			unset( $ppp_social_settings['twitter'] );
+			update_option( 'ppp_social_settings', $ppp_social_settings );
+		}
 	}
 }
 add_action( 'ppp_disconnect-twitter', 'ppp_disconnect_twitter', 10 );
@@ -290,7 +308,7 @@ function ppp_tw_add_metabox_content( $post ) {
 
 	$share_by_default      = empty( $ppp_share_settings['twitter']['share_on_publish'] ) ? false : true;
 
-	if ( ! empty( $ppp_share_on_publish ) || $share_by_default ) {
+	if ( $ppp_share_on_publish == '1' || ( $ppp_share_on_publish == '' && $share_by_default ) ) {
 		$show_share_on_publish = true;
 	}
 	$ppp_share_on_publish_text = get_post_meta( $post->ID, '_ppp_share_on_publish_text', true );
@@ -377,6 +395,8 @@ function ppp_tw_add_metabox_content( $post ) {
 add_action( 'ppp_generate_metabox_content-tw', 'ppp_tw_add_metabox_content', 10, 1 );
 
 function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
+	global $post;
+
 	$share_time     = strtotime( $args['date'] . ' ' . $args['time'] );
 	$readonly       = current_time( 'timestamp' ) > $share_time ? 'readonly="readonly" ' : false;
 	$no_date        = ! empty( $readonly ) ? ' hasDatepicker' : '';
@@ -484,6 +504,18 @@ function ppp_tw_share_on_publish( $new_status, $old_status, $post ) {
 	$share_link = ppp_generate_link( $post->ID, $name, true );
 
 	$status['twitter'] = ppp_send_tweet( $share_content . ' ' . $share_link, $post->ID, $media );
+
+	if ( ! empty( $status['twitter']->id_str ) ) {
+		$author_id = $post->post_author;
+		$author_rt = get_user_meta( $author_id, '_ppp_share_on_publish', true );
+
+		if ( $author_rt ) {
+			$twitter_user = new PPP_Twitter_User( $author_id );
+			$twitter_user->retweet( $status['twitter']->id_str );
+		}
+
+	}
+
 
 	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
 		update_post_meta( $post->ID, '_ppp-' . $name . '-status', $status );
@@ -658,3 +690,91 @@ function ppp_tw_add_contact_method( $user_contactmethods ) {
 	return $user_contactmethods;
 }
 add_filter( 'user_contactmethods', 'ppp_tw_add_contact_method' );
+
+
+/**
+ * Adds in the Post Promoter Pro Preferences Profile Section
+ * @param  object $user The User object being viewed
+ * @return void         Displays HTML
+ */
+function ppp_tw_profile_settings( $user ) {
+
+	if ( $user->ID == get_current_user_id() && ! current_user_can( 'edit_posts' ) ) {
+		return;
+	}
+
+	if ( $user->ID !== get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	$connected = false;
+	?>
+	<h3><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h3>
+	<table class="form-table">
+		<tr>
+			<th><?php _e( 'Connect to Twitter', 'ppp-txt' ); ?></th>
+			<td>
+			<?php
+			$twitter = new PPP_Twitter_User( get_current_user_id() );
+			$tw_user = get_user_meta( $user->ID, '_ppp_twitter_data', true );
+			if ( empty( $tw_user ) ) {
+				$tw_authurl = $twitter->get_auth_url( admin_url( 'user-edit.php?user_id=' . $user->ID ) );
+
+				echo '<a href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
+			} else {
+				$connected = true;
+				?>
+				<p><strong><?php _e( 'Signed in as', 'ppp-txt' ); ?>: </strong><?php echo $tw_user['user']->screen_name; ?></p>
+				<p>
+					<a class="button-primary" href="<?php echo admin_url( 'user-edit.php?user_id=' . $user->ID . '&ppp_social_disconnect=true&ppp_network=twitter&user_id=' . $user->ID ); ?>" ><?php _e( 'Disconnect from Twitter', 'ppp-txt' ); ?></a>&nbsp;
+					<a class="button-secondary" href="https://twitter.com/settings/applications" target="blank"><?php _e( 'Revoke Access via Twitter', 'ppp-txt' ); ?></a>
+				</p>
+				<?php
+			}
+			?>
+			</td>
+		</tr>
+
+		<?php if ( $connected ) : ?>
+		<?php
+			$share_on_publish = get_user_meta( $user->ID, '_ppp_share_on_publish', true );
+			$share_scheduled  = get_user_meta( $user->ID, '_ppp_share_scheduled' , true );
+		?>
+		<tr>
+			<th><?php _e( 'Sharing Options', 'ppp-txt' ); ?></th>
+			<td>
+				<input type="checkbox" <?php checked( true, $share_on_publish, true ); ?>name="share_on_publish" value="1" id="share-on-publish" /> <label for="share-on-publish"><?php _e( 'Retweet my posts when they are published', 'ppp-txt' ); ?></label>
+				<p class="description"><?php printf( __( 'Retweet the primary account as %s when it Tweets on publishing my posts.', 'ppp-txt' ), $tw_user['user']->screen_name ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th></th>
+			<td>
+				<input type="checkbox" <?php checked( true, $share_scheduled, true ); ?> name="share_scheduled" value="1" id="share-scheduled" /> <label for="share-scheduled"><?php _e( 'Retweet scheduled shares of my posts', 'ppp-txt' ); ?></label>
+				<p class="description"><?php printf( __( 'When the primary account schedules a Tweet for one of my posts, Retweet it as %s.', 'ppp-txt' ), $tw_user['user']->screen_name ); ?></p>
+			</td>
+		</tr>
+
+		<?php endif; ?>
+	</table>
+	<?php
+}
+add_action( 'show_user_profile', 'ppp_tw_profile_settings' );
+add_action( 'edit_user_profile', 'ppp_tw_profile_settings' );
+
+/**
+ * Saves the User Profile Settings
+ * @param  int $user_id The User ID being saved
+ * @return void         Saves to Usermeta
+ */
+function ppp_tw_save_profile( $user_id ) {
+
+	$share_on_publish = ! empty( $_POST['share_on_publish'] ) ? true : false;
+	$share_scheduled  = ! empty( $_POST['share_scheduled'] )  ? true : false;
+
+	update_user_meta( $user_id, '_ppp_share_on_publish', $share_on_publish );
+	update_user_meta( $user_id, '_ppp_share_scheduled' , $share_scheduled  );
+
+}
+add_action( 'personal_options_update', 'ppp_tw_save_profile' );
+add_action( 'edit_user_profile_update', 'ppp_tw_save_profile' );

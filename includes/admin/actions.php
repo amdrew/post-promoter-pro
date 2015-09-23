@@ -13,7 +13,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return void
  */
 function ppp_disconnect_social() {
+
 	if ( isset( $_GET['ppp_social_disconnect'] ) && isset( $_GET['ppp_network'] ) ) {
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'You do not have permission to view this page', 'ppp-txt' ) );
+		}
+
 		$network = $_GET['ppp_network'];
 		do_action( 'ppp_disconnect-' . $network );
 	}
