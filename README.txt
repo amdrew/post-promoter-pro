@@ -16,6 +16,15 @@ You write great content, but it can get lost in the fast-moving world of social 
 Engage followers who may have missed the original post; Post Promoter Pro allows you to customize the text that sits before the link to your content. Experiment with hashtags, a call to action, or interesting text that starts a conversation and compels your followers to view your post.
 
 == Changelog ==
+
+= 2.2.7 September 22, 2015 =
+* NEW: Retweet as Author
+* TWEAK: Convert H2 tags to H1 for settings
+* TWEAK: Account list table icon column is too wide
+* FIX: Unchecking Tweet / Share boxes not respected on draft save
+* FIX: Apostrophe in name makes page dropdown always show 'Me'
+* FIX: Character count color indicator incorrect in some situations
+
 = 2.2.6 July 16, 2015 =
 * FIX: Upcoming Tweets Dashboard widget showing to subscirbers
 
