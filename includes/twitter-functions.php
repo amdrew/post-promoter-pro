@@ -155,6 +155,11 @@ function ppp_send_tweet( $message, $post_id, $use_media = false ) {
 	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( ppp_entities_and_slashes( $message ), $use_media ) );
 }
 
+function ppp_tw_get_post_meta( $post_meta, $post_id ) {
+	return get_post_meta( $post_id, '_ppp_tweets', true );
+}
+add_filter( 'ppp_get_scheduled_items_tw', 'ppp_tw_get_post_meta', 10, 2 );
+
 /**
  * Combines the results from ppp_generate_share_content and ppp_generate_link into a single string
  * @param  int $post_id The Post ID
@@ -339,7 +344,6 @@ function ppp_tw_add_metabox_content( $post ) {
 			<div class="ppp-post-override-wrap">
 				<p><h3><?php _e( 'Scheduled Tweets', 'ppp-txt' ); ?></h3></p>
 				<div id="ppp-tweet-fields" class="ppp-tweet-fields">
-					<input type="hidden" id="edd-variable-prices" class="edd-variable-prices-name-field" value=""/>
 					<div id="ppp-tweet-fields" class="ppp-meta-table-wrap">
 						<table class="widefat ppp-repeatable-table" width="100%" cellpadding="0" cellspacing="0">
 							<thead>
@@ -522,6 +526,49 @@ function ppp_tw_share_on_publish( $new_status, $old_status, $post ) {
 	}
 }
 add_action( 'ppp_share_on_publish', 'ppp_tw_share_on_publish', 10, 3 );
+
+function ppp_tw_generate_timestamps( $times, $post_id ) {
+	// Make the timestamp in the users' timezone, b/c that makes more sense
+	$offset = (int) -( get_option( 'gmt_offset' ) );
+
+	$ppp_tweets = get_post_meta( $post_id, '_ppp_tweets', true );
+
+	if ( empty( $ppp_tweets ) ) {
+		$ppp_tweets = array();
+	}
+
+	foreach ( $ppp_tweets as $key => $data ) {
+		if ( ! array_filter( $data ) ) {
+			continue;
+		}
+
+		$share_time = explode( ':', $data['time'] );
+		$hours = (int) $share_time[0];
+		$minutes = (int) substr( $share_time[1], 0, 2 );
+		$ampm = strtolower( substr( $share_time[1], -2 ) );
+
+		if ( $ampm == 'pm' && $hours != 12 ) {
+			$hours = $hours + 12;
+		}
+
+		if ( $ampm == 'am' && $hours == 12 ) {
+			$hours = 00;
+		}
+
+		$hours     = $hours + $offset;
+		$date      = explode( '/', $data['date'] );
+		$timestamp = mktime( $hours, $minutes, 0, $date[0], $date[1], $date[2] );
+
+		if ( $timestamp > current_time( 'timestamp', 1 ) ) { // Make sure the timestamp we're getting is in the future
+			$time_key           = strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) ) . '_tw';
+			$times[ $time_key ] = 'sharedate_' . $key . '_' . $post_id . '_tw';
+		}
+
+	}
+
+	return $times;
+}
+add_filter( 'ppp_get_timestamps', 'ppp_tw_generate_timestamps', 10, 2 );
 
 /**
  * Unschedule any tweets when the post is unscheduled

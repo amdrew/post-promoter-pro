@@ -131,10 +131,11 @@ class PPP_Schedule_Table extends WP_List_Table {
 			$index      = $name_parts[1];
 			$service    = isset( $name_parts[3] ) ? $name_parts[3] : 'tw';
 			$builder    = 'ppp_' . $service . '_build_share_message';
-			$post_meta  = get_post_meta( $ppp_data['args'][0], '_ppp_tweets', true );
+			$post_meta  = apply_filters( 'ppp_get_scheduled_items_' . $service, array(), $ppp_data['args'][0] );
 			$image_url  = '';
+
 			if ( ! empty( $post_meta[$index]['attachment_id'] ) ) {
-				$image_url = ppp_post_has_media( $ppp_data['args'][0], 'tw', true, $post_meta[$index]['attachment_id'] );
+				$image_url = ppp_post_has_media( $ppp_data['args'][0], $service, true, $post_meta[$index]['attachment_id'] );
 			} elseif ( ! empty( $post_meta[$index]['image'] ) ) {
 				$image_url = $post_meta[$index]['image'];
 			}

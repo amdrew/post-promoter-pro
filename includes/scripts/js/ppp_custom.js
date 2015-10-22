@@ -11,10 +11,6 @@ var tweetLengthImageRed    = 94;
 		minDate: 0
 	});
 
-	$('input[id*="_share_on_publish"]').click( function() {
-		$(this).parent().siblings('.ppp_share_on_publish_text').toggle();
-	});
-
 	$('#bitly-login').click( function() {
 		var data = {};
 		var button = $('#bitly-login');
@@ -80,6 +76,134 @@ var tweetLengthImageRed    = 94;
 		$(clickedId).show();
 		return false;
 	});
+
+	var PPP_Facebook_Configuration = {
+		init: function() {
+			this.share_on_publish();
+			this.featured_image();
+			this.check_timestamps();
+			this.show_hide_conflict_warning();
+		},
+		share_on_publish: function() {
+			$('#ppp_fb_share_on_publish').change( function() {
+				$('#fb-share-on-publish').toggle();
+				$('#fb-schedule-share').toggle();
+			});
+		},
+		featured_image: function() {
+
+			// WP 3.5+ uploader
+			var file_frame;
+			window.formfield = '';
+
+			$('body').on('click', '.ppp-upload-file-button', function(e) {
+
+				e.preventDefault();
+
+				var button = $(this);
+
+				window.formfield = $(this).closest('.ppp-repeatable-upload-wrapper');
+
+				// If the media frame already exists, reopen it.
+				if ( file_frame ) {
+					//file_frame.uploader.uploader.param( 'post_id', set_to_post_id );
+					file_frame.open();
+					return;
+				}
+
+				// Create the media frame.
+				file_frame = wp.media.frames.file_frame = wp.media( {
+					frame: 'post',
+					state: 'insert',
+					title: button.data( 'uploader-title' ),
+					button: {
+						text: button.data( 'uploader-button-text' )
+					},
+					multiple: $( this ).data( 'multiple' ) == '0' ? false : true  // Set to true to allow multiple files to be selected
+				} );
+
+				file_frame.on( 'menu:render:default', function( view ) {
+					// Store our views in an object.
+					var views = {};
+
+					// Unset default menu items
+					view.unset( 'library-separator' );
+					view.unset( 'gallery' );
+					view.unset( 'featured-image' );
+					view.unset( 'embed' );
+
+					// Initialize the views in our view object.
+					view.set( views );
+				} );
+
+				// When an image is selected, run a callback.
+				file_frame.on( 'insert', function() {
+
+					var selection = file_frame.state().get('selection');
+					selection.each( function( attachment, index ) {
+						attachment = attachment.toJSON();
+						// place first attachment in field
+						window.formfield.find( '.ppp-repeatable-attachment-id-field' ).val( attachment.id );
+						window.formfield.find( '.ppp-repeatable-upload-field' ).val( attachment.url ).change();
+					});
+				});
+
+				// Finally, open the modal
+				file_frame.open();
+			});
+
+
+			// WP 3.5+ uploader
+			var file_frame;
+			window.formfield = '';
+
+			$('body').on( 'change', '.ppp-upload-field', function(e) {
+				if ( $(this).val() == '' ) {
+					var attachment_field = $(this).prev( '.ppp-repeatable-attachment-id-field' );
+					attachment_field.val( '' );
+				}
+			});
+
+		},
+		check_timestamps: function() {
+			$( 'body' ).on( 'change', '.share-date-selector, .share-time-selector', function(e) {
+				var row = $(this).parent().parent();
+
+				var date = $(row).find('.share-date-selector').val();
+				var time = $(row).find('.share-time-selector').val();
+				if ( date == '' ||  time == '' ) {
+					return false;
+				}
+
+				var data = {
+					'action': 'ppp_has_schedule_conflict',
+					'date'  : date,
+					'time'  : time
+				};
+
+				$.post(ajaxurl, data, function(response) {
+					if ( response == 1 ) {
+						$(row).addClass( 'ppp-row-warning' );
+					} else {
+						$(row).removeClass( 'ppp-row-warning' );
+					}
+
+					PPP_Twitter_Configuration.show_hide_conflict_warning();
+				});
+
+			});
+		},
+		show_hide_conflict_warning: function() {
+			if ( $('.ppp-repeatable-table > tbody > tr.ppp-row-warning').length > 0 ) {
+				$('#ppp-show-conflict-warning').slideDown();
+			} else {
+				$('#ppp-show-conflict-warning').slideUp();
+			}
+		}
+
+	}
+	PPP_Facebook_Configuration.init();
+
 
 	var PPP_Twitter_Configuration = {
 		init: function() {
@@ -350,7 +474,6 @@ var tweetLengthImageRed    = 94;
 		}
 
 	}
-
 	PPP_Twitter_Configuration.init();
 
 	$( 'body' ).on( 'focusin', '.ppp-tweet-text-repeatable', function() {
