@@ -261,6 +261,18 @@ function ppp_fb_share( $link, $message, $picture ) {
 	return $ppp_facebook_oauth->ppp_fb_share_link( $link, ppp_entities_and_slashes( $message ), $picture );
 }
 
+function ppp_fb_scheduled_share( $share_message = '', $post_id = 0, $media = false, $name = '' ) {
+	$link = ppp_generate_link( $post_id, $name );
+
+	$status['facebook'] = ppp_fb_share( $link, $share_message, $media );
+
+	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
+		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
+	}
+
+}
+add_action( 'ppp_share_scheduled_fb', 'ppp_fb_scheduled_share', 10, 4 );
+
 function ppp_fb_get_post_meta( $post_meta, $post_id ) {
 	return get_post_meta( $post_id, '_ppp_fb_shares', true );
 }
@@ -405,10 +417,12 @@ function ppp_fb_add_metabox_content( $post ) {
 add_action( 'ppp_generate_metabox_content-fb', 'ppp_fb_add_metabox_content', 10, 1 );
 
 function ppp_render_fb_share_on_publish_row( $args = array() ) {
+	global $post;
+	$readonly = $post->post_status !== 'publish' ? '' : 'readonly="readonly" ';
 	?>
 	<tr class="ppp-fb-wrapper ppp-repeatable-row">
 		<td colspan="2">
-			<?php _e( 'On Publish', 'ppp-txt' ); ?>
+			<em><?php _e( 'On Publish', 'ppp-txt' ); ?></em>
 		</td>
 
 		<td>
@@ -518,6 +532,7 @@ add_action( 'save_post', 'ppp_fb_save_post_meta_boxes', 10, 2 ); // save the cus
  */
 function ppp_fb_share_on_publish( $new_status, $old_status, $post ) {
 	global $ppp_options;
+
 	$from_meta = get_post_meta( $post->ID, '_ppp_fb_share_on_publish', true );
 	$from_post = isset( $_POST['_ppp_fb_share_on_publish'] );
 
@@ -525,28 +540,40 @@ function ppp_fb_share_on_publish( $new_status, $old_status, $post ) {
 		return;
 	}
 
+	$title         = '';
+	$attachment_id = 0;
+	$image_url     = '';
+
 	// Determine if we're seeing the share on publish in meta or $_POST
-	if ( $from_meta && !$from_post ) {
-		$ppp_share_on_publish_title = get_post_meta( $post->ID, '_ppp_fb_share_on_publish_title', true );
+	if ( $from_meta && ! $from_post ) {
+		$title         = get_post_meta( $post->ID, '_ppp_fb_share_on_publish_title',         true );
+		$attachment_id = get_post_meta( $post->ID, '_ppp_fb_share_on_publish_attachment_id', true );
+		$image_url     = get_post_meta( $post->ID, '_ppp_fb_share_on_publish_image_url',     true );
 	} else {
-		$ppp_share_on_publish_title = isset( $_POST['_ppp_fb_share_on_publish_title'] ) ? $_POST['_ppp_fb_share_on_publish_title'] : '';
+		$title         = isset( $_POST['_ppp_fb_share_on_publish_title'] )         ? $_POST['_ppp_fb_share_on_publish_title']         : '';
+		$attachment_id = isset( $_POST['_ppp_fb_share_on_publish_attachment_id'] ) ? $_POST['_ppp_fb_share_on_publish_attachment_id'] : 0;
+		$image_url     = isset( $_POST['_ppp_fb_share_on_publish_image_url'] )     ? $_POST['_ppp_fb_share_on_publish_image_url']     : '';
 	}
 
-	$thumbnail = ppp_post_has_media( $post->ID, 'fb', true );
+	$thumbnail = '';
+	if ( empty( $attachment_id ) && ! empty( $image_url ) ) {
+		$thumbnail = $image_url;
+	} else {
+		$thumbnail = ppp_post_has_media( $post->ID, 'fb', true, $attachment_id );
+	}
 
 	$name = 'sharedate_0_' . $post->ID . '_fb';
 
 	$default_title = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : '';
 	// If an override was found, use it, otherwise try the default text content
-	$share_title = ( isset( $ppp_share_on_publish_title ) && !empty( $ppp_share_on_publish_title ) ) ? $ppp_share_on_publish_title : $default_title;
+	if ( empty( $title ) && empty( $default_title ) ) {
+		$title = get_the_title( $post->ID );
+	}
 
-	// If the content is still empty, just use the post title
-	$share_title = ( isset( $share_title ) && !empty( $share_title ) ) ? $share_title : get_the_title( $post->ID );
+	$title = apply_filters( 'ppp_share_content', $title, array( 'post_id' => $post->ID ) );
+	$link  = ppp_generate_link( $post->ID, $name, true );
 
-	$share_title = apply_filters( 'ppp_share_content', $share_title, array( 'post_id' => $post->ID ) );
-	$share_link = ppp_generate_link( $post->ID, $name, true );
-
-	$status['facebook'] = ppp_fb_share( $share_link, $share_title, $thumbnail );
+	$status['facebook'] = ppp_fb_share( $link, $title, $thumbnail );
 
 	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
 		update_post_meta( $post->ID, '_ppp-' . $name . '-status', $status );
@@ -599,9 +626,14 @@ add_filter( 'ppp_get_timestamps', 'ppp_fb_generate_timestamps', 10, 2 );
 
 function ppp_fb_build_share_message( $post_id, $name, $scheduled = true ) {
 	$share_content = ppp_fb_generate_share_content( $post_id, $name );
-	$share_link    = ppp_generate_link( $post_id, $name, $scheduled );
 
-	return apply_filters( 'ppp_tw_build_share_message', $share_content . ' ' . $share_link );
+	return apply_filters( 'ppp_fb_build_share_message', $share_content );
+}
+
+function ppp_fb_build_share_link( $post_id, $name, $scheduled = true ) {
+	$share_link = ppp_generate_link( $post_id, $name, $scheduled );
+
+	return $share_link;
 }
 
 function ppp_fb_generate_share_content( $post_id, $name, $is_scheduled = true ) {
@@ -622,6 +654,20 @@ function ppp_fb_generate_share_content( $post_id, $name, $is_scheduled = true ) 
 	$share_content = ( isset( $share_content ) && !empty( $share_content ) ) ? $share_content : get_the_title( $post_id );
 
 	return apply_filters( 'ppp_share_content_fb', $share_content, array( 'post_id' => $post_id ) );
+}
+
+/**
+ * Return if media is supported for this scheduled post
+ * @param  int $post_id The Post ID
+ * @param  int $index   The index of this tweet in the _ppp_tweets data
+ * @return bool         Whether or not this tweet should contain a media post
+ */
+function ppp_fb_use_media( $post_id, $index ) {
+	if ( empty( $post_id ) || empty( $index ) ) {
+		return false;
+	}
+
+	true; // Always include an image for facebook, even if it's a fallback to the featured image
 }
 
 /**

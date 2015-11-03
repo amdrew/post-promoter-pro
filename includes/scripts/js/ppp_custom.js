@@ -209,6 +209,7 @@ var tweetLengthImageRed    = 94;
 		init: function() {
 			this.add();
 			this.remove();
+			this.share_on_publish();
 			this.featured_image();
 			this.count_length();
 			this.check_timestamps();
@@ -304,6 +305,11 @@ var tweetLengthImageRed    = 94;
 						$( this ).attr( 'name', name ).attr( 'id', name );
 					});
 				});
+			});
+		},
+		share_on_publish: function() {
+			$('#tw #ppp_share_on_publish').click( function() {
+				$(this).parent().siblings('.ppp_share_on_publish_text').toggle();
 			});
 		},
 		featured_image: function() {

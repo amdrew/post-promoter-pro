@@ -142,19 +142,19 @@ class PPP_Schedule_Table extends WP_List_Table {
 
 			$conflict   = $cron_tally[$timestamp] > 1 ? true : false;
 
-			$data[$key] = array(
+			$data[ $key ] = array(
 				'post_id'      => $ppp_data['args'][0],
 				'post_title'   => get_the_title( $ppp_data['args'][0] ),
 				'service'      => $service,
 				'index'        => $index,
 				'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
 				'content'      => $builder( $ppp_data['args'][0], $ppp_data['args'][1], false ),
-				'name'         => 'sharedate_' . $index . '_' . $ppp_data['args'][0],
+				'name'         => 'sharedate_' . $index . '_' . $ppp_data['args'][0] . '_' . $service,
 				'conflict'     => $conflict,
 			);
 
 			if ( ! empty( $image_url ) ) {
-				$data[$key]['image_url'] = $image_url;
+				$data[ $key ]['image_url'] = $image_url;
 			}
 
 		}

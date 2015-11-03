@@ -4,12 +4,12 @@
  *
  * @since  2.2.3
  */
-class PPP_Dashboard_Tweets {
+class PPP_Dashboard_Shares {
 
 	/**
 	 * The ID of this widget.
 	 */
-	const wid = 'ppp_dashboard_tweets';
+	const wid = 'ppp_dashboard_shares';
 
 	/**
 	 * Hook to wp_dashboard_setup to add the widget.
@@ -23,9 +23,9 @@ class PPP_Dashboard_Tweets {
 
 		wp_add_dashboard_widget(
 			self::wid,
-			__( 'Upcoming Tweets', 'ppp-tweets' ),
-			array( 'PPP_Dashboard_Tweets', 'widget' ),
-			array( 'PPP_Dashboard_Tweets', 'config' )
+			__( 'Upcoming Shares', 'ppp-tweets' ),
+			array( 'PPP_Dashboard_Shares', 'widget' ),
+			array( 'PPP_Dashboard_Shares', 'config' )
 		);
 	}
 
@@ -42,7 +42,7 @@ class PPP_Dashboard_Tweets {
 			$limited_shares = array_slice( $shares, 0, $number, true );
 			?>
 			<div id="future-tweets" class="activity-block">
-				<h4><?php _e( 'Post-Related Tweets', 'ppp-tweets' ); ?></h4>
+				<h4><?php _e( 'Post-Related shares', 'ppp-tweets' ); ?></h4>
 				<ul>
 				<?php
 				foreach ( $limited_shares as $key => $share ) {
@@ -100,12 +100,12 @@ class PPP_Dashboard_Tweets {
 
 			}
 			?><span><em>
-				<?php _e( 'No scheduled tweets at this time.', 'ppp-txt' ); ?>
+				<?php _e( 'No scheduled shares at this time.', 'ppp-txt' ); ?>
 				<?php printf( $relative_time, $edit_url ); ?>
 			</em></span><?php
 		}
 
-		do_action( 'ppp_dashboard_tweets_after' );
+		do_action( 'ppp_dashboard_shares' );
 	}
 
 	/**
@@ -134,7 +134,7 @@ class PPP_Dashboard_Tweets {
 	 * @return int The Number of tweets to show
 	 */
 	private static function get_count() {
-		$stored_count = get_option( 'ppp_dashboard_twitter_count' );
+		$stored_count = get_option( 'ppp_dashboard_shares_count' );
 
 		$stored_count = empty( $stored_count ) || ! is_numeric( $stored_count ) ? 5 : absint( $stored_count );
 
@@ -142,4 +142,4 @@ class PPP_Dashboard_Tweets {
 	}
 
 }
-add_action('wp_dashboard_setup', array('PPP_Dashboard_Tweets','init') );
+add_action('wp_dashboard_setup', array('PPP_Dashboard_Shares','init') );

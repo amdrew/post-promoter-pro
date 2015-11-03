@@ -149,11 +149,32 @@ add_action( 'ppp_disconnect-twitter', 'ppp_disconnect_twitter', 10 );
  * @param  string $message The Text to share as the body of the tweet
  * @return object          The Results from the Twitter API
  */
-function ppp_send_tweet( $message, $post_id, $use_media = false ) {
+function ppp_send_tweet( $message, $post_id, $use_media = false, $name = '' ) {
 	global $ppp_twitter_oauth;
 
 	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( ppp_entities_and_slashes( $message ), $use_media ) );
 }
+
+function ppp_tw_scheduled_share( $share_message = '', $post_id = 0, $media = false ) {
+	$status['twitter'] = ppp_send_tweet( $share_message, $post_id, $media );
+
+	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
+		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
+	}
+
+	if ( ! empty( $status['twitter']->id_str ) ) {
+		$post      = get_post( $post_id );
+		$author_id = $post->post_author;
+		$author_rt = get_user_meta( $author_id, '_ppp_share_scheduled', true );
+
+		if ( $author_rt ) {
+			$twitter_user = new PPP_Twitter_User( $author_id );
+			$twitter_user->retweet( $status['twitter']->id_str );
+		}
+
+	}
+}
+add_action( 'ppp_share_scheduled_tw', 'ppp_tw_scheduled_share', 10, 4 );
 
 function ppp_tw_get_post_meta( $post_meta, $post_id ) {
 	return get_post_meta( $post_id, '_ppp_tweets', true );
