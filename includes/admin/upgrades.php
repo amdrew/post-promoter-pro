@@ -88,24 +88,6 @@ function ppp_maybe_resume_upgrade() {
 
 }
 
-/**
- * Get's the array of completed upgrade actions
- *
- * @since  2.3
- * @return array The array of completed upgrades
- */
-function ppp_get_completed_upgrades() {
-
-	$completed_upgrades = get_option( 'ppp_completed_upgrades' );
-
-	if ( false === $completed_upgrades ) {
-		$completed_upgrades = array();
-	}
-
-	return $completed_upgrades;
-
-}
-
 /** End Helper Functions **/
 
 /**

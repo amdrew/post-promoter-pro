@@ -177,6 +177,24 @@ function ppp_get_upload_path() {
 }
 
 /**
+ * Get's the array of completed upgrade actions
+ *
+ * @since  2.3
+ * @return array The array of completed upgrades
+ */
+function ppp_get_completed_upgrades() {
+
+	$completed_upgrades = get_option( 'ppp_completed_upgrades' );
+
+	if ( false === $completed_upgrades ) {
+		$completed_upgrades = array();
+	}
+
+	return $completed_upgrades;
+
+}
+
+/**
  * Check if the upgrade routine has been run for a specific action
  *
  * @since  2.3

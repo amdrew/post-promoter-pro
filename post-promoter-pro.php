@@ -30,12 +30,7 @@ class PostPromoterPro {
 		if ( ! is_callable( 'curl_init' ) ) {
 			add_action( 'admin_notices', array( $this, 'no_curl' ) );
 		} else {
-			register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
-
 			global $ppp_options, $ppp_social_settings, $ppp_share_settings;
-			$ppp_options         = get_option( 'ppp_options' );
-			$ppp_social_settings = get_option( 'ppp_social_settings' );
-			$ppp_share_settings  = get_option( 'ppp_share_settings' );
 
 			include PPP_PATH . '/includes/general-functions.php';
 			include PPP_PATH . '/includes/share-functions.php';
@@ -52,26 +47,15 @@ class PostPromoterPro {
 				include PPP_PATH . '/includes/admin/meta-boxes.php';
 				include PPP_PATH . '/includes/admin/welcome.php';
 				include PPP_PATH . '/includes/admin/dashboard.php';
-
-				add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
-				add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );
-
-				// Handle licenses
-				add_action( 'admin_init', array( $this, 'plugin_updater' ) );
-				add_action( 'admin_init', array( $this, 'activate_license' ) );
-				add_action( 'admin_init', array( $this, 'deactivate_license' ) );
-
-				add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
-				add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
-				add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
-				add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), PHP_INT_MAX );
-				add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
 			}
 
-			add_action( 'init', array( $this, 'get_actions' ) );
-			add_action( 'save_post', 'ppp_schedule_share', 99, 2);
-			add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
-			add_action( 'init', 'ppp_add_image_sizes' );
+			register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
+
+			$ppp_options         = get_option( 'ppp_options' );
+			$ppp_social_settings = get_option( 'ppp_social_settings' );
+			$ppp_share_settings  = get_option( 'ppp_share_settings' );
+
+			$this->hooks();
 		}
 
 	}
@@ -122,6 +106,29 @@ class PostPromoterPro {
 		set_transient( '_ppp_activation_redirect', 'true', 30 );
 
 		ppp_set_upgrade_complete( 'upgrade_post_meta' );
+	}
+
+	private function hooks() {
+		if ( is_admin() ) {
+			add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
+			add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );
+
+			// Handle licenses
+			add_action( 'admin_init', array( $this, 'plugin_updater' ) );
+			add_action( 'admin_init', array( $this, 'activate_license' ) );
+			add_action( 'admin_init', array( $this, 'deactivate_license' ) );
+
+			add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
+			add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), PHP_INT_MAX );
+			add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
+		}
+
+		add_action( 'init', array( $this, 'get_actions' ) );
+		add_action( 'save_post', 'ppp_schedule_share', 99, 2);
+		add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
+		add_action( 'init', 'ppp_add_image_sizes' );
 	}
 
 	/**
