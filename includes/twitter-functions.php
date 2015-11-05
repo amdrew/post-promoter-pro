@@ -156,7 +156,8 @@ function ppp_send_tweet( $message, $post_id, $use_media = false, $name = '' ) {
 }
 
 function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
-
+	global $ppp_options;
+	
 	$post_meta     = get_post_meta( $post_id, '_ppp_tweets', true );
 	$this_share    = $post_meta[ $index ];
 	$attachment_id = isset( $this_share['attachment_id'] ) ? $this_share['attachment_id'] : false;

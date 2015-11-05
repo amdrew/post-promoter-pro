@@ -593,6 +593,8 @@ function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 add_action( 'ppp_share_on_publish', 'ppp_li_share_on_publish', 10, 3 );
 
 function ppp_li_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
+	global $ppp_options;
+	
 	$link = ppp_generate_link( $post_id, $name );
 
 	$post_meta     = get_post_meta( $post_id, '_ppp_li_shares', true );
