@@ -120,6 +120,8 @@ class PostPromoterPro {
 		update_option( 'ppp_share_settings', $default_share_settings );
 
 		set_transient( '_ppp_activation_redirect', 'true', 30 );
+
+		ppp_set_upgrade_complete( 'upgrade_post_meta' );
 	}
 
 	/**

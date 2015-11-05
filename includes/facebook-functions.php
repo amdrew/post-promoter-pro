@@ -545,11 +545,14 @@ function ppp_fb_share_on_publish( $new_status, $old_status, $post ) {
 	global $ppp_options;
 
 	$from_meta = get_post_meta( $post->ID, '_ppp_fb_share_on_publish', true );
-	$from_post = isset( $_POST['_ppp_fb_share_on_publish'] );
+	$from_post = isset( $_POST['_ppp_fb_share_on_publish'] ) ? $_POST['_ppp_fb_share_on_publish'] : '0';
 
-	if ( empty( $from_meta ) && empty( $from_post ) ) {
+	if ( '1' != $from_meta && '1' != $from_post ) {
 		return;
 	}
+
+	$from_meta = $from_meta == '1' ? true : false;
+	$from_post = $from_post == '1' ? true : false;
 
 	$title         = '';
 	$attachment_id = 0;

@@ -323,11 +323,11 @@ function ppp_li_add_metabox_content( $post ) {
 	global $ppp_options, $ppp_share_settings;
 	$default_text = !empty( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : __( 'Social Text', 'ppp-txt' );
 
-	$ppp_li_share_on_publish    = get_post_meta( $post->ID, '_ppp_li_share_on_publish', true );
-	$ppp_share_on_publish_title = get_post_meta( $post->ID, '_ppp_li_share_on_publish_title', true );
-	$ppp_share_on_publish_desc  = get_post_meta( $post->ID, '_ppp_li_share_on_publish_desc', true );
-	$ppp_li_share_on_publish_attachment_id = get_post_meta( $post->ID, '_ppp_fb_share_on_publish_attachment_id', true );
-	$ppp_li_share_on_publish_image_url     = get_post_meta( $post->ID, '_ppp_fb_share_on_publish_image_url', true );
+	$ppp_li_share_on_publish               = get_post_meta( $post->ID, '_ppp_li_share_on_publish', true );
+	$ppp_share_on_publish_title            = get_post_meta( $post->ID, '_ppp_li_share_on_publish_title', true );
+	$ppp_share_on_publish_desc             = get_post_meta( $post->ID, '_ppp_li_share_on_publish_desc', true );
+	$ppp_li_share_on_publish_attachment_id = get_post_meta( $post->ID, '_ppp_li_share_on_publish_attachment_id', true );
+	$ppp_li_share_on_publish_image_url     = get_post_meta( $post->ID, '_ppp_li_share_on_publish_image_url', true );
 
 	$show_share_on_publish = false;
 
@@ -540,11 +540,14 @@ add_action( 'save_post', 'ppp_li_save_post_meta_boxes', 10, 2 ); // save the cus
 function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 	global $ppp_options;
 	$from_meta = get_post_meta( $post->ID, '_ppp_li_share_on_publish', true );
-	$from_post = isset( $_POST['_ppp_li_share_on_publish'] );
+	$from_post = isset( $_POST['_ppp_li_share_on_publish'] ) ? $_POST['_ppp_li_share_on_publish']: '0';
 
-	if ( empty( $from_meta ) && empty( $from_post ) ) {
+	if ( '1' != $from_meta && '1' != $from_post ) {
 		return;
 	}
+
+	$from_meta = $from_meta == '1' ? true : false;
+	$from_post = $from_post == '1' ? true : false;
 
 	$title         = '';
 	$desc          = '';
@@ -552,7 +555,7 @@ function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 	$image_url     = '';
 
 	// Determine if we're seeing the share on publish in meta or $_POST
-	if ( $from_meta && !$from_post ) {
+	if ( $from_meta && ! $from_post ) {
 		$title         = get_post_meta( $post->ID, '_ppp_li_share_on_publish_title'        , true );
 		$desc          = get_post_meta( $post->ID, '_ppp_li_share_on_publish_desc'         , true );
 		$attachment_id = get_post_meta( $post->ID, '_ppp_li_share_on_publish_attachment_id', true );
