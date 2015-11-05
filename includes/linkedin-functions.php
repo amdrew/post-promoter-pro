@@ -387,14 +387,14 @@ function ppp_li_add_metabox_content( $post ) {
 									$args = apply_filters( 'ppp_fb_row_args', compact( 'date','time','text', 'desc', 'image','attachment_id' ), $value );
 									?>
 
-									<?php ppp_render_li_share_row( $key, $args, $post->ID ); ?>
+									<?php ppp_render_li_share_row( $key, $args ); ?>
 
 
 								<?php endforeach; ?>
 
 							<?php else: ?>
 
-								<?php ppp_render_li_share_row( 1, array( 'date' => '', 'time' => '', 'text' => '', 'desc' => '', 'image' => '', 'attachment_id' => '' ), $post->ID, 1 ); ?>
+								<?php ppp_render_li_share_row( 1, array( 'date' => '', 'time' => '', 'text' => '', 'desc' => '', 'image' => '', 'attachment_id' => '' ) ); ?>
 
 							<?php endif; ?>
 						</tbody>
@@ -447,11 +447,11 @@ function ppp_render_li_share_on_publish_row( $args = array() ) {
 <?php
 }
 
-function ppp_render_li_share_row( $key, $args = array(), $post_id ) {
+function ppp_render_li_share_row( $key, $args = array() ) {
 	global $post;
 
 	$share_time     = strtotime( $args['date'] . ' ' . $args['time'] );
-	$readonly       = current_time( 'timestamp' ) > $share_time ? 'readonly="readonly" ' : false;
+	$readonly       = current_time( 'timestamp' ) > $share_time ? 'readonly="readonly" ' : '';
 	$no_date        = ! empty( $readonly ) ? ' hasDatepicker' : '';
 	$hide           = ! empty( $readonly ) ? 'display: none;' : '';
 	?>
@@ -490,7 +490,7 @@ function ppp_render_li_share_row( $key, $args = array(), $post_id ) {
 	<tr>
 		<td colspan="2"></td>
 		<td colspan="3">
-			<textarea <?php if ( $readonly ): ?>readonly<?php endif; ?> class="ppp-repeatable-textarea" name="_ppp_li_shares[<?php echo $key; ?>][desc]" placeholder="<?php _e( 'Link Description', 'ppp-txt' ); ?>"><?php echo esc_attr( $args['desc'] ); ?></textarea>
+			<textarea <?php echo $readonly; ?> class="ppp-repeatable-textarea" name="_ppp_li_shares[<?php echo $key; ?>][desc]" placeholder="<?php _e( 'Link Description', 'ppp-txt' ); ?>"><?php echo esc_attr( $args['desc'] ); ?></textarea>
 		</td>
 	</tr>
 <?php
@@ -584,6 +584,7 @@ function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 
 	$link = ppp_generate_link( $post->ID, $name, true );
 
+	$status             = array();
 	$status['linkedin'] = ppp_li_share( $title, $desc, $link, $thumbnail );
 
 	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
@@ -594,7 +595,7 @@ add_action( 'ppp_share_on_publish', 'ppp_li_share_on_publish', 10, 3 );
 
 function ppp_li_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 	global $ppp_options;
-	
+
 	$link = ppp_generate_link( $post_id, $name );
 
 	$post_meta     = get_post_meta( $post_id, '_ppp_li_shares', true );

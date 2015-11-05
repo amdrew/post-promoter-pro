@@ -263,7 +263,7 @@ function ppp_fb_share( $link, $message, $picture ) {
 
 function ppp_fb_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 	global $ppp_options;
-	
+
 	$link = ppp_generate_link( $post_id, $name );
 
 	$post_meta     = get_post_meta( $post_id, '_ppp_fb_shares', true );
@@ -466,7 +466,7 @@ function ppp_render_fb_share_row( $key, $args = array(), $post_id ) {
 	global $post;
 
 	$share_time     = strtotime( $args['date'] . ' ' . $args['time'] );
-	$readonly       = current_time( 'timestamp' ) > $share_time ? 'readonly="readonly" ' : false;
+	$readonly       = current_time( 'timestamp' ) > $share_time ? 'readonly="readonly" ' : '';
 	$no_date        = ! empty( $readonly ) ? ' hasDatepicker' : '';
 	$hide           = ! empty( $readonly ) ? 'display: none;' : '';
 	?>
