@@ -261,8 +261,21 @@ function ppp_fb_share( $link, $message, $picture ) {
 	return $ppp_facebook_oauth->ppp_fb_share_link( $link, ppp_entities_and_slashes( $message ), $picture );
 }
 
-function ppp_fb_scheduled_share( $share_message = '', $post_id = 0, $media = false, $name = '' ) {
+function ppp_fb_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 	$link = ppp_generate_link( $post_id, $name );
+
+	$post_meta     = get_post_meta( $post_id, '_ppp_fb_shares', true );
+	$this_share    = $post_meta[ $index ];
+	$attachment_id = isset( $this_share['attachment_id'] ) ? $this_share['attachment_id'] : false;
+
+	$share_message = ppp_fb_build_share_message( $post_id, $name );
+
+	if ( empty( $attachment_id ) && ! empty( $this_share['image'] ) ) {
+		$media = $this_share['image'];
+	} else {
+		$use_media = ppp_fb_use_media( $post_id, $index );
+		$media     = ppp_post_has_media( $post_id, 'fb', $use_media, $attachment_id );
+	}
 
 	$status['facebook'] = ppp_fb_share( $link, $share_message, $media );
 
@@ -271,7 +284,7 @@ function ppp_fb_scheduled_share( $share_message = '', $post_id = 0, $media = fal
 	}
 
 }
-add_action( 'ppp_share_scheduled_fb', 'ppp_fb_scheduled_share', 10, 4 );
+add_action( 'ppp_share_scheduled_fb', 'ppp_fb_scheduled_share', 10, 3 );
 
 function ppp_fb_get_post_meta( $post_meta, $post_id ) {
 	return get_post_meta( $post_id, '_ppp_fb_shares', true );
@@ -344,18 +357,17 @@ function ppp_fb_add_metabox_content( $post ) {
 
 	?>
 	<p>
-	<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
-	<label for="ppp_fb_share_on_publish"><?php _e( 'Share this post on Facebook&hellip;', 'ppp-txt' ); ?></label>
-	<select name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish">
-		<option value="1" <?php selected( true, $show_share_on_publish, true ); ?><?php if ( $disabled ): ?>disabled<?php endif; ?>><?php _e( 'When this post is published', 'ppp-txt' ); ?></option>
-		<option value="0" <?php selected( false, $show_share_on_publish, true ); ?>><?php _e( 'After this post is published', 'ppp-txt' ); ?></option>
-	</select>
-		<p class="ppp_share_on_publish_text"<?php if ( false === $show_share_on_publish ) : ?> style="display: none;"<?php endif; ?>>
-		</p>
-
 		<div class="ppp-post-override-wrap">
-			<p><h3><?php _e( 'Share to Facebook', 'ppp-txt' ); ?></h3></p>
-			<div id="ppp-fb-fields" class="ppp-fb-fields">
+			<p><h3><?php _e( 'Share on Facebook', 'ppp-txt' ); ?></h3></p>
+			<p>
+				<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
+				<label for="ppp_fb_share_on_publish"><?php _e( 'Share this post on Facebook&hellip;', 'ppp-txt' ); ?></label>
+				<select name="_ppp_fb_share_on_publish" id="ppp_fb_share_on_publish" class="ppp-toggle-share-on-publish">
+					<option value="1" <?php selected( true, $show_share_on_publish, true ); ?><?php if ( $disabled ): ?>disabled<?php endif; ?>><?php _e( 'When this post is published', 'ppp-txt' ); ?></option>
+					<option value="0" <?php selected( false, $show_share_on_publish, true ); ?>><?php _e( 'After this post is published', 'ppp-txt' ); ?></option>
+				</select>
+			</p>
+			<div id="ppp-fb-fields" class="ppp-fields">
 				<div id="ppp-fb-fields" class="ppp-meta-table-wrap">
 					<table class="widefat ppp-repeatable-table" width="100%" cellpadding="0" cellspacing="0">
 						<thead>
@@ -367,7 +379,7 @@ function ppp_fb_add_metabox_content( $post ) {
 								<th style="width: 10px;"></th>
 							</tr>
 						</thead>
-						<tbody id="fb-share-on-publish" <?php if ( false === $show_share_on_publish ) : echo 'style="display: none;"'; endif; ?>>
+						<tbody id="fb-share-on-publish" class="ppp-share-on-publish" <?php if ( false === $show_share_on_publish ) : echo 'style="display: none;"'; endif; ?>>
 							<?php
 								$args = array(
 									'text'          => $ppp_share_on_publish_title,
@@ -378,7 +390,7 @@ function ppp_fb_add_metabox_content( $post ) {
 								ppp_render_fb_share_on_publish_row( $args );
 							?>
 						</tbody>
-						<tbody id="fb-schedule-share" <?php if ( true === $show_share_on_publish ) : echo 'style="display: none;"'; endif; ?>>
+						<tbody id="fb-schedule-share" class="ppp-schedule-share" <?php if ( true === $show_share_on_publish ) : echo 'style="display: none;"'; endif; ?>>
 							<?php $shares = get_post_meta( $post->ID, '_ppp_fb_shares', true ); ?>
 							<?php if ( ! empty( $shares ) ) : ?>
 
@@ -408,7 +420,6 @@ function ppp_fb_add_metabox_content( $post ) {
 			</div><!--end #edd_variable_price_fields-->
 
 			<p><?php _e( 'Do not include links in your text, this will be added automatically.', 'ppp-txt' ); ?></p>
-			<p style="display: none;" id="ppp-show-conflict-warning"><?php printf( __( 'Items highlighted in red have a time assigned that is within %d minutes of an already scheduled Facebook share', 'ppp-txt' ), floor( ppp_get_default_conflict_window() / 60 ) ); ?></p>
 		</div>
 		<?php _e( 'Note: If no image is chosen, and the post has a featured image, the Featured image will be attached to this share', 'ppp-txt' ); ?>
 	</p>
@@ -420,9 +431,9 @@ function ppp_render_fb_share_on_publish_row( $args = array() ) {
 	global $post;
 	$readonly = $post->post_status !== 'publish' ? '' : 'readonly="readonly" ';
 	?>
-	<tr class="ppp-fb-wrapper ppp-repeatable-row">
-		<td colspan="2">
-			<em><?php _e( 'On Publish', 'ppp-txt' ); ?></em>
+	<tr class="ppp-fb-wrapper ppp-repeatable-row on-publish-row">
+		<td colspan="2" class="ppp-on-plublish-date-column">
+			<?php _e( 'Share On Publish', 'ppp-txt' ); ?>
 		</td>
 
 		<td>
@@ -457,7 +468,7 @@ function ppp_render_fb_share_row( $key, $args = array(), $post_id ) {
 	$no_date        = ! empty( $readonly ) ? ' hasDatepicker' : '';
 	$hide           = ! empty( $readonly ) ? 'display: none;' : '';
 	?>
-	<tr class="ppp-fb-wrapper ppp-repeatable-row" data-key="<?php echo esc_attr( $key ); ?>">
+	<tr class="ppp-fb-wrapper ppp-repeatable-row ppp-repeatable-facebook scheduled-row" data-key="<?php echo esc_attr( $key ); ?>">
 		<td>
 			<input <?php echo $readonly; ?>type="text" class="share-date-selector<?php echo $no_date; ?>" name="_ppp_fb_shares[<?php echo $key; ?>][date]" placeholder="mm/dd/yyyy" value="<?php echo $args['date']; ?>" />
 		</td>
@@ -485,7 +496,7 @@ function ppp_render_fb_share_row( $key, $args = array(), $post_id ) {
 		</td>
 
 		<td>
-			<a href="#" class="ppp-repeatable-row ppp-remove-repeatable" data-type="tweet" style="background: url(<?php echo admin_url('/images/xit.gif'); ?>) no-repeat;<?php echo $hide; ?>">&times;</a>
+			<a href="#" class="ppp-repeatable-row ppp-remove-repeatable" data-type="facebook" style="background: url(<?php echo admin_url('/images/xit.gif'); ?>) no-repeat;<?php echo $hide; ?>">&times;</a>
 		</td>
 
 	</tr>
@@ -509,9 +520,9 @@ function ppp_fb_save_post_meta_boxes( $post_id, $post ) {
 	$ppp_share_on_publish_image_url     = ( isset( $_REQUEST['_ppp_fb_share_on_publish_image_url'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish_image_url'] : '';
 	$ppp_share_on_publish_attachment_id = ( isset( $_REQUEST['_ppp_fb_share_on_publish_attachment_id'] ) ) ? $_REQUEST['_ppp_fb_share_on_publish_attachment_id'] : '';
 
-	update_post_meta( $post_id, '_ppp_fb_share_on_publish', $ppp_fb_share_on_publish );
-	update_post_meta( $post_id, '_ppp_fb_share_on_publish_title', $ppp_share_on_publish_title );
-	update_post_meta( $post_id, '_ppp_fb_share_on_publish_image_url', $ppp_share_on_publish_image_url );
+	update_post_meta( $post_id, '_ppp_fb_share_on_publish',               $ppp_fb_share_on_publish );
+	update_post_meta( $post_id, '_ppp_fb_share_on_publish_title',         $ppp_share_on_publish_title );
+	update_post_meta( $post_id, '_ppp_fb_share_on_publish_image_url',     $ppp_share_on_publish_image_url );
 	update_post_meta( $post_id, '_ppp_fb_share_on_publish_attachment_id', $ppp_share_on_publish_attachment_id );
 
 	$fb_data = ( isset( $_REQUEST['_ppp_fb_shares'] ) ) ? $_REQUEST['_ppp_fb_shares'] : array();
@@ -597,9 +608,9 @@ function ppp_fb_generate_timestamps( $times, $post_id ) {
 		}
 
 		$share_time = explode( ':', $data['time'] );
-		$hours = (int) $share_time[0];
-		$minutes = (int) substr( $share_time[1], 0, 2 );
-		$ampm = strtolower( substr( $share_time[1], -2 ) );
+		$hours      = (int) $share_time[0];
+		$minutes    = (int) substr( $share_time[1], 0, 2 );
+		$ampm       = strtolower( substr( $share_time[1], -2 ) );
 
 		if ( $ampm == 'pm' && $hours != 12 ) {
 			$hours = $hours + 12;

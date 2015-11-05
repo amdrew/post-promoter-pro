@@ -67,23 +67,8 @@ function ppp_share_post( $post_id, $name ) {
 	$name_parts = explode( '_', $name );
 	$index      = $name_parts[1];
 	$service    = isset( $name_parts[3] ) ? $name_parts[3] : 'tw';
-	$builder    = 'ppp_' . $service . '_build_share_message';
 
-	$post_meta     = apply_filters( 'ppp_get_scheduled_items_' . $service, array(), $post_id );
-	$this_share    = $post_meta[ $name_parts[1] ];
-	$attachment_id = isset( $this_share['attachment_id'] ) ? $this_share['attachment_id'] : false;
-
-	$share_message = $builder( $post_id, $name );
-
-	if ( empty( $attachment_id ) && ! empty( $this_share['image'] ) ) {
-		$media = $this_share['image'];
-	} else {
-		$check_media_function = 'ppp_' . $service . '_use_media';
-		$use_media = $check_media_function( $post_id, $name_parts[1] );
-		$media     = ppp_post_has_media( $post_id, $service, $use_media, $attachment_id );
-	}
-
-	do_action( 'ppp_share_scheduled_' . $service, $share_message, $post_id, $media, $name );
+	do_action( 'ppp_share_scheduled_' . $service, $post_id, $index, $name );
 
 }
 
