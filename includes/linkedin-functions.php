@@ -630,7 +630,7 @@ function ppp_li_use_media( $post_id, $index ) {
 		return false;
 	}
 
-	true; // Always include an image for facebook, even if it's a fallback to the featured image
+	return true; // Always include an image for facebook, even if it's a fallback to the featured image
 }
 
 function ppp_li_build_share_message( $post_id, $name, $scheduled = true ) {
