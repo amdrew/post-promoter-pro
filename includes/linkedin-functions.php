@@ -194,6 +194,11 @@ function ppp_linkedin_refresh_notice() {
 		return;
 	}
 
+	$has_dismissed = get_transient( 'ppp-dismiss-refresh-li' . get_current_user_id() );
+	if ( false !== $has_dismissed ) {
+		return;
+	}
+
 	global $ppp_linkedin_oauth, $ppp_social_settings;
 
 	// Look for the tokens coming back
@@ -205,7 +210,7 @@ function ppp_linkedin_refresh_notice() {
 
 	$days_left = absint( round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 	?>
-	<div class="update-nag">
+	<div class="notice notice-warning is-dismissible" data-service="li">
 		<?php if ( $days_left > 0 ): ?>
 			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your LinkedIn authentication expires in within %d days. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
 		<?php elseif ( $days_left < 1 ): ?>
@@ -214,6 +219,24 @@ function ppp_linkedin_refresh_notice() {
 	</div>
 	<?php
 }
+
+/**
+ * Allow dismissing of the admin notices on a user level
+ *
+ * @since  2.3
+ * @return void
+ */
+function ppp_li_dismiss_notice() {
+
+	$nag = sanitize_key( $_POST[ 'nag' ] );
+
+	if ( $nag === $_POST[ 'nag' ] ) {
+		set_transient( $nag . get_current_user_id(), true, DAY_IN_SECONDS );
+	}
+
+
+}
+add_action( 'wp_ajax_ppp_dismiss_notice-li', 'ppp_li_dismiss_notice' );
 
 /**
  * Define the linkedin tokens as constants
