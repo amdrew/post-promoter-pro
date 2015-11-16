@@ -61,7 +61,7 @@ class PPP_Dashboard_Shares {
 					$content = preg_replace( $regex, '', $content );
 					?>
 					<li>
-						<span class="meta"><?php echo date_i18n( 'M jS, ' . get_option( 'time_format' ), $date ); ?></span>
+						<span class="meta"><i class="dashicons icon-ppp-<?php echo $service; ?>"></i>&nbsp;<?php echo date_i18n( 'M jS, ' . get_option( 'time_format' ), $date ); ?></span>
 						<a href="<?php echo admin_url( 'post.php?post=' . $post_id . '&action=edit' ); ?>"><?php echo $content; ?></a>
 					</li>
 				<?php } ?>

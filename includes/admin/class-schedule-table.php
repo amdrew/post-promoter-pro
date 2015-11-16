@@ -135,12 +135,12 @@ class PPP_Schedule_Table extends WP_List_Table {
 			$image_url  = '';
 
 			if ( ! empty( $post_meta[$index]['attachment_id'] ) ) {
-				$image_url = ppp_post_has_media( $ppp_data['args'][0], $service, true, $post_meta[$index]['attachment_id'] );
-			} elseif ( ! empty( $post_meta[$index]['image'] ) ) {
-				$image_url = $post_meta[$index]['image'];
+				$image_url = ppp_post_has_media( $ppp_data['args'][0], $service, true, $post_meta[ $index ]['attachment_id'] );
+			} elseif ( ! empty( $post_meta[ $index ]['image'] ) ) {
+				$image_url = $post_meta[ $index ]['image'];
 			}
 
-			$conflict   = $cron_tally[$timestamp] > 1 ? true : false;
+			$conflict   = $cron_tally[ $timestamp ] > 1 ? true : false;
 
 			$data[ $key ] = array(
 				'post_id'      => $ppp_data['args'][0],
@@ -156,6 +156,8 @@ class PPP_Schedule_Table extends WP_List_Table {
 			if ( ! empty( $image_url ) ) {
 				$data[ $key ]['image_url'] = $image_url;
 			}
+
+			var_dump($data[ $key ] );
 
 		}
 

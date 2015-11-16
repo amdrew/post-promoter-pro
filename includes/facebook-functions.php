@@ -261,6 +261,15 @@ function ppp_fb_share( $link, $message, $picture ) {
 	return $ppp_facebook_oauth->ppp_fb_share_link( $link, ppp_entities_and_slashes( $message ), $picture );
 }
 
+/**
+ * Send out a scheduled share to Facebook
+ *
+ * @since  2.3
+ * @param  integer $post_id The Post ID to share fore
+ * @param  integer $index   The index in the shares
+ * @param  string  $name    The name of the Cron
+ * @return void
+ */
 function ppp_fb_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 	global $ppp_options;
 
@@ -288,6 +297,14 @@ function ppp_fb_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 }
 add_action( 'ppp_share_scheduled_fb', 'ppp_fb_scheduled_share', 10, 3 );
 
+/**
+ * Returns the stored Facebook data for a post
+ *
+ * @since  2.3
+ * @param  array $post_meta Array of meta data (empty)
+ * @param  int   $post_id   The Post ID to get the meta for
+ * @return array            The stored Facebook shares for a post
+ */
 function ppp_fb_get_post_meta( $post_meta, $post_id ) {
 	return get_post_meta( $post_id, '_ppp_fb_shares', true );
 }
@@ -429,6 +446,13 @@ function ppp_fb_add_metabox_content( $post ) {
 }
 add_action( 'ppp_generate_metabox_content-fb', 'ppp_fb_add_metabox_content', 10, 1 );
 
+/**
+ * Render the Facebook share on publish row
+ *
+ * @since  2.3
+ * @param  array  $args Contains share on publish data, if there is any
+ * @return void
+ */
 function ppp_render_fb_share_on_publish_row( $args = array() ) {
 	global $post;
 	$readonly = $post->post_status !== 'publish' ? '' : 'readonly="readonly" ';
@@ -462,6 +486,15 @@ function ppp_render_fb_share_on_publish_row( $args = array() ) {
 <?php
 }
 
+/**
+ * Render the scheduled share row for Facebook
+ *
+ * @since  2.3
+ * @param  int $key        The key in the array
+ * @param  array  $args    Arguements for the current post's share data
+ * @param  int    $post_id The post ID being edited
+ * @return void
+ */
 function ppp_render_fb_share_row( $key, $args = array(), $post_id ) {
 	global $post;
 
@@ -597,6 +630,14 @@ function ppp_fb_share_on_publish( $new_status, $old_status, $post ) {
 }
 add_action( 'ppp_share_on_publish', 'ppp_fb_share_on_publish', 10, 3 );
 
+/**
+ * Generate the timestamps and names for the scheduled Facebook shares
+ *
+ * @since  2.3
+ * @param  array $times   The times to save
+ * @param  int   $post_id The Post ID of the item being saved
+ * @return array          Array of timestamps and cron names
+ */
 function ppp_fb_generate_timestamps( $times, $post_id ) {
 	// Make the timestamp in the users' timezone, b/c that makes more sense
 	$offset = (int) -( get_option( 'gmt_offset' ) );
@@ -640,18 +681,45 @@ function ppp_fb_generate_timestamps( $times, $post_id ) {
 }
 add_filter( 'ppp_get_timestamps', 'ppp_fb_generate_timestamps', 10, 2 );
 
+/**
+ * Build the text for the Facebook share
+ *
+ * @since  2.3
+ * @param  int     $post_id   The Post ID
+ * @param  string  $name      The cron name
+ * @param  boolean $scheduled If the item is being fired by a schedule (default, true), or retrieved for display (false)
+ * @return string             The message to share
+ */
 function ppp_fb_build_share_message( $post_id, $name, $scheduled = true ) {
 	$share_content = ppp_fb_generate_share_content( $post_id, $name );
 
 	return apply_filters( 'ppp_fb_build_share_message', $share_content );
 }
 
+/**
+ * Build the link for the Facebook Share
+ *
+ * @since  2.3
+ * @param  int     $post_id   The post ID being shared
+ * @param  string  $name      The cron name
+ * @param  boolean $scheduled If the item is being fired by a schedule (default, true), or retrieved for display (false)
+ * @return string             The formatted link to the post
+ */
 function ppp_fb_build_share_link( $post_id, $name, $scheduled = true ) {
 	$share_link = ppp_generate_link( $post_id, $name, $scheduled );
 
 	return $share_link;
 }
 
+/**
+ * The worker function for ppp_fb_build_share_message
+ *
+ * @since  2.3
+ * @param  int     $post_id      Post ID
+ * @param  string  $name         The cron name
+ * @param  boolean $scheduled    If the item is being fired by a schedule (default, true), or retrieved for display (false)
+ * @return string                The formatted link to the post
+ */
 function ppp_fb_generate_share_content( $post_id, $name, $is_scheduled = true ) {
 	global $ppp_options;
 	$default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : '';

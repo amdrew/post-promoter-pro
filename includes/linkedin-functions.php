@@ -307,6 +307,19 @@ function ppp_li_register_metabox_content( $content ) {
 add_filter( 'ppp_metabox_content', 'ppp_li_register_metabox_content', 10, 1 );
 
 /**
+ * Returns the stored LinkedIn data for a post
+ *
+ * @since  2.3
+ * @param  array $post_meta Array of meta data (empty)
+ * @param  int   $post_id   The Post ID to get the meta for
+ * @return array            The stored LinkedIn shares for a post
+ */
+function ppp_li_get_post_meta( $post_meta, $post_id ) {
+	return get_post_meta( $post_id, '_ppp_li_shares', true );
+}
+add_filter( 'ppp_get_scheduled_items_li', 'ppp_li_get_post_meta', 10, 2 );
+
+/**
  * Registers the thumbnail size for LinkedIn
  * @return void
  */
@@ -410,6 +423,13 @@ function ppp_li_add_metabox_content( $post ) {
 }
 add_action( 'ppp_generate_metabox_content-li', 'ppp_li_add_metabox_content', 10, 1 );
 
+/**
+ * Render the LinkedIn share on publish row
+ *
+ * @since  2.3
+ * @param  array  $args Contains share on publish data, if there is any
+ * @return void
+ */
 function ppp_render_li_share_on_publish_row( $args = array() ) {
 	global $post;
 	$readonly = $post->post_status !== 'publish' ? '' : 'readonly="readonly" ';
@@ -447,6 +467,15 @@ function ppp_render_li_share_on_publish_row( $args = array() ) {
 <?php
 }
 
+/**
+ * Render the scheduled share row for LinkedIn
+ *
+ * @since  2.3
+ * @param  int $key        The key in the array
+ * @param  array  $args    Arguements for the current post's share data
+ * @param  int    $post_id The post ID being edited
+ * @return void
+ */
 function ppp_render_li_share_row( $key, $args = array() ) {
 	global $post;
 
@@ -593,6 +622,15 @@ function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 }
 add_action( 'ppp_share_on_publish', 'ppp_li_share_on_publish', 10, 3 );
 
+/**
+ * Send out a scheduled share to LinkedIn
+ *
+ * @since  2.3
+ * @param  integer $post_id The Post ID to share fore
+ * @param  integer $index   The index in the shares
+ * @param  string  $name    The name of the Cron
+ * @return void
+ */
 function ppp_li_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 	global $ppp_options;
 
@@ -636,12 +674,30 @@ function ppp_li_use_media( $post_id, $index ) {
 	return true; // Always include an image for facebook, even if it's a fallback to the featured image
 }
 
+/**
+ * Build the text for the LinkedIn share
+ *
+ * @since  2.3
+ * @param  int     $post_id   The Post ID
+ * @param  string  $name      The cron name
+ * @param  boolean $scheduled If the item is being fired by a schedule (default, true), or retrieved for display (false)
+ * @return string             The message to share
+ */
 function ppp_li_build_share_message( $post_id, $name, $scheduled = true ) {
 	$share_content = ppp_li_generate_share_content( $post_id, $name );
 
 	return apply_filters( 'ppp_li_build_share_message', $share_content );
 }
 
+/**
+ * The worker function for ppp_li_build_share_message
+ *
+ * @since  2.3
+ * @param  int     $post_id      Post ID
+ * @param  string  $name         The cron name
+ * @param  boolean $scheduled    If the item is being fired by a schedule (default, true), or retrieved for display (false)
+ * @return string                The formatted link to the post
+ */
 function ppp_li_generate_share_content( $post_id, $name, $is_scheduled = true ) {
 	global $ppp_options;
 	$default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : '';
@@ -662,6 +718,14 @@ function ppp_li_generate_share_content( $post_id, $name, $is_scheduled = true ) 
 	return apply_filters( 'ppp_share_content_li', $share_content, array( 'post_id' => $post_id ) );
 }
 
+/**
+ * Builds out the link description for sharing to LinkedIn
+ *
+ * @since  2.3
+ * @param  int $post_id The Post Id
+ * @param  int $index   The share index
+ * @return string       Link description for the share index of the given post ID
+ */
 function ppp_li_get_share_description( $post_id, $index ) {
 	$description = '';
 	$li_shares   = get_post_meta( $post_id, '_ppp_li_shares', true );
@@ -673,6 +737,14 @@ function ppp_li_get_share_description( $post_id, $index ) {
 	return $description;
 }
 
+/**
+ * Generate the timestamps and names for the scheduled LinkedIn shares
+ *
+ * @since  2.3
+ * @param  array $times   The times to save
+ * @param  int   $post_id The Post ID of the item being saved
+ * @return array          Array of timestamps and cron names
+ */
 function ppp_li_generate_timestamps( $times, $post_id ) {
 	// Make the timestamp in the users' timezone, b/c that makes more sense
 	$offset = (int) -( get_option( 'gmt_offset' ) );

@@ -155,9 +155,18 @@ function ppp_send_tweet( $message, $post_id, $use_media = false, $name = '' ) {
 	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( ppp_entities_and_slashes( $message ), $use_media ) );
 }
 
+/**
+ * Send out a scheduled share to Twitter
+ *
+ * @since  2.3
+ * @param  integer $post_id The Post ID to share fore
+ * @param  integer $index   The index in the shares
+ * @param  string  $name    The name of the Cron
+ * @return void
+ */
 function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
 	global $ppp_options;
-	
+
 	$post_meta     = get_post_meta( $post_id, '_ppp_tweets', true );
 	$this_share    = $post_meta[ $index ];
 	$attachment_id = isset( $this_share['attachment_id'] ) ? $this_share['attachment_id'] : false;
@@ -320,6 +329,19 @@ function ppp_tw_register_metabox_content( $content ) {
 add_filter( 'ppp_metabox_content', 'ppp_tw_register_metabox_content', 10, 1 );
 
 /**
+ * Returns the stored Twitter data for a post
+ *
+ * @since  2.3
+ * @param  array $post_meta Array of meta data (empty)
+ * @param  int   $post_id   The Post ID to get the meta for
+ * @return array            The stored Twitter shares for a post
+ */
+function ppp_tw_get_post_meta( $post_meta, $post_id ) {
+	return get_post_meta( $post_id, '_ppp_tweets', true );
+}
+add_filter( 'ppp_get_scheduled_items_tw', 'ppp_tw_get_post_meta', 10, 2 );
+
+/**
  * Registers the thumbnail size for Twitter
  * @return void
  */
@@ -395,6 +417,12 @@ function ppp_tw_add_metabox_content( $post ) {
 }
 add_action( 'ppp_generate_metabox_content-tw', 'ppp_tw_add_metabox_content', 10, 1 );
 
+/**
+ * Generates the 'share on publish row' of the Twitter Metabox content
+ *
+ * @since  2.3
+ * @return void
+ */
 function ppp_render_tweet_share_on_publish_row() {
 	global $post, $ppp_share_settings;
 	$default_text = !empty( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : __( 'Social Text', 'ppp-txt' );
@@ -436,6 +464,14 @@ function ppp_render_tweet_share_on_publish_row() {
 <?php
 }
 
+/**
+ * Generates the row for a scheduled Tweet in the metabox
+ *
+ * @param  int    $key     The array index
+ * @param  array  $args    Arguements/Data for the specific index
+ * @param  int    $post_id The post ID
+ * @return void
+ */
 function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 	global $post;
 
@@ -565,6 +601,14 @@ function ppp_tw_share_on_publish( $new_status, $old_status, $post ) {
 }
 add_action( 'ppp_share_on_publish', 'ppp_tw_share_on_publish', 10, 3 );
 
+/**
+ * Generate the timestamps and names for the scheduled Twitter shares
+ *
+ * @since  2.3
+ * @param  array $times   The times to save
+ * @param  int   $post_id The Post ID of the item being saved
+ * @return array          Array of timestamps and cron names
+ */
 function ppp_tw_generate_timestamps( $times, $post_id ) {
 	// Make the timestamp in the users' timezone, b/c that makes more sense
 	$offset = (int) -( get_option( 'gmt_offset' ) );
@@ -779,6 +823,8 @@ add_filter( 'user_contactmethods', 'ppp_tw_add_contact_method' );
 
 /**
  * Adds in the Post Promoter Pro Preferences Profile Section
+ *
+ * @since  2.2.7
  * @param  object $user The User object being viewed
  * @return void         Displays HTML
  */
@@ -849,6 +895,8 @@ add_action( 'edit_user_profile', 'ppp_tw_profile_settings' );
 
 /**
  * Saves the User Profile Settings
+ *
+ * @since  2.2.7
  * @param  int $user_id The User ID being saved
  * @return void         Saves to Usermeta
  */
