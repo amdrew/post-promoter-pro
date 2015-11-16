@@ -372,4 +372,26 @@ var tweetLengthImageRed    = 94;
 		}, 200, function() {});
 	});
 
+	// Save dismiss state
+	$( '.notice.is-dismissible' ).on('click', '.notice-dismiss', function ( event ) {
+		event.preventDefault();
+		var $this   = $(this);
+		var service = $this.parent().data( 'service' );
+
+		if( ! service ){
+			return;
+		}
+
+		var data = {
+			action: 'ppp_dismiss_notice-' + service,
+			url: ajaxurl,
+			nag: 'ppp-dismiss-refresh-' + service,
+		}
+
+		$.post(ajaxurl, data, function(response) {});
+
+
+
+	});
+
 })(jQuery);
