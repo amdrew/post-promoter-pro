@@ -37,6 +37,7 @@ function ppp_schedule_share( $post_id, $post ) {
 		$timestamps = ppp_get_timestamps( $post_id );
 
 		foreach ( $timestamps as $timestamp => $name ) {
+			$timestamp = substr( $timestamp, 0, strlen( $timestamp ) - 3 );
 			wp_schedule_single_event( $timestamp, 'ppp_share_post_event', array( $post_id, $name ) );
 		}
 	}

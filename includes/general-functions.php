@@ -175,3 +175,62 @@ function ppp_get_upload_path() {
 	$wp_upload_dir = wp_upload_dir();
 	return $wp_upload_dir['basedir'] . '/ppp';
 }
+
+/**
+ * Get's the array of completed upgrade actions
+ *
+ * @since  2.3
+ * @return array The array of completed upgrades
+ */
+function ppp_get_completed_upgrades() {
+
+	$completed_upgrades = get_option( 'ppp_completed_upgrades' );
+
+	if ( false === $completed_upgrades ) {
+		$completed_upgrades = array();
+	}
+
+	return $completed_upgrades;
+
+}
+
+/**
+ * Check if the upgrade routine has been run for a specific action
+ *
+ * @since  2.3
+ * @param  string $upgrade_action The upgrade action to check completion for
+ * @return bool                   If the action has been added to the copmleted actions array
+ */
+function ppp_has_upgrade_completed( $upgrade_action = '' ) {
+
+	if ( empty( $upgrade_action ) ) {
+		return false;
+	}
+
+	$completed_upgrades = ppp_get_completed_upgrades();
+
+	return in_array( $upgrade_action, $completed_upgrades );
+
+}
+
+/**
+ * Adds an upgrade action to the completed upgrades array
+ *
+ * @since  2.3
+ * @param  string $upgrade_action The action to add to the copmleted upgrades array
+ * @return bool                   If the function was successfully added
+ */
+function ppp_set_upgrade_complete( $upgrade_action = '' ) {
+
+	if ( empty( $upgrade_action ) ) {
+		return false;
+	}
+
+	$completed_upgrades   = ppp_get_completed_upgrades();
+	$completed_upgrades[] = $upgrade_action;
+
+	// Remove any blanks, and only show uniques
+	$completed_upgrades = array_unique( array_values( $completed_upgrades ) );
+
+	return update_option( 'ppp_completed_upgrades', $completed_upgrades );
+}

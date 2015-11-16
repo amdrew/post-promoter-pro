@@ -149,11 +149,56 @@ add_action( 'ppp_disconnect-twitter', 'ppp_disconnect_twitter', 10 );
  * @param  string $message The Text to share as the body of the tweet
  * @return object          The Results from the Twitter API
  */
-function ppp_send_tweet( $message, $post_id, $use_media = false ) {
+function ppp_send_tweet( $message, $post_id, $use_media = false, $name = '' ) {
 	global $ppp_twitter_oauth;
 
 	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( ppp_entities_and_slashes( $message ), $use_media ) );
 }
+
+/**
+ * Send out a scheduled share to Twitter
+ *
+ * @since  2.3
+ * @param  integer $post_id The Post ID to share fore
+ * @param  integer $index   The index in the shares
+ * @param  string  $name    The name of the Cron
+ * @return void
+ */
+function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
+	global $ppp_options;
+
+	$post_meta     = get_post_meta( $post_id, '_ppp_tweets', true );
+	$this_share    = $post_meta[ $index ];
+	$attachment_id = isset( $this_share['attachment_id'] ) ? $this_share['attachment_id'] : false;
+
+	$share_message = ppp_tw_build_share_message( $post_id, $name );
+
+	if ( empty( $attachment_id ) && ! empty( $this_share['image'] ) ) {
+		$media = $this_share['image'];
+	} else {
+		$use_media = ppp_tw_use_media( $post_id, $index );
+		$media     = ppp_post_has_media( $post_id, 'tw', $use_media, $attachment_id );
+	}
+
+	$status['twitter'] = ppp_send_tweet( $share_message, $post_id, $media );
+
+	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
+		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
+	}
+
+	if ( ! empty( $status['twitter']->id_str ) ) {
+		$post      = get_post( $post_id );
+		$author_id = $post->post_author;
+		$author_rt = get_user_meta( $author_id, '_ppp_share_scheduled', true );
+
+		if ( $author_rt ) {
+			$twitter_user = new PPP_Twitter_User( $author_id );
+			$twitter_user->retweet( $status['twitter']->id_str );
+		}
+
+	}
+}
+add_action( 'ppp_share_scheduled_tw', 'ppp_tw_scheduled_share', 10, 3 );
 
 /**
  * Combines the results from ppp_generate_share_content and ppp_generate_link into a single string
@@ -284,6 +329,19 @@ function ppp_tw_register_metabox_content( $content ) {
 add_filter( 'ppp_metabox_content', 'ppp_tw_register_metabox_content', 10, 1 );
 
 /**
+ * Returns the stored Twitter data for a post
+ *
+ * @since  2.3
+ * @param  array $post_meta Array of meta data (empty)
+ * @param  int   $post_id   The Post ID to get the meta for
+ * @return array            The stored Twitter shares for a post
+ */
+function ppp_tw_get_post_meta( $post_meta, $post_id ) {
+	return get_post_meta( $post_id, '_ppp_tweets', true );
+}
+add_filter( 'ppp_get_scheduled_items_tw', 'ppp_tw_get_post_meta', 10, 2 );
+
+/**
  * Registers the thumbnail size for Twitter
  * @return void
  */
@@ -299,47 +357,11 @@ add_action( 'ppp_add_image_sizes', 'ppp_tw_register_thumbnail_size' );
  */
 function ppp_tw_add_metabox_content( $post ) {
 	global $ppp_options, $ppp_share_settings;
-	$default_text = !empty( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : __( 'Social Text', 'ppp-txt' );
-
-	$ppp_post_exclude = get_post_meta( $post->ID, '_ppp_post_exclude', true );
-
-	$ppp_share_on_publish  = get_post_meta( $post->ID, '_ppp_share_on_publish', true );
-	$show_share_on_publish = false;
-
-	$share_by_default      = empty( $ppp_share_settings['twitter']['share_on_publish'] ) ? false : true;
-
-	if ( $ppp_share_on_publish == '1' || ( $ppp_share_on_publish == '' && $share_by_default ) ) {
-		$show_share_on_publish = true;
-	}
-	$ppp_share_on_publish_text = get_post_meta( $post->ID, '_ppp_share_on_publish_text', true );
-	$ppp_share_on_publish_include_image = get_post_meta( $post->ID, '_ppp_share_on_publish_include_image', true );
 	?>
 		<p>
-			<p>
-			<?php $disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false; ?>
-			<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_share_on_publish" id="ppp_share_on_publish" value="1" <?php checked( true, $show_share_on_publish, true ); ?> />&nbsp;
-				<label for="ppp_share_on_publish"><?php _e( 'Tweet this post at the time of publishing?', 'ppp-txt' ); ?></label>
-				<p class="ppp_share_on_publish_text"<?php if ( false === $show_share_on_publish ) : ?> style="display: none;"<?php endif; ?>>
-						<input
-						<?php if ( $disabled ): ?>readonly<?php endif; ?>
-						class="ppp-share-text"
-						type="text"
-						placeholder="<?php echo esc_attr( $default_text ); ?>"
-						name="_ppp_share_on_publish_text"
-						<?php if ( isset( $ppp_share_on_publish_text ) ) {?>value="<?php echo esc_attr( $ppp_share_on_publish_text ); ?>"<?php ;}?>
-						<?php $length = ! empty($ppp_share_on_publish_text ) ? strlen( $ppp_share_on_publish_text ) : 0; ?>
-					/>&nbsp;<span class="ppp-text-length"><?php echo $length; ?></span>
-					<br />
-					<span>
-						<input class="ppp-tw-featured-image-input" <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
-						&nbsp;<label for="ppp-share-on-publish-image"><?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?></label>
-					</span>
-				</p>
-			</p>
 			<div class="ppp-post-override-wrap">
-				<p><h3><?php _e( 'Scheduled Tweets', 'ppp-txt' ); ?></h3></p>
+				<p><h3><?php _e( 'Share on Twitter', 'ppp-txt' ); ?></h3></p>
 				<div id="ppp-tweet-fields" class="ppp-tweet-fields">
-					<input type="hidden" id="edd-variable-prices" class="edd-variable-prices-name-field" value=""/>
 					<div id="ppp-tweet-fields" class="ppp-meta-table-wrap">
 						<table class="widefat ppp-repeatable-table" width="100%" cellpadding="0" cellspacing="0">
 							<thead>
@@ -352,6 +374,7 @@ function ppp_tw_add_metabox_content( $post ) {
 								</tr>
 							</thead>
 							<tbody>
+								<?php ppp_render_tweet_share_on_publish_row(); ?>
 								<?php $tweets = get_post_meta( $post->ID, '_ppp_tweets', true ); ?>
 								<?php if ( ! empty( $tweets ) ) : ?>
 
@@ -394,6 +417,61 @@ function ppp_tw_add_metabox_content( $post ) {
 }
 add_action( 'ppp_generate_metabox_content-tw', 'ppp_tw_add_metabox_content', 10, 1 );
 
+/**
+ * Generates the 'share on publish row' of the Twitter Metabox content
+ *
+ * @since  2.3
+ * @return void
+ */
+function ppp_render_tweet_share_on_publish_row() {
+	global $post, $ppp_share_settings;
+	$default_text = !empty( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : __( 'Social Text', 'ppp-txt' );
+
+	$ppp_post_exclude = get_post_meta( $post->ID, '_ppp_post_exclude', true );
+
+	$ppp_share_on_publish  = get_post_meta( $post->ID, '_ppp_share_on_publish', true );
+	$show_share_on_publish = false;
+
+	$share_by_default      = empty( $ppp_share_settings['twitter']['share_on_publish'] ) ? false : true;
+
+	if ( $ppp_share_on_publish == '1' || ( $ppp_share_on_publish == '' && $share_by_default ) ) {
+		$show_share_on_publish = true;
+	}
+
+	$ppp_share_on_publish_text          = get_post_meta( $post->ID, '_ppp_share_on_publish_text', true );
+	$ppp_share_on_publish_include_image = get_post_meta( $post->ID, '_ppp_share_on_publish_include_image', true );
+
+	$disabled = ( $post->post_status === 'publish' && time() > strtotime( $post->post_date ) ) ? true : false;
+	?>
+	<tr class="ppp-tweet-wrapper ppp-repeatable-row on-publish-row">
+		<td colspan="2" class="ppp-on-plublish-date-column">
+			<input <?php if ( $disabled ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_share_on_publish" id="ppp_share_on_publish" value="1" <?php checked( true, $show_share_on_publish, true ); ?> />
+			&nbsp;<label for="ppp_share_on_publish"><?php _e( 'Tweet On Publish', 'ppp-txt' ); ?></label>
+		</td>
+
+		<td>
+			<input <?php if ( $disabled ): ?>readonly<?php endif; ?> class="ppp-tweet-text-repeatable" type="text" name="_ppp_share_on_publish_text" value="<?php echo esc_attr( $ppp_share_on_publish_text ); ?>" />
+			<?php $length = ! empty( $args['text'] ) ? strlen( $args['text'] ) : 0; ?>
+			&nbsp;<span class="ppp-text-length"><?php echo $length; ?></span>
+		</td>
+
+		<td style="width: 200px" colspan="2">
+			<input class="ppp-tw-featured-image-input" <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
+			&nbsp;<label for="ppp-share-on-publish-image"><?php _e( 'Featured Image', 'ppp-txt' ); ?></label>
+		</td>
+
+	</tr>
+<?php
+}
+
+/**
+ * Generates the row for a scheduled Tweet in the metabox
+ *
+ * @param  int    $key     The array index
+ * @param  array  $args    Arguements/Data for the specific index
+ * @param  int    $post_id The post ID
+ * @return void
+ */
 function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 	global $post;
 
@@ -402,7 +480,7 @@ function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 	$no_date        = ! empty( $readonly ) ? ' hasDatepicker' : '';
 	$hide           = ! empty( $readonly ) ? 'display: none;' : '';
 	?>
-	<tr class="ppp-tweet-wrapper ppp-repeatable-row" data-key="<?php echo esc_attr( $key ); ?>">
+	<tr class="ppp-tweet-wrapper ppp-repeatable-row ppp-repeatable-twitter scheduled-row" data-key="<?php echo esc_attr( $key ); ?>">
 		<td>
 			<input <?php echo $readonly; ?>type="text" class="share-date-selector<?php echo $no_date; ?>" name="_ppp_tweets[<?php echo $key; ?>][date]" placeholder="mm/dd/yyyy" value="<?php echo $args['date']; ?>" />
 		</td>
@@ -432,7 +510,7 @@ function ppp_render_tweet_row( $key, $args = array(), $post_id ) {
 		</td>
 
 		<td>
-			<a href="#" class="ppp-repeatable-row ppp-remove-repeatable" data-type="tweet" style="background: url(<?php echo admin_url('/images/xit.gif'); ?>) no-repeat;<?php echo $hide; ?>">&times;</a>
+			<a href="#" class="ppp-repeatable-row ppp-remove-repeatable" data-type="twitter" style="background: url(<?php echo admin_url('/images/xit.gif'); ?>) no-repeat;<?php echo $hide; ?>">&times;</a>
 		</td>
 
 	</tr>
@@ -522,6 +600,57 @@ function ppp_tw_share_on_publish( $new_status, $old_status, $post ) {
 	}
 }
 add_action( 'ppp_share_on_publish', 'ppp_tw_share_on_publish', 10, 3 );
+
+/**
+ * Generate the timestamps and names for the scheduled Twitter shares
+ *
+ * @since  2.3
+ * @param  array $times   The times to save
+ * @param  int   $post_id The Post ID of the item being saved
+ * @return array          Array of timestamps and cron names
+ */
+function ppp_tw_generate_timestamps( $times, $post_id ) {
+	// Make the timestamp in the users' timezone, b/c that makes more sense
+	$offset = (int) -( get_option( 'gmt_offset' ) );
+
+	$ppp_tweets = get_post_meta( $post_id, '_ppp_tweets', true );
+
+	if ( empty( $ppp_tweets ) ) {
+		$ppp_tweets = array();
+	}
+
+	foreach ( $ppp_tweets as $key => $data ) {
+		if ( ! array_filter( $data ) ) {
+			continue;
+		}
+
+		$share_time = explode( ':', $data['time'] );
+		$hours = (int) $share_time[0];
+		$minutes = (int) substr( $share_time[1], 0, 2 );
+		$ampm = strtolower( substr( $share_time[1], -2 ) );
+
+		if ( $ampm == 'pm' && $hours != 12 ) {
+			$hours = $hours + 12;
+		}
+
+		if ( $ampm == 'am' && $hours == 12 ) {
+			$hours = 00;
+		}
+
+		$hours     = $hours + $offset;
+		$date      = explode( '/', $data['date'] );
+		$timestamp = mktime( $hours, $minutes, 0, $date[0], $date[1], $date[2] );
+
+		if ( $timestamp > current_time( 'timestamp', 1 ) ) { // Make sure the timestamp we're getting is in the future
+			$time_key           = strtotime( date_i18n( 'd-m-Y H:i:s', $timestamp , true ) ) . '_tw';
+			$times[ $time_key ] = 'sharedate_' . $key . '_' . $post_id . '_tw';
+		}
+
+	}
+
+	return $times;
+}
+add_filter( 'ppp_get_timestamps', 'ppp_tw_generate_timestamps', 10, 2 );
 
 /**
  * Unschedule any tweets when the post is unscheduled
@@ -694,6 +823,8 @@ add_filter( 'user_contactmethods', 'ppp_tw_add_contact_method' );
 
 /**
  * Adds in the Post Promoter Pro Preferences Profile Section
+ *
+ * @since  2.2.7
  * @param  object $user The User object being viewed
  * @return void         Displays HTML
  */
@@ -764,6 +895,8 @@ add_action( 'edit_user_profile', 'ppp_tw_profile_settings' );
 
 /**
  * Saves the User Profile Settings
+ *
+ * @since  2.2.7
  * @param  int $user_id The User ID being saved
  * @return void         Saves to Usermeta
  */
