@@ -141,7 +141,8 @@ class PostPromoterPro {
 		if ( 'toplevel_page_ppp-options' != $hook
 			  && 'post-promoter_page_ppp-social-settings' != $hook
 			  && 'post-new.php' != $hook
-			  && 'post.php' != $hook ) {
+			  && 'post.php' != $hook
+			  && 'post-promoter_page_ppp-schedule-info' != $hook ) {
 					return;
 		}
 
@@ -151,9 +152,21 @@ class PostPromoterPro {
 		$jquery_ui_timepicker_path = PPP_URL . 'includes/scripts/libs/jquery-ui-timepicker-addon.js';
 		wp_enqueue_script( 'ppp_timepicker_js', $jquery_ui_timepicker_path , array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
 		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
+
+		if ( 'post-promoter_page_ppp-schedule-info' === $hook ) {
+			wp_register_script( 'momentjs', PPP_URL . 'includes/scripts/libs/moment.min.js', array( 'jquery' ), PPP_VERSION, false );
+			wp_register_script( 'fullcalendar', PPP_URL . 'includes/scripts/libs/fullcalendar/fullcalendar.min.js', array( 'jquery', 'momentjs' ), PPP_VERSION, false );
+
+			wp_enqueue_script( 'fullcalendar' );
+		}
 	}
 
 	public function load_styles( $hook ) {
+		if ( 'post-promoter_page_ppp-schedule-info' === $hook ) {
+			wp_register_style( 'fullcalendar', PPP_URL . 'includes/scripts/libs/fullcalendar/fullcalendar.min.css', false, PPP_VERSION );
+			wp_enqueue_style( 'fullcalendar' );
+		}
+
 		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
 		wp_enqueue_style( 'ppp_admin_css' );
 

@@ -275,26 +275,57 @@ function ppp_display_social() {
 */
 function ppp_display_schedule() {
 	?>
-	<style type="text/css">
-		.wp-list-table .column-day { width: 5%; }
-		.wp-list-table .column-date { width: 20%; }
-		.wp-list-table .column-post_title { width: 25%; }
-		.wp-list-table .column-content { width: 50%; }
-	</style>
-	<?php
-	require_once PPP_PATH . 'includes/admin/class-schedule-table.php';
-	$schedule_table = new PPP_Schedule_Table();
-	$schedule_table->prepare_items();
-	?>
 	<div class="wrap">
+		<?php
+		require_once PPP_PATH . 'includes/admin/class-schedule-table.php';
+		$schedule_table = new PPP_Schedule_Table();
+		$events = $schedule_table->prepare_items();
+
+		$post_types = apply_filters( 'ppp_schedule_post_types', array( 'post' ) );
+		$args  = array( 'm' => date( 'Ym' ), 'post_type' => $post_types );
+		$posts = new WP_Query( $args );
+		?>
+		<script>
+		jQuery( document ).ready( function($) {
+			$('#ppp-schedule-calendar').fullCalendar({
+				theme: true,
+				header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'month,agendaWeek',
+				},
+				eventStartEditable: false,
+				eventDurationEditable: false,
+				events: [
+				<?php foreach ( $events as $key => $event ) : ?>
+					{
+						id:    "<?php echo $key; ?>",
+						title: "<?php echo $event['post_title']; ?>",
+						start: "<?php echo date_i18n( 'Y-m-d/TH:i:s', $event['date'] ); ?>",
+						end:   "<?php echo date_i18n( 'Y-m-d/TH:i:s', $event['date'] ); ?>",
+						className: "ppp-calendar-item-<?php echo $event['service']; ?>",
+					},
+				<?php endforeach; ?>
+				<?php if ( $posts->have_posts() ) : ?>
+					<?php while ( $posts->have_posts() ) : ?>
+					<?php $posts->the_post(); ?>
+					{
+						id:    "<?php echo get_the_ID(); ?>",
+						title: "<?php echo get_the_title(); ?>",
+						start: "<?php echo date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date() . ' ' . get_the_time() ) ); ?>",
+						className: "ppp-calendar-item-wp",
+					},
+					<?php endwhile; ?>
+				<?php endif; ?>
+				<?php wp_reset_postdata(); ?>
+				<?php do_action( 'ppp_insert_schedule_events' ); ?>
+				]
+			});
+		});
+		</script>
 		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - Scheduled Shares', 'ppp-txt' ); ?></h1>
-		<?php $schedule_table->display() ?>
+		<div id='ppp-schedule-calendar'></div>
 	</div>
-	<?php if ( ppp_is_shortener_enabled() ): ?>
-	<p>
-		<small><?php _e( 'NOTICE: Schedule view does not show shortened links, they will be shortened at the time of sharing', 'ppp-txt' ); ?></small>
-	</p>
-	<?php endif; ?>
 	<?php
 }
 

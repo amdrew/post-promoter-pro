@@ -157,8 +157,6 @@ class PPP_Schedule_Table extends WP_List_Table {
 				$data[ $key ]['image_url'] = $image_url;
 			}
 
-			var_dump($data[ $key ] );
-
 		}
 
 		$total_items = count( $data );
@@ -176,6 +174,9 @@ class PPP_Schedule_Table extends WP_List_Table {
 			) );
 
 		$this->items = $data;
+
+		return $this->items;
+
 	}
 }
 
