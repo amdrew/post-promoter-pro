@@ -143,29 +143,29 @@ function ppp_display_social() {
 					<td id="ppp-analytics-options">
 						<p>
 							<input id="ppp_no_tracking"
-							       name="ppp_share_settings[analytics]"
-							       type="radio"
-							       value="none"
-							       <?php checked( 'none', $analytics_option, true ); ?>
+								   name="ppp_share_settings[analytics]"
+								   type="radio"
+								   value="none"
+								   <?php checked( 'none', $analytics_option, true ); ?>
 							/>&nbsp<label for="ppp_no_tracking"><?php _e( 'None', 'ppp-txt' ); ?></label>
 						</p>
 						<br />
 						<p>
 							<input id="ppp_unique_links"
-							       name="ppp_share_settings[analytics]"
-							       type="radio"
-							       value="unique_links"
-							       <?php checked( 'unique_links', $analytics_option, true ); ?>
+								   name="ppp_share_settings[analytics]"
+								   type="radio"
+								   value="unique_links"
+								   <?php checked( 'unique_links', $analytics_option, true ); ?>
 							/>&nbsp<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Appends a query string to shared links for analytics.', 'ppp-txt' ); ?></small>
 						</p>
 						<br />
 						<p>
 							<input id="ppp_ga_tags"
-							       name="ppp_share_settings[analytics]"
-							       type="radio"
-							       value="google_analytics"
-							       <?php checked( 'google_analytics', $analytics_option, true ); ?>
+								   name="ppp_share_settings[analytics]"
+								   type="radio"
+								   value="google_analytics"
+								   <?php checked( 'google_analytics', $analytics_option, true ); ?>
 							/>&nbsp<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Results can be seen in the Acquisition Menu under "Campaigns"', 'ppp-txt' ); ?></small>
 						</p>
@@ -225,10 +225,10 @@ function ppp_display_social() {
 					<td id="ppp-twitter-cards-wrapper">
 						<p>
 							<input id="ppp-twitter-cards"
-							       name="ppp_share_settings[twitter][cards_enabled]"
-							       type="checkbox"
-							       value="1"
-							       <?php checked( true, $twitter_cards_enabled, true ); ?>
+								   name="ppp_share_settings[twitter][cards_enabled]"
+								   type="checkbox"
+								   value="1"
+								   <?php checked( true, $twitter_cards_enabled, true ); ?>
 							/>&nbsp<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
 						</p>
 					</td>
@@ -276,55 +276,63 @@ function ppp_display_social() {
 function ppp_display_schedule() {
 	?>
 	<div class="wrap">
-		<?php
-		require_once PPP_PATH . 'includes/admin/class-schedule-table.php';
-		$schedule_table = new PPP_Schedule_Table();
-		$events = $schedule_table->prepare_items();
-
-		$post_types = apply_filters( 'ppp_schedule_post_types', array( 'post' ) );
-		$args  = array( 'm' => date( 'Ym' ), 'post_type' => $post_types );
-		$posts = new WP_Query( $args );
-		?>
 		<script>
 		jQuery( document ).ready( function($) {
 			$('#ppp-schedule-calendar').fullCalendar({
 				theme: true,
 				header: {
-					left: 'prev,next today',
-					center: 'title',
-					right: 'month,agendaWeek',
+					left: '',
+					center: 'prev title next',
+					right: 'today',
 				},
+				eventLimit: 5,
 				eventStartEditable: false,
 				eventDurationEditable: false,
-				events: [
-				<?php foreach ( $events as $key => $event ) : ?>
-					{
-						id:    "<?php echo $key; ?>",
-						title: "<?php echo $event['post_title']; ?>",
-						start: "<?php echo date_i18n( 'Y-m-d/TH:i:s', $event['date'] ); ?>",
-						end:   "<?php echo date_i18n( 'Y-m-d/TH:i:s', $event['date'] ); ?>",
-						className: "ppp-calendar-item-<?php echo $event['service']; ?>",
-					},
-				<?php endforeach; ?>
-				<?php if ( $posts->have_posts() ) : ?>
-					<?php while ( $posts->have_posts() ) : ?>
-					<?php $posts->the_post(); ?>
-					{
-						id:    "<?php echo get_the_ID(); ?>",
-						title: "<?php echo get_the_title(); ?>",
-						start: "<?php echo date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date() . ' ' . get_the_time() ) ); ?>",
-						className: "ppp-calendar-item-wp",
-					},
-					<?php endwhile; ?>
-				<?php endif; ?>
-				<?php wp_reset_postdata(); ?>
-				<?php do_action( 'ppp_insert_schedule_events' ); ?>
-				]
+				viewRender: function ( view, element ) {
+					$('.fc-left').html('<span id="loading_data" class="spinner"></span>');
+					$('#loading_data').css('visibility', 'visible');
+					var data = {
+						'action': 'ppp_get_calendar_events',
+						'start' : view.start._d,
+						'end'   :view.end._d,
+					};
+
+					$.post(ajaxurl, data, function(response) {
+						if ( response.length > 0 ) {
+							$.each( response, function(key, value ) {
+								$('#ppp-schedule-calendar').fullCalendar('renderEvent', value);
+							});
+						}
+						$('#loading_data').css('visibility', 'hidden');
+					}, 'json');
+				},
+				eventMouseover: function(calEvent, jsEvent, view) {
+					var postClass = '.cal-post-' + calEvent.belongsTo;
+					$('.fc-event').not(postClass).css('opacity', '.6');
+					$('.ppp-calendar-item-wp' + postClass).addClass('active-group');
+
+					var tooltip = '<div class="tooltipevent">' + calEvent.title + '</div>';
+					$("body").append(tooltip);
+					$(this).mouseover(function(e) {
+						$(this).css('z-index', 10000);
+						$('.tooltipevent').fadeIn('500');
+						$('.tooltipevent').fadeTo('10', 1.9);
+					}).mousemove(function(e) {
+						$('.tooltipevent').css('top', e.pageY + 10);
+						$('.tooltipevent').css('left', e.pageX + 20);
+					});
+				},
+				eventMouseout: function(calEvent, jsEvent, view) {
+					$('.fc-event').css('opacity', '1');
+					$('.ppp-calendar-item-wp').removeClass('active-group');
+					$(this).css('z-index', 8);
+					$('.tooltipevent').remove();
+				}
 			});
 		});
 		</script>
-		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - Scheduled Shares', 'ppp-txt' ); ?></h1>
-		<div id='ppp-schedule-calendar'></div>
+		<div id="icon-options-general" class="icon32"></div><h1><?php _e( 'Post Promoter Pro - Publishing Schedule', 'ppp-txt' ); ?></h1>
+		<div id="ppp-schedule-calendar"></div>
 	</div>
 	<?php
 }

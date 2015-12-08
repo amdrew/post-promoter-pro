@@ -572,7 +572,7 @@ function ppp_li_save_post_meta_boxes( $post_id, $post ) {
 	update_post_meta( $post_id, '_ppp_li_share_on_publish_image_url',     $ppp_share_on_publish_image_url );
 	update_post_meta( $post_id, '_ppp_li_share_on_publish_attachment_id', $ppp_share_on_publish_attachment_id );
 
-	$li_data = ( isset( $_REQUEST['_ppp_li_shares'] ) ) ? $_REQUEST['_ppp_li_shares'] : array();
+	$li_data = ( isset( $_REQUEST['_ppp_li_shares'] ) && empty( $ppp_li_share_on_publish ) ) ? $_REQUEST['_ppp_li_shares'] : array();
 	foreach ( $li_data as $index => $share ) {
 		$li_data[ $index ]['text'] = sanitize_text_field( $share['text'] );
 		$li_data[ $index ]['desc'] = sanitize_text_field( $share['desc'] );
@@ -810,3 +810,33 @@ function ppp_li_generate_timestamps( $times, $post_id ) {
 	return $times;
 }
 add_filter( 'ppp_get_timestamps', 'ppp_li_generate_timestamps', 10, 2 );
+
+function ppp_li_calendar_on_publish_event( $events, $post_id ) {
+	$share_on_publish = get_post_meta( $post_id, '_ppp_li_share_on_publish', true );
+
+	if ( ! empty( $share_on_publish ) ) {
+		$share_text = get_post_meta( $post_id, '_ppp_li_share_on_publish_title', true );
+		$events[] = array(
+			'id' => $post_id . '-share-on-publish',
+			'title' => ( ! empty( $share_text ) ) ? $share_text : ppp_li_generate_share_content( $post_id, null, false ),
+			'start'     => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date( null, $post_id ) . ' ' . get_the_time( null, $post_id ) ) + 1 ),
+			'end'       => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date( null, $post_id ) . ' ' . get_the_time( null, $post_id ) ) + 1 ),
+			'className' => 'ppp-calendar-item-li cal-post-' . $post_id,
+			'belongsTo' => $post_id,
+		);
+	}
+
+	return $events;
+}
+add_filter( 'ppp_calendar_on_publish_event', 'ppp_li_calendar_on_publish_event', 10, 2 );
+
+function ppp_li_get_post_shares( $items, $post_id ) {
+	$shares = get_post_meta( $post_id, '_ppp_li_shares', true );
+	if ( empty( $shares ) ) { return $items; }
+
+	foreach ( $shares as $key => $share ) {
+		$items[] = array( 'id' => $key, 'service' => 'li' );
+	}
+	return $items;
+}
+add_filter( 'ppp_get_post_scheduled_shares', 'ppp_li_get_post_shares', 10, 2 );

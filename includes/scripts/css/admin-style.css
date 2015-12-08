@@ -246,6 +246,26 @@ a[class*="ppp-calendar-item-"] .fc-time:before {
 	content: "\f120";
 }
 
+.active-group {
+	background-color: #d54e21;
+}
+
+.fc-day-number.fc-today {
+	font-weight: 800;
+	color: #CC6666;
+}
+
+.tooltipevent {
+	max-width: 300px;
+	width: auto;
+	height: auto;
+	background: #ccc;
+	position: absolute;
+	z-index:10001;
+	padding: 5px;
+	word-wrap: break-word;
+}
+
 [class^="icon-ppp-"]:before,
 [class*="icon-ppp-"]:before {
 	font-family: "ppp-dashicon" !important;

@@ -167,14 +167,15 @@ class PostPromoterPro {
 			wp_enqueue_style( 'fullcalendar' );
 		}
 
-		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
-		wp_enqueue_style( 'ppp_admin_css' );
-
 		// List of people who make it impossible to override their jQuery UI as it's in their core CSS...so only
 		// load ours if they don't exist
 		if ( ! wp_style_is( 'ot-admin-css' ) && ! wp_style_is( 'jquery-ui-css' ) ) {
 			wp_enqueue_style( 'jquery-ui-css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/flick/jquery-ui.css' );
 		}
+
+		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
+		wp_enqueue_style( 'ppp_admin_css' );
+
 	}
 
 	/**
