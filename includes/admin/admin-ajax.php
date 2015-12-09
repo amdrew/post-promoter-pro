@@ -38,11 +38,15 @@ function ppp_check_for_schedule_conflict() {
 }
 add_action( 'wp_ajax_ppp_has_schedule_conflict', 'ppp_check_for_schedule_conflict' );
 
+/**
+ * Retrieve calendar data for the provided start and end dates (from fullcalendar)
+ * @return void  Echo's JSON
+ */
 function ppp_get_celendar_events() {
 	$start = $_POST['start'];
 	$end   = $_POST['end'];
 
-	$post_types  = apply_filters( 'ppp_schedule_post_types', array( 'post' ) );
+	$post_types  = apply_filters( 'ppp_schedule_post_types', array( 'post', 'ppp_share' ) );
 	$post_status = apply_filters( 'ppp_schedule_post_status', array( 'publish', 'future' ) );
 	$args  = array(
 		'post_type'      => $post_types,
@@ -61,12 +65,16 @@ function ppp_get_celendar_events() {
 	if ( $posts->have_posts() ) {
 		while ( $posts->have_posts() ) {
 			$posts->the_post();
+			$post_type = get_post_type();
+			$class     = $post_type != 'ppp_share' ? 'ppp-calendar-item-wp' : 'ppp-calendar-item-' . get_post_meta( get_the_ID(), '_wp_log_network', true );
+			$post_id   = $post_type != 'ppp_share' ? get_the_ID() : get_post_field( 'post_parent', get_the_ID() );
+
 			$events[] = array(
 				'id'        => get_the_ID(),
 				'title'     => get_the_title(),
 				'start'     => date_i18n( 'Y-m-d/TH:i:s', strtotime( get_the_date() . ' ' . get_the_time() ) ),
-				'className' => 'ppp-calendar-item-wp cal-post-' . get_the_ID(),
-				'belongsTo' => get_the_ID(),
+				'className' => $class . ' cal-post-' . $post_id,
+				'belongsTo' => $post_id,
 			);
 
 			$events = apply_filters( 'ppp_calendar_on_publish_event', $events, get_the_ID() );

@@ -37,6 +37,7 @@ class PostPromoterPro {
 			include PPP_PATH . '/includes/cron-functions.php';
 			include PPP_PATH . '/includes/filters.php';
 			include PPP_PATH . '/includes/libs/social-loader.php';
+			include PPP_PATH . '/includes/libs/class-wp-logging.php';
 
 			if ( is_admin() ) {
 				include PPP_PATH . '/includes/admin/upgrades.php';
@@ -129,6 +130,7 @@ class PostPromoterPro {
 		add_action( 'save_post', 'ppp_schedule_share', 99, 2);
 		add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
 		add_action( 'init', 'ppp_add_image_sizes' );
+		add_filter( 'wp_log_types', array( $this, 'register_log_type' ), 10, 1 );
 	}
 
 	/**
@@ -204,43 +206,43 @@ class PostPromoterPro {
 	 */
 	public function ppp_setup_admin_menu() {
 		add_menu_page( __( 'Post Promoter', 'ppp-txt' ),
-		               __( 'Post Promoter', 'ppp-txt' ),
-		               apply_filters( 'ppp_manage_role', 'administrator' ),
-		               'ppp-options',
-		               'ppp_admin_page'
-		             );
+					   __( 'Post Promoter', 'ppp-txt' ),
+					   apply_filters( 'ppp_manage_role', 'administrator' ),
+					   'ppp-options',
+					   'ppp_admin_page'
+					 );
 
 		add_submenu_page( 'ppp-options',
-			              __( 'Social Settings', 'ppp-txt' ),
-			              __( 'Social Settings', 'ppp-txt' ),
-			              'manage_options',
-			              'ppp-social-settings',
-			              'ppp_display_social'
-			            );
+						  __( 'Social Settings', 'ppp-txt' ),
+						  __( 'Social Settings', 'ppp-txt' ),
+						  'manage_options',
+						  'ppp-social-settings',
+						  'ppp_display_social'
+						);
 
 		add_submenu_page( 'ppp-options',
-			              __( 'Schedule', 'ppp-txt' ),
-			              __( 'Schedule', 'ppp-txt' ),
-			              'manage_options',
-			              'ppp-schedule-info',
-			              'ppp_display_schedule'
-			            );
+						  __( 'Schedule', 'ppp-txt' ),
+						  __( 'Schedule', 'ppp-txt' ),
+						  'manage_options',
+						  'ppp-schedule-info',
+						  'ppp_display_schedule'
+						);
 
 		add_submenu_page( 'ppp-options',
-			              __( 'System Info', 'ppp-txt' ),
-			              __( 'System Info', 'ppp-txt' ),
-			              'manage_options',
-			              'ppp-system-info',
-			              'ppp_display_sysinfo'
-			            );
+						  __( 'System Info', 'ppp-txt' ),
+						  __( 'System Info', 'ppp-txt' ),
+						  'manage_options',
+						  'ppp-system-info',
+						  'ppp_display_sysinfo'
+						);
 
 		add_submenu_page( null,
-			              __( 'PPP Upgrades', 'ppp-txt' ),
-			              __( 'PPP Upgrades', 'ppp-txt' ),
-			              'manage_options',
-			              'ppp-upgrades',
-			              'ppp_upgrades_screen'
-			            );
+						  __( 'PPP Upgrades', 'ppp-txt' ),
+						  __( 'PPP Upgrades', 'ppp-txt' ),
+						  'manage_options',
+						  'ppp-upgrades',
+						  'ppp_upgrades_screen'
+						);
 
 	}
 
@@ -303,10 +305,10 @@ class PostPromoterPro {
 		<div class="updated">
 			<p>
 				<?php printf(
-			         __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-txt' ),
-			              admin_url( 'admin.php?page=ppp-options' )
-			         );
-			    ?>
+					 __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-txt' ),
+						  admin_url( 'admin.php?page=ppp-options' )
+					 );
+				?>
 			</p>
 		</div>
 		<?php
@@ -365,10 +367,10 @@ class PostPromoterPro {
 		if( isset( $_POST['ppp_license_activate'] ) ) {
 
 			// run a quick security check
-		 	if( ! check_admin_referer( 'ppp_activate_nonce', 'ppp_activate_nonce' ) ) {
-		 		return;
-		 	}
-		 	// get out if we didn't click the Activate button
+			if( ! check_admin_referer( 'ppp_activate_nonce', 'ppp_activate_nonce' ) ) {
+				return;
+			}
+			// get out if we didn't click the Activate button
 
 			// retrieve the license from the database
 			$license = trim( get_option( '_ppp_license_key' ) );
@@ -417,6 +419,12 @@ class PostPromoterPro {
 			do_action( 'ppp_' . $_GET['ppp_action'], $_GET );
 		}
 	}
+
+	public function register_log_type( $log_types ) {
+		$types[] = 'ppp_share';
+		return $types;
+	}
+
 }
 
 function post_promoter_pro() {

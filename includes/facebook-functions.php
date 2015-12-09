@@ -311,12 +311,22 @@ function ppp_fb_scheduled_share(  $post_id = 0, $index = 1, $name = ''  ) {
 		$media     = ppp_post_has_media( $post_id, 'fb', $use_media, $attachment_id );
 	}
 
-	$status['facebook'] = ppp_fb_share( $link, $share_message, $media );
+	$status = ppp_fb_share( $link, $share_message, $media );
 
-	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
-		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
-	}
+	$log_title = ppp_fb_build_share_message( $post_id, $name );
 
+	$log_data = array(
+		'post_title'    => $log_title,
+		'post_content'  =>  json_encode( $status ),
+		'post_parent'   => $post_id,
+		'log_type'      => 'ppp_share'
+	);
+
+	$log_meta = array(
+		'network'   => 'fb',
+	);
+
+	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
 }
 add_action( 'ppp_share_scheduled_fb', 'ppp_fb_scheduled_share', 10, 3 );
 
@@ -645,11 +655,22 @@ function ppp_fb_share_on_publish( $new_status, $old_status, $post ) {
 	$title = apply_filters( 'ppp_share_content', $title, array( 'post_id' => $post->ID ) );
 	$link  = ppp_generate_link( $post->ID, $name, true );
 
-	$status['facebook'] = ppp_fb_share( $link, $title, $thumbnail );
+	$status = ppp_fb_share( $link, $title, $thumbnail );
 
-	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
-		update_post_meta( $post->ID, '_ppp-' . $name . '-status', $status );
-	}
+	$log_title = ppp_fb_build_share_message( $post->ID, $name );
+
+	$log_data = array(
+		'post_title'    => $log_title,
+		'post_content'  =>  json_encode( $status ),
+		'post_parent'   => $post->ID,
+		'log_type'      => 'ppp_share'
+	);
+
+	$log_meta = array(
+		'network'   => 'fb',
+	);
+
+	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
 }
 add_action( 'ppp_share_on_publish', 'ppp_fb_share_on_publish', 10, 3 );
 

@@ -165,7 +165,7 @@ function ppp_send_tweet( $message, $post_id, $use_media = false, $name = '' ) {
  * @return void
  */
 function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
-	global $ppp_options;
+	global $ppp_options, $wp_logs;
 
 	$post_meta     = get_post_meta( $post_id, '_ppp_tweets', true );
 	$this_share    = $post_meta[ $index ];
@@ -180,20 +180,31 @@ function ppp_tw_scheduled_share( $post_id = 0, $index = 1, $name = '' ) {
 		$media     = ppp_post_has_media( $post_id, 'tw', $use_media, $attachment_id );
 	}
 
-	$status['twitter'] = ppp_send_tweet( $share_message, $post_id, $media );
+	$status = ppp_send_tweet( $share_message, $post_id, $media );
 
-	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
-		update_post_meta( $post_id, '_ppp-' . $name . '-status', $status );
-	}
+	$log_title = ppp_tw_build_share_message( $post_id, $name, false, false );
 
-	if ( ! empty( $status['twitter']->id_str ) ) {
+	$log_data = array(
+		'post_title'    => $log_title,
+		'post_content'  =>  json_encode( $status ),
+		'post_parent'   => $post_id,
+		'log_type'      => 'ppp_share'
+	);
+
+	$log_meta = array(
+		'network'   => 'tw',
+	);
+
+	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
+
+	if ( ! empty( $status->id_str ) ) {
 		$post      = get_post( $post_id );
 		$author_id = $post->post_author;
 		$author_rt = get_user_meta( $author_id, '_ppp_share_scheduled', true );
 
 		if ( $author_rt ) {
 			$twitter_user = new PPP_Twitter_User( $author_id );
-			$twitter_user->retweet( $status['twitter']->id_str );
+			$twitter_user->retweet( $status->id_str );
 		}
 
 	}
@@ -587,22 +598,32 @@ function ppp_tw_share_on_publish( $new_status, $old_status, $post ) {
 	$media = ppp_post_has_media( $post->ID, 'tw', $use_media );
 	$share_link = ppp_generate_link( $post->ID, $name, true );
 
-	$status['twitter'] = ppp_send_tweet( $share_content . ' ' . $share_link, $post->ID, $media );
+	$status = ppp_send_tweet( $share_content . ' ' . $share_link, $post->ID, $media );
 
-	if ( ! empty( $status['twitter']->id_str ) ) {
+	$log_title = ppp_tw_build_share_message( $post->ID, $name, false, false );
+
+	$log_data = array(
+		'post_title'    => $log_title,
+		'post_content'  =>  json_encode( $status ),
+		'post_parent'   => $post->ID,
+		'log_type'      => 'ppp_share'
+	);
+
+	$log_meta = array(
+		'network'   => 'tw',
+	);
+
+	$log_entry = WP_Logging::insert_log( $log_data, $log_meta );
+
+	if ( ! empty( $status->id_str ) ) {
 		$author_id = $post->post_author;
 		$author_rt = get_user_meta( $author_id, '_ppp_share_on_publish', true );
 
 		if ( $author_rt ) {
 			$twitter_user = new PPP_Twitter_User( $author_id );
-			$twitter_user->retweet( $status['twitter']->id_str );
+			$twitter_user->retweet( $status->id_str );
 		}
 
-	}
-
-
-	if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
-		update_post_meta( $post->ID, '_ppp-' . $name . '-status', $status );
 	}
 }
 add_action( 'ppp_share_on_publish', 'ppp_tw_share_on_publish', 10, 3 );
